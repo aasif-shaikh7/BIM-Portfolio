@@ -28,23 +28,4 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
 
 
 /* GOATCOUNTER TOTAL VISITOR COUNTER */
-(function () {
-  function initVisitorCounter() {
-    if (!window.goatcounter || typeof window.goatcounter.visit_count !== 'function') {
-      setTimeout(initVisitorCounter, 100);
-      return;
-    }
-    window.goatcounter.visit_count({
-      append: '#goatcounter-counter',
-      path: 'TOTAL',
-      no_branding: true,
-      style: `
-        div { display:inline !important; border:0 !important; padding:0 !important; margin:0 !important;
-              background:transparent !important; color:inherit !important; font:inherit !important; line-height:inherit !important; }
-        #gcvc-for, #gcvc-by { display:none !important; }
-        #gcvc-views { display:inline !important; color:inherit !important; font:inherit !important; }
-      `
-    });
-  }
-  initVisitorCounter();
-})();
+(function(){function init(){if(!window.goatcounter||typeof window.goatcounter.visit_count!=='function'){setTimeout(init,100);return;}window.goatcounter.visit_count({append:'#goatcounter-counter',path:'TOTAL',no_branding:true,style:`div{display:inline!important;border:0!important;padding:0!important;margin:0!important;background:transparent!important;color:inherit!important;font:inherit!important}#gcvc-for,#gcvc-by{display:none!important}#gcvc-views{display:inline!important;color:inherit!important;font:inherit!important}`});}init();})();

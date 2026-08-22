@@ -124,11 +124,4 @@ body{overflow-x:hidden}
 .visitor-copy strong{font:700 17px "Space Grotesk";letter-spacing:-.02em}
 @media(max-width:700px){.visitor-widget{right:14px;bottom:76px;min-width:112px;padding:9px 12px;border-radius:14px}.visitor-icon{width:26px;height:26px}.visitor-copy strong{font-size:15px}}
 
-/* GoatCounter floating visitor counter */
-.visitor-widget{position:fixed;right:22px;bottom:82px;z-index:59;display:flex;align-items:center;gap:10px;min-width:126px;padding:10px 14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:#111;color:#fff;box-shadow:0 14px 38px rgba(0,0,0,.20);backdrop-filter:blur(12px)}
-.visitor-icon{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#c9ff38;color:#111;font-size:12px;font-weight:900}
-.visitor-copy{display:flex;flex-direction:column;line-height:1}
-.visitor-label{font-size:8px;letter-spacing:.16em;color:#96968e;font-weight:800;margin-bottom:5px}
-.visitor-number{font:700 17px "Space Grotesk";letter-spacing:-.02em;color:#fff}
-.visitor-number div{display:inline!important}
-@media(max-width:700px){.visitor-widget{right:14px;bottom:76px;min-width:112px;padding:9px 12px;border-radius:14px}.visitor-icon{width:26px;height:26px}.visitor-number{font-size:15px}}
+.visitor-widget{position:fixed;right:22px;bottom:82px;z-index:61;display:flex;align-items:center;gap:10px;min-width:126px;padding:10px 14px;border:1px solid rgba(255,255,255,.12);border-radius:16px;background:#111;color:#fff;box-shadow:0 14px 38px rgba(0,0,0,.20);backdrop-filter:blur(12px)}.visitor-icon{width:29px;height:29px;border-radius:50%;display:grid;place-items:center;background:#c9ff38;color:#111;font-size:12px;font-weight:900}.visitor-copy{display:flex;flex-direction:column;line-height:1}.visitor-label{font-size:8px;letter-spacing:.16em;color:#96968e;font-weight:800;margin-bottom:5px}.visitor-number{font:700 17px "Space Grotesk";color:#fff}.visitor-number div{display:inline!important}@media(max-width:700px){.visitor-widget{right:14px;bottom:76px;min-width:112px;padding:9px 12px}.visitor-icon{width:26px;height:26px}.visitor-number{font-size:15px}}
