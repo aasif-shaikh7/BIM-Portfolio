@@ -64,4 +64,75 @@ document.querySelectorAll('.reveal').forEach(el=>obs.observe(el));
   prev.addEventListener('click',function(){go(-1)});next.addEventListener('click',function(){go(1)});
   grid.addEventListener('scroll',function(){var index=Math.round(grid.scrollLeft/cardStep());index=Math.max(0,Math.min(cards.length-1,index));current.textContent=String(index+1).padStart(2,'0')},{passive:true});
   grid.addEventListener('wheel',function(e){if(Math.abs(e.deltaY)>Math.abs(e.deltaX)){e.preventDefault();grid.scrollLeft+=e.deltaY}},{passive:false});
+
+  /* AUTO CAROUSEL: one card every 0.5 seconds. Loops continuously. */
+  var autoTimer=null,autoDelay=500;
+  function autoStart(){
+    if(autoTimer)clearInterval(autoTimer);
+    autoTimer=setInterval(function(){
+      var max=grid.scrollWidth-grid.clientWidth;
+      if(grid.scrollLeft>=max-3){grid.scrollTo({left:0,behavior:'smooth'});}
+      else{go(1);}
+    },autoDelay);
+  }
+  autoStart();
+  /* Keep automatic movement running even after manual interaction. */
+  grid.addEventListener('pointerdown',function(){clearInterval(autoTimer)});
+  grid.addEventListener('pointerup',autoStart);
+  grid.addEventListener('pointercancel',autoStart);
+  window.addEventListener('resize',function(){clearInterval(autoTimer);autoStart()});
+})();
+
+/* SYSTEM / LIGHT / DARK THEME TOGGLE */
+(function(){
+  var style=document.createElement('style');
+  style.textContent=`
+    :root{color-scheme:light}
+    html[data-theme="dark"]{color-scheme:dark}
+    html[data-theme="dark"] body{--bg:#0c0d0d;--ink:#f4f4ef;--muted:#a5a59d;--line:#30312e;background:var(--bg);color:var(--ink)}
+    html[data-theme="dark"] .site-header{background:rgba(12,13,13,.92);border-color:#30312e}
+    html[data-theme="dark"] .site-header nav{color:#bdbdb5}
+    html[data-theme="dark"] .site-header nav a:hover{color:#fff}
+    html[data-theme="dark"] .nav-cta{border-color:#aaa;color:#fff}
+    html[data-theme="dark"] .brand span{background:#f4f4ef;color:#111}
+    html[data-theme="dark"] .hero h1 em{color:#aaa}
+    html[data-theme="dark"] .hero-text,html[data-theme="dark"] .large{color:#bdbdb5}
+    html[data-theme="dark"] .pill-row span{border-color:#30312e}
+    html[data-theme="dark"] .project-card{background:#171918;border-color:#30312e}
+    html[data-theme="dark"] .project-media{background:#222421}
+    html[data-theme="dark"] .view-project{color:#fff;border-color:#aaa}
+    html[data-theme="dark"] .process-section{background:#151716}
+    html[data-theme="dark"] .process-step{background:#151716}
+    html[data-theme="dark"] .process-grid{background:#30312e}
+    html[data-theme="dark"] .contact-card{background:#f4f4ef;color:#111}
+    html[data-theme="dark"] .contact-card p{color:#555}
+    html[data-theme="dark"] .contact-details a,html[data-theme="dark"] .contact-details div{border-color:#d0d0ca}
+    html[data-theme="dark"] footer{border-color:#30312e}
+    html[data-theme="dark"] .modal-box{background:#111312;color:#f4f4ef}
+    .theme-switcher{display:inline-flex;align-items:center;gap:2px;padding:3px;border:1px solid var(--line);border-radius:999px;background:rgba(255,255,255,.45);backdrop-filter:blur(10px);margin-left:10px}
+    .theme-switcher button{width:30px;height:30px;border:0;background:transparent;color:var(--muted);border-radius:50%;cursor:pointer;font:700 12px/1 "DM Sans",sans-serif;display:grid;place-items:center;transition:.2s ease}
+    .theme-switcher button:hover{color:var(--ink)}
+    .theme-switcher button.active{background:var(--ink);color:var(--bg)}
+    html[data-theme="dark"] .theme-switcher{background:rgba(255,255,255,.05)}
+    html[data-theme="dark"] .project-carousel-btn{background:#191b1a;color:#fff;border-color:#444}
+    html[data-theme="dark"] .project-carousel-label{color:#999}
+    html[data-theme="dark"] .project-carousel-label b{color:#fff}
+    @media(max-width:850px){.theme-switcher{margin-left:auto;margin-right:8px}.theme-switcher button{width:28px;height:28px}}
+  `;
+  document.head.appendChild(style);
+
+  var header=document.querySelector('.site-header');if(!header)return;
+  var switcher=document.createElement('div');switcher.className='theme-switcher';switcher.setAttribute('role','group');switcher.setAttribute('aria-label','Theme');
+  switcher.innerHTML='<button type="button" data-theme-choice="system" title="System default" aria-label="System default">◐</button><button type="button" data-theme-choice="light" title="Light theme" aria-label="Light theme">☀</button><button type="button" data-theme-choice="dark" title="Dark theme" aria-label="Dark theme">☾</button>';
+  var cta=header.querySelector('.nav-cta');if(cta)header.insertBefore(switcher,cta);else header.appendChild(switcher);
+  var buttons=switcher.querySelectorAll('button');
+  function applyTheme(choice){
+    if(choice==='system')document.documentElement.removeAttribute('data-theme');
+    else document.documentElement.setAttribute('data-theme',choice);
+    localStorage.setItem('portfolio-theme',choice);
+    buttons.forEach(function(b){b.classList.toggle('active',b.dataset.themeChoice===choice)});
+  }
+  var saved=localStorage.getItem('portfolio-theme')||'system';
+  applyTheme(saved);
+  buttons.forEach(function(b){b.addEventListener('click',function(){applyTheme(b.dataset.themeChoice)})});
 })();
