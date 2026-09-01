@@ -1,4 +1,4 @@
-/* BIM Portfolio — Focus Carousel v1.2.0 */
+/* BIM Portfolio — Focus Carousel v1.2.1 */
 (function () {
   'use strict';
 
@@ -10,9 +10,9 @@
     if (cards.length < 3) return;
 
     var style = document.createElement('style');
-    style.setAttribute('data-carousel-focus', 'v1.2.0');
+    style.setAttribute('data-carousel-focus', 'v1.2.1');
     style.textContent = `
-      /* Focused center-card presentation */
+      /* Focused center-card presentation: ~2/3 larger, side cards ~1/3 smaller. */
       .project-carousel .project-card {
         transform: scale(.92);
         filter: grayscale(0) blur(0);
@@ -24,54 +24,51 @@
       }
 
       .project-carousel .project-card.carousel-focus-active {
-        transform: scale(1.42);
+        transform: scale(1.66);
         filter: none;
         opacity: 1;
         z-index: 10;
-        box-shadow: 0 24px 70px rgba(0,0,0,.42), 0 0 38px rgba(255,79,163,.18), 0 0 70px rgba(118,88,255,.16);
+        box-shadow: 0 28px 80px rgba(0,0,0,.46), 0 0 42px rgba(255,79,163,.20), 0 0 78px rgba(118,88,255,.18);
       }
 
       .project-carousel .project-card.carousel-focus-side {
         transform: scale(.67);
-        filter: grayscale(.92) blur(2px);
-        opacity: .5;
+        filter: grayscale(.94) blur(2.5px);
+        opacity: .48;
         z-index: 2;
       }
 
-      /* Keep the focus effect inside the carousel viewport. */
       .project-carousel {
         overflow-x: clip;
         overflow-y: visible;
       }
 
-      /* The scroll container must remain usable for touch and arrows. */
       .project-carousel .project-card.carousel-focus-active,
       .project-carousel .project-card.carousel-focus-side {
         pointer-events: auto;
       }
 
       @media (max-width: 1050px) {
-        .project-carousel .project-card.carousel-focus-active { transform: scale(1.28); }
-        .project-carousel .project-card.carousel-focus-side { transform: scale(.74); }
+        .project-carousel .project-card.carousel-focus-active { transform: scale(1.38); }
+        .project-carousel .project-card.carousel-focus-side { transform: scale(.67); }
       }
 
       @media (max-width: 700px) {
         .project-carousel .project-card { transform: scale(.96); opacity: .78; }
         .project-carousel .project-card.carousel-focus-active {
-          transform: scale(1.08);
+          transform: scale(1.10);
           filter: none;
           opacity: 1;
         }
         .project-carousel .project-card.carousel-focus-side {
-          transform: scale(.86);
-          filter: grayscale(.8) blur(1px);
-          opacity: .58;
+          transform: scale(.82);
+          filter: grayscale(.88) blur(1.2px);
+          opacity: .56;
         }
       }
     `;
     document.head.appendChild(style);
 
-    var rafId = null;
     var ticking = false;
 
     function updateFocus() {
@@ -85,8 +82,7 @@
         return {
           card: card,
           index: index,
-          distance: Math.abs(center - centerX),
-          center: center
+          distance: Math.abs(center - centerX)
         };
       }).sort(function (a, b) {
         return a.distance - b.distance;
@@ -101,47 +97,34 @@
 
       active.card.classList.add('carousel-focus-active');
 
-      /* Only the immediately visible neighbor on each side is dimmed. */
-      var visibleNeighbors = ranked
+      /* Dim only the two nearest visible neighbors. */
+      ranked
         .filter(function (item) {
           return item.index !== active.index && item.distance < rect.width;
         })
-        .sort(function (a, b) { return a.distance - b.distance; })
-        .slice(0, 2);
-
-      visibleNeighbors.forEach(function (item) {
-        item.card.classList.add('carousel-focus-side');
-      });
+        .slice(0, 2)
+        .forEach(function (item) {
+          item.card.classList.add('carousel-focus-side');
+        });
     }
 
     function scheduleUpdate() {
       if (ticking) return;
       ticking = true;
-      rafId = window.requestAnimationFrame(updateFocus);
+      window.requestAnimationFrame(updateFocus);
     }
 
     grid.addEventListener('scroll', scheduleUpdate, { passive: true });
     window.addEventListener('resize', scheduleUpdate, { passive: true });
 
-    /* Recalculate after the existing carousel script starts moving. */
     window.setTimeout(updateFocus, 100);
     window.setTimeout(updateFocus, 700);
     window.setTimeout(updateFocus, 1400);
 
-    /* Keep focus synchronized during smooth scrolling. */
-    if ('MutationObserver' in window) {
-      var observer = new MutationObserver(scheduleUpdate);
-      observer.observe(grid, { childList: false, subtree: true, attributes: false });
-    }
-
-    /* Respect reduced-motion users. */
     var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)');
     if (reducedMotion && reducedMotion.matches) {
       style.textContent += '\n.project-carousel .project-card,.project-carousel .project-card.carousel-focus-active,.project-carousel .project-card.carousel-focus-side{transition:none!important;}';
     }
-
-    /* Avoid an unused requestAnimationFrame handle warning in older browsers. */
-    void rafId;
   }
 
   if (document.readyState === 'loading') {
