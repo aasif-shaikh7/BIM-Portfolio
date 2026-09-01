@@ -1,4 +1,4 @@
-/* BIM Portfolio — Focus Carousel v1.2.2 */
+/* BIM Portfolio — Focus Carousel v1.2.3 */
 (function () {
   'use strict';
 
@@ -9,131 +9,253 @@
     var cards = Array.prototype.slice.call(grid.querySelectorAll('.project-card'));
     if (cards.length < 3) return;
 
+    var activeIndex = 0;
+    var rafId = null;
+    var correctionTimer = null;
+    var isProgrammaticScroll = false;
+    var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
     var style = document.createElement('style');
-    style.setAttribute('data-carousel-focus', 'v1.2.2');
+    style.setAttribute('data-carousel-focus', 'v1.2.3');
     style.textContent = `
-      /* Center-focus presentation: active card ~2/3 larger; visible neighbors ~1/3 smaller. */
+      /* Stable center-focus carousel. Layout space stays fixed; only visual scale changes. */
+      .project-carousel {
+        overflow-x: auto !important;
+        overflow-y: visible !important;
+        scroll-snap-type: none !important;
+        scroll-behavior: auto !important;
+        scrollbar-width: none;
+        -ms-overflow-style: none;
+        padding-left: var(--carousel-focus-gutter, 0px) !important;
+        padding-right: var(--carousel-focus-gutter, 0px) !important;
+        box-sizing: border-box;
+      }
+
+      .project-carousel::-webkit-scrollbar { display:none; }
+
       .project-carousel .project-card {
+        position:relative;
         transform: scale(.67);
-        filter: grayscale(1) brightness(.68) blur(2.5px);
-        opacity: .46;
-        z-index: 1;
-        transform-origin: center center;
-        transition: transform 650ms cubic-bezier(.22,.61,.36,1), filter 650ms ease, opacity 650ms ease, box-shadow 650ms ease, border-color 650ms ease;
-        will-change: transform, filter, opacity;
+        transform-origin:center center;
+        filter:grayscale(1) brightness(.64) blur(2.5px);
+        opacity:.42;
+        z-index:1;
+        transition:transform 650ms cubic-bezier(.22,.61,.36,1),filter 650ms ease,opacity 650ms ease,box-shadow 650ms ease,border-color 650ms ease;
+        will-change:transform,filter,opacity;
+        flex-shrink:0;
       }
 
       .project-carousel .project-card.carousel-focus-active {
-        transform: scale(1.66);
-        filter: none;
-        opacity: 1;
-        z-index: 10;
-        border-color: rgba(255,79,163,.72);
-        box-shadow: 0 28px 80px rgba(0,0,0,.46), 0 0 0 2px rgba(118,88,255,.35), 0 0 42px rgba(255,79,163,.22), 0 0 78px rgba(118,88,255,.18);
+        transform:scale(1.66);
+        filter:none;
+        opacity:1;
+        z-index:10;
+        border-color:rgba(255,79,163,.76);
+        box-shadow:0 26px 74px rgba(0,0,0,.46),0 0 0 2px rgba(118,88,255,.32),0 0 44px rgba(255,79,163,.22),0 0 82px rgba(118,88,255,.16);
       }
 
-      /* Keep adjacent cards visible but clearly de-emphasized. */
       .project-carousel .project-card.carousel-focus-side {
-        transform: scale(.67);
-        filter: grayscale(1) brightness(.62) blur(2.5px);
-        opacity: .42;
-        z-index: 2;
+        transform:scale(.67);
+        filter:grayscale(1) brightness(.58) blur(2.8px);
+        opacity:.40;
+        z-index:2;
       }
 
-      /* Important: the carousel must remain scrollable. */
-      .project-carousel {
-        overflow-x: auto;
-        overflow-y: visible;
-        scrollbar-width: none;
-        -ms-overflow-style: none;
-      }
-
-      .project-carousel::-webkit-scrollbar { display: none; }
       .project-carousel .project-card.carousel-focus-active,
-      .project-carousel .project-card.carousel-focus-side { pointer-events: auto; }
+      .project-carousel .project-card.carousel-focus-side { pointer-events:auto; }
 
-      @media (max-width: 1050px) {
-        .project-carousel .project-card.carousel-focus-active { transform: scale(1.38); }
-        .project-carousel .project-card.carousel-focus-side { transform: scale(.67); }
+      @media(max-width:1050px){
+        .project-carousel .project-card.carousel-focus-active{transform:scale(1.38);}
+        .project-carousel .project-card.carousel-focus-side{transform:scale(.67);}
       }
 
-      @media (max-width: 700px) {
-        /* Mobile keeps the focus treatment usable instead of creating an oversized card. */
-        .project-carousel .project-card { transform: scale(.82); opacity: .55; filter: grayscale(.9) brightness(.72) blur(1.2px); }
-        .project-carousel .project-card.carousel-focus-active {
-          transform: scale(1.10);
-          filter: none;
-          opacity: 1;
-          border-color: rgba(255,79,163,.72);
-          box-shadow: 0 18px 45px rgba(0,0,0,.38), 0 0 0 2px rgba(118,88,255,.28), 0 0 30px rgba(255,79,163,.18);
-        }
-        .project-carousel .project-card.carousel-focus-side {
-          transform: scale(.82);
-          filter: grayscale(1) brightness(.68) blur(1.2px);
-          opacity: .48;
-        }
+      @media(max-width:700px){
+        .project-carousel .project-card{transform:scale(.82);filter:grayscale(.92) brightness(.68) blur(1.25px);opacity:.48;}
+        .project-carousel .project-card.carousel-focus-active{transform:scale(1.10);filter:none;opacity:1;}
+        .project-carousel .project-card.carousel-focus-side{transform:scale(.82);filter:grayscale(1) brightness(.64) blur(1.4px);opacity:.44;}
       }
 
-      @media (prefers-reduced-motion: reduce) {
-        .project-carousel .project-card { transition: none !important; }
+      @media(prefers-reduced-motion:reduce){
+        .project-carousel .project-card{transition:none!important;}
       }
     `;
     document.head.appendChild(style);
 
-    var ticking = false;
+    function cardWidth() {
+      return cards[0] ? cards[0].getBoundingClientRect().width : 0;
+    }
+
+    function cardStep() {
+      var first = cards[0];
+      if (!first) return 0;
+      var gap = parseFloat(getComputedStyle(grid).gap) || 0;
+      return first.getBoundingClientRect().width + gap;
+    }
+
+    function setGutter() {
+      var width = cardWidth();
+      if (!width) return;
+      var gutter = Math.max(0, (grid.clientWidth - width) / 2);
+      grid.style.setProperty('--carousel-focus-gutter', gutter + 'px');
+    }
+
+    function centerCard(index, behavior) {
+      if (!cards[index]) return;
+      setGutter();
+
+      var card = cards[index];
+      var target = card.offsetLeft - ((grid.clientWidth - card.offsetWidth) / 2);
+      var maxScroll = Math.max(0, grid.scrollWidth - grid.clientWidth);
+      target = Math.max(0, Math.min(target, maxScroll));
+
+      isProgrammaticScroll = true;
+      if (reducedMotion) {
+        grid.scrollLeft = target;
+      } else {
+        grid.scrollTo({
+          left: target,
+          behavior: behavior || 'smooth'
+        });
+      }
+
+      window.setTimeout(function () {
+        isProgrammaticScroll = false;
+        updateFocusFromPosition();
+      }, reducedMotion ? 0 : 720);
+    }
+
+    function nearestIndex() {
+      var viewportCenter = grid.scrollLeft + (grid.clientWidth / 2);
+      var best = 0;
+      var bestDistance = Infinity;
+
+      cards.forEach(function (card, index) {
+        var center = card.offsetLeft + (card.offsetWidth / 2);
+        var distance = Math.abs(center - viewportCenter);
+        if (distance < bestDistance) {
+          bestDistance = distance;
+          best = index;
+        }
+      });
+
+      return best;
+    }
+
+    function applyFocus(index) {
+      activeIndex = Math.max(0, Math.min(cards.length - 1, index));
+
+      cards.forEach(function (card, index) {
+        card.classList.remove('carousel-focus-active', 'carousel-focus-side');
+        if (index === activeIndex) {
+          card.classList.add('carousel-focus-active');
+        } else if (index === activeIndex - 1 || index === activeIndex + 1) {
+          card.classList.add('carousel-focus-side');
+        }
+      });
+    }
+
+    function updateFocusFromPosition() {
+      var index = nearestIndex();
+      applyFocus(index);
+    }
+
+    function scheduleFocusUpdate() {
+      if (rafId) return;
+      rafId = window.requestAnimationFrame(function () {
+        rafId = null;
+        updateFocusFromPosition();
+      });
+    }
+
+    function settleAfterScroll() {
+      if (correctionTimer) window.clearTimeout(correctionTimer);
+      correctionTimer = window.setTimeout(function () {
+        correctionTimer = null;
+        if (isProgrammaticScroll) return;
+        var index = nearestIndex();
+        applyFocus(index);
+        centerCard(index, reducedMotion ? 'auto' : 'smooth');
+      }, 100);
+    }
 
     /*
-     * Determine focus from the scroll coordinate, not transformed getBoundingClientRect().
-     * This prevents the scale transform from changing which card is considered the center.
+     * The existing portfolio carousel uses scrollBy/scrollTo. Wrap those methods
+     * so its autoplay still works, but every movement settles on a truly centered card.
+     * Native touch/drag scrolling remains untouched.
      */
-    function updateFocus() {
-      ticking = false;
+    var originalScrollBy = grid.scrollBy.bind(grid);
+    var originalScrollTo = grid.scrollTo.bind(grid);
 
-      var viewportCenter = grid.scrollLeft + (grid.clientWidth / 2);
-      var ranked = cards.map(function (card, index) {
-        return {
-          card: card,
-          index: index,
-          center: card.offsetLeft + (card.offsetWidth / 2),
-          distance: Math.abs((card.offsetLeft + (card.offsetWidth / 2)) - viewportCenter)
-        };
-      }).sort(function (a, b) {
-        return a.distance - b.distance;
-      });
+    grid.scrollBy = function (options, y) {
+      if (typeof options === 'number') {
+        originalScrollBy(options, y);
+      } else {
+        originalScrollBy(options || { left: 0, top: 0 });
+      }
+      settleAfterScroll();
+    };
 
-      var active = ranked[0];
-      if (!active) return;
+    grid.scrollTo = function (options, y) {
+      if (typeof options === 'number') {
+        originalScrollTo(options, y);
+        settleAfterScroll();
+        return;
+      }
 
-      cards.forEach(function (card) {
-        card.classList.remove('carousel-focus-active', 'carousel-focus-side');
-      });
+      if (options && Object.prototype.hasOwnProperty.call(options, 'top') &&
+          Object.prototype.hasOwnProperty.call(options, 'left') &&
+          Number(options.left) === 0 && activeIndex > 0) {
+        /* Existing carousel uses scrollTo({left:0}) at the end. Instead of a visible
+           jump from the last card to the left edge, wrap cleanly to card 0's center. */
+        centerCard(0, reducedMotion ? 'auto' : 'smooth');
+        return;
+      }
 
-      active.card.classList.add('carousel-focus-active');
+      originalScrollTo(options || { left: 0, top: 0 });
+      settleAfterScroll();
+    };
 
-      /* Only the immediate left/right neighbors receive the muted treatment. */
-      if (cards[active.index - 1]) cards[active.index - 1].classList.add('carousel-focus-side');
-      if (cards[active.index + 1]) cards[active.index + 1].classList.add('carousel-focus-side');
-    }
+    grid.addEventListener('scroll', function () {
+      scheduleFocusUpdate();
+      settleAfterScroll();
+    }, { passive:true });
 
-    function scheduleUpdate() {
-      if (ticking) return;
-      ticking = true;
-      window.requestAnimationFrame(updateFocus);
-    }
+    grid.addEventListener('touchstart', function () {
+      if (correctionTimer) window.clearTimeout(correctionTimer);
+    }, { passive:true });
 
-    grid.addEventListener('scroll', scheduleUpdate, { passive: true });
-    window.addEventListener('resize', scheduleUpdate, { passive: true });
+    grid.addEventListener('touchend', function () {
+      var index = nearestIndex();
+      applyFocus(index);
+      centerCard(index, reducedMotion ? 'auto' : 'smooth');
+    }, { passive:true });
 
-    /* Re-evaluate focus after the existing autoplay script changes scroll position. */
-    [100, 500, 1000, 1500].forEach(function (delay) {
-      window.setTimeout(updateFocus, delay);
-    });
+    grid.addEventListener('wheel', function () {
+      settleAfterScroll();
+    }, { passive:true });
 
-    updateFocus();
+    window.addEventListener('resize', function () {
+      setGutter();
+      centerCard(activeIndex, reducedMotion ? 'auto' : 'smooth');
+    }, { passive:true });
+
+    /* Stable initial state: first card is centered before visual emphasis is shown. */
+    setGutter();
+    applyFocus(0);
+    centerCard(0, reducedMotion ? 'auto' : 'auto');
+
+    /* Re-apply once layout/fonts have settled. */
+    window.setTimeout(function () {
+      setGutter();
+      centerCard(activeIndex, reducedMotion ? 'auto' : 'auto');
+    }, 250);
+    window.setTimeout(function () {
+      updateFocusFromPosition();
+    }, 900);
   }
 
   if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
+    document.addEventListener('DOMContentLoaded', init, { once:true });
   } else {
     init();
   }
