@@ -1,8 +1,8 @@
-/* BIM Portfolio — Project Focus Carousel v1.2.3 */
+/* BIM Portfolio — Project Focus Carousel v1.2.4 */
 (function () {
   'use strict';
 
-  var VERSION = '1.2.3';
+  var VERSION = '1.2.4';
 
   function init() {
     var track = document.querySelector('.project-grid');
@@ -11,6 +11,7 @@
     var cards = Array.prototype.slice.call(track.querySelectorAll('.project-card'));
     if (!cards.length) return;
 
+    /* Prevent duplicate initialization if another script/page fragment calls init. */
     if (track.getAttribute('data-focus-carousel-version')) return;
     track.setAttribute('data-focus-carousel-version', VERSION);
 
@@ -26,7 +27,12 @@
     var style = document.createElement('style');
     style.setAttribute('data-project-focus-carousel', VERSION);
     style.textContent = `
-      /* v1.2.3 — stable center-focus carousel. The layout position never changes while scrolling. */
+      /*
+       * v1.2.4
+       * The carousel uses fixed layout widths + symmetric horizontal padding.
+       * This gives every card, including the first and last, enough scroll room
+       * to sit at the exact visual center after scaling.
+       */
       .project-grid[data-focus-carousel-version] {
         display: flex !important;
         flex-wrap: nowrap !important;
@@ -36,9 +42,11 @@
         overflow-y: visible !important;
         width: 100% !important;
         max-width: none !important;
-        padding-top: 105px !important;
-        padding-bottom: 105px !important;
-        margin: -105px 0 !important;
+        padding-top: 110px !important;
+        padding-bottom: 110px !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+        margin: -110px 0 !important;
         scroll-snap-type: none !important;
         scroll-behavior: auto !important;
         scrollbar-width: none !important;
@@ -47,24 +55,19 @@
         -webkit-overflow-scrolling: touch;
       }
 
-      .project-grid[data-focus-carousel-version]::-webkit-scrollbar { display: none !important; }
-
-      .project-grid[data-focus-carousel-version] > .carousel-focus-spacer {
-        flex: 0 0 0px;
-        width: 0;
-        height: 1px;
-        pointer-events: none;
+      .project-grid[data-focus-carousel-version]::-webkit-scrollbar {
+        display: none !important;
       }
 
       .project-grid[data-focus-carousel-version] > .project-card {
-        flex: 0 0 calc((100% - 56px) / 3) !important;
-        width: calc((100% - 56px) / 3) !important;
-        min-width: 0 !important;
+        flex: 0 0 var(--carousel-card-width) !important;
+        width: var(--carousel-card-width) !important;
+        min-width: var(--carousel-card-width) !important;
         position: relative;
         transform: scale(.67);
         transform-origin: center center;
-        filter: grayscale(1) brightness(.55) blur(2.8px);
-        opacity: .40;
+        filter: grayscale(1) brightness(.52) blur(3px);
+        opacity: .38;
         z-index: 1;
         transition:
           transform 620ms cubic-bezier(.22,.61,.36,1),
@@ -80,7 +83,7 @@
         filter: none;
         opacity: 1;
         z-index: 10;
-        border-color: rgba(255,79,163,.82);
+        border-color: rgba(255,79,163,.85);
         box-shadow:
           0 30px 80px rgba(0,0,0,.46),
           0 0 0 2px rgba(118,88,255,.34),
@@ -90,51 +93,46 @@
 
       .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side {
         transform: scale(.67);
-        filter: grayscale(1) brightness(.50) blur(3px);
-        opacity: .36;
+        filter: grayscale(1) brightness(.48) blur(3.2px);
+        opacity: .34;
         z-index: 2;
       }
 
-      /* The existing project hover rule must never compete with the focus transform. */
+      /* Existing hover styles must not override the focus transform. */
       .project-grid[data-focus-carousel-version] > .project-card:hover,
       .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active:hover,
       .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side:hover {
-        transform: var(--carousel-transform, scale(.67));
-        box-shadow: inherit;
+        transform: var(--carousel-transform);
+      }
+
+      .project-grid[data-focus-carousel-version] > .project-card {
+        --carousel-transform: scale(.67);
       }
 
       .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
         --carousel-transform: scale(1.66);
       }
 
-      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side,
-      .project-grid[data-focus-carousel-version] > .project-card:not(.carousel-focus-active) {
-        --carousel-transform: scale(.67);
-      }
-
       @media (max-width: 1050px) {
-        .project-grid[data-focus-carousel-version] > .project-card {
-          flex-basis: calc((100% - 28px) / 2) !important;
-          width: calc((100% - 28px) / 2) !important;
+        .project-grid[data-focus-carousel-version] {
+          gap: 22px !important;
         }
         .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
-          transform: scale(1.38);
-          --carousel-transform: scale(1.38);
+          transform: scale(1.42);
+          --carousel-transform: scale(1.42);
         }
       }
 
       @media (max-width: 700px) {
         .project-grid[data-focus-carousel-version] {
           gap: 16px !important;
-          padding-top: 55px !important;
-          padding-bottom: 55px !important;
-          margin: -55px 0 !important;
+          padding-top: 65px !important;
+          padding-bottom: 65px !important;
+          margin: -65px 0 !important;
         }
         .project-grid[data-focus-carousel-version] > .project-card {
-          flex-basis: calc(100% - 56px) !important;
-          width: calc(100% - 56px) !important;
           transform: scale(.82);
-          filter: grayscale(1) brightness(.66) blur(1.2px);
+          filter: grayscale(1) brightness(.64) blur(1.2px);
           opacity: .46;
           --carousel-transform: scale(.82);
         }
@@ -147,7 +145,7 @@
         .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side {
           transform: scale(.82);
           --carousel-transform: scale(.82);
-          filter: grayscale(1) brightness(.63) blur(1.3px);
+          filter: grayscale(1) brightness(.62) blur(1.3px);
           opacity: .42;
         }
       }
@@ -160,22 +158,34 @@
     `;
     document.head.appendChild(style);
 
-    var startSpacer = document.createElement('div');
-    var endSpacer = document.createElement('div');
-    startSpacer.className = 'carousel-focus-spacer carousel-focus-spacer-start';
-    endSpacer.className = 'carousel-focus-spacer carousel-focus-spacer-end';
-    startSpacer.setAttribute('aria-hidden', 'true');
-    endSpacer.setAttribute('aria-hidden', 'true');
-    track.insertBefore(startSpacer, cards[0]);
-    track.appendChild(endSpacer);
-
     function layout() {
-      if (!cards[0]) return;
+      /*
+       * Use an explicit pixel width instead of percentage flex-basis. The track
+       * itself is also the viewport, so this prevents the card width from changing
+       * when horizontal padding is added for first/last-card centering.
+       */
+      var trackWidth = track.clientWidth;
+      var gap = window.innerWidth <= 700 ? 16 : (window.innerWidth <= 1050 ? 22 : 28);
+      var cardWidth;
 
-      var cardWidth = cards[0].offsetWidth;
-      var sideSpace = Math.max(0, (track.clientWidth - cardWidth) / 2);
-      startSpacer.style.flexBasis = sideSpace + 'px';
-      endSpacer.style.flexBasis = sideSpace + 'px';
+      if (window.innerWidth <= 700) {
+        cardWidth = Math.max(220, trackWidth - 56);
+      } else if (window.innerWidth <= 1050) {
+        cardWidth = Math.max(260, (trackWidth - gap) / 2);
+      } else {
+        cardWidth = Math.max(280, (trackWidth - (gap * 2)) / 3);
+      }
+
+      track.style.setProperty('--carousel-card-width', cardWidth + 'px');
+
+      /*
+       * Symmetric content gutters are the key fix. They create real scrollable
+       * space before card 01 and after the final card, so neither edge card is
+       * forced away from the center.
+       */
+      var gutter = Math.max(0, (trackWidth - cardWidth) / 2);
+      track.style.paddingLeft = gutter + 'px';
+      track.style.paddingRight = gutter + 'px';
     }
 
     function setClasses(index) {
@@ -183,6 +193,7 @@
 
       cards.forEach(function (card, i) {
         card.classList.remove('carousel-focus-active', 'carousel-focus-side');
+
         if (i === activeIndex) {
           card.classList.add('carousel-focus-active');
         } else if (i === activeIndex - 1 || i === activeIndex + 1) {
@@ -197,9 +208,10 @@
 
       layout();
 
-      /* Use the untransformed layout box. CSS scale must never affect centering math. */
+      /* offsetLeft is the untransformed layout position, so scale never affects math. */
       var target = card.offsetLeft - ((track.clientWidth - card.offsetWidth) / 2);
       var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
+
       return Math.max(0, Math.min(target, maxScroll));
     }
 
@@ -215,10 +227,10 @@
         behavior: useBehavior
       });
 
-      /* Keep the lock active for the full CSS scroll animation, not just the first scroll event. */
+      /* Smooth scroll normally settles well below 1 second; keep the lock longer. */
       programmaticTimer = window.setTimeout(function () {
         isProgrammaticScroll = false;
-      }, useBehavior === 'smooth' ? 750 : 60);
+      }, useBehavior === 'smooth' ? 850 : 80);
     }
 
     function nearestCard() {
@@ -229,6 +241,7 @@
       cards.forEach(function (card, index) {
         var cardCenter = card.offsetLeft + (card.offsetWidth / 2);
         var distance = Math.abs(cardCenter - center);
+
         if (distance < bestDistance) {
           bestDistance = distance;
           best = index;
@@ -243,6 +256,7 @@
         window.clearInterval(autoTimer);
         autoTimer = null;
       }
+
       if (resumeTimer) window.clearTimeout(resumeTimer);
 
       if (duration !== Infinity) {
@@ -251,13 +265,14 @@
     }
 
     function startAutoplay() {
-      if (reducedMotion || document.hidden || pointerDown) return;
-      if (cards.length < 2) return;
+      if (reducedMotion || document.hidden || pointerDown || cards.length < 2) return;
+
       if (autoTimer) window.clearInterval(autoTimer);
 
-      /* Exactly 1 second between carousel advances. */
+      /* Exactly 1 second between automatic card changes. */
       autoTimer = window.setInterval(function () {
         if (pointerDown || document.hidden) return;
+
         var nextIndex = (activeIndex + 1) % cards.length;
         setClasses(nextIndex);
         centerCard(nextIndex, 'smooth');
@@ -277,7 +292,7 @@
       }, 130);
     }
 
-    /* User interaction: holding/hovering pauses autoplay. */
+    /* Hold/drag pauses autoplay. */
     track.addEventListener('pointerdown', function () {
       pointerDown = true;
       pauseAutoplay(Infinity);
@@ -293,6 +308,7 @@
       settleUserScroll();
     }, { passive: true });
 
+    /* Hover pauses autoplay on desktop. */
     track.addEventListener('mouseenter', function () {
       pauseAutoplay(Infinity);
     });
@@ -307,10 +323,9 @@
     }, { passive: true });
 
     /*
-     * Critical stability fix:
-     * Do NOT change the active class on every scroll event. During smooth scrolling,
-     * changing scale/filter while the browser is animating scroll causes the visual
-     * position to jump and produces the reported shake/glitch.
+     * Critical anti-glitch rule: never change scale/filter classes while our own
+     * smooth scroll is running. The previous implementation did that and caused
+     * the card to visually shake because transform and scroll were fighting.
      */
     track.addEventListener('scroll', function () {
       if (!isProgrammaticScroll && !pointerDown) {
@@ -322,6 +337,7 @@
       if (document.hidden) {
         pauseAutoplay(Infinity);
       } else {
+        layout();
         centerCard(activeIndex, 'auto');
         startAutoplay();
       }
@@ -332,17 +348,17 @@
       centerCard(activeIndex, 'auto');
     }, { passive: true });
 
-    /* Initial state: project 01 is centered before autoplay starts. */
+    /* Initial state. */
     setClasses(0);
     layout();
     centerCard(0, 'auto');
 
-    /* Recalculate after fonts/responsive CSS settle. */
+    /* Re-center once responsive styles/fonts have settled. */
     window.setTimeout(function () {
       layout();
       centerCard(activeIndex, 'auto');
       startAutoplay();
-    }, 300);
+    }, 350);
   }
 
   if (document.readyState === 'loading') {
