@@ -1,136 +1,26 @@
-/* BIM Portfolio — Professional BIM Modeler System v1.3.0 */
+/* BIM Portfolio — Professional BIM Modeler System v1.3.1 */
 :root{
-  --bim-navy:#0b1f33;
-  --bim-navy-2:#123451;
-  --bim-steel:#52677a;
-  --bim-slate:#687989;
-  --bim-line:#d7dee5;
-  --bim-bg:#f4f6f8;
-  --bim-white:#fff;
-  --bim-accent:#1479b8;
-  --bim-accent-2:#0f5d8f;
-  --bim-green:#21845a;
-  --bim-shadow:0 16px 40px rgba(11,31,51,.10);
+  --bim-navy:#0b1f33;--bim-navy-2:#123451;--bim-steel:#52677a;--bim-slate:#687989;--bim-line:#d7dee5;--bim-bg:#f4f6f8;--bim-white:#fff;--bim-accent:#1479b8;--bim-accent-2:#0f5d8f;--bim-green:#21845a;--bim-shadow:0 16px 40px rgba(11,31,51,.10);
 }
-
-/* Replace the decorative neon/glass appearance with a restrained AEC/BIM visual language. */
 html{background:var(--bim-bg)}
 body{background:var(--bim-bg)!important;color:var(--bim-navy)!important;font-family:"DM Sans",Arial,sans-serif!important}
 body:before{display:none!important}
+.site-header{height:74px!important;background:rgba(255,255,255,.96)!important;border-bottom:1px solid var(--bim-line)!important;box-shadow:0 2px 12px rgba(11,31,51,.06)!important;backdrop-filter:none!important}
+.brand{font-family:"Space Grotesk",Arial,sans-serif!important;color:var(--bim-navy)!important}.brand span{background:var(--bim-navy)!important;color:#fff!important;border-radius:5px!important}.site-header nav a{color:var(--bim-steel)!important}.site-header nav a:hover{color:var(--bim-accent)!important}.nav-cta{border-color:var(--bim-navy)!important;color:var(--bim-navy)!important;border-radius:5px!important}
+.hero{background:linear-gradient(180deg,#fff 0%,#f4f6f8 100%)!important}.hero-grid{max-width:1280px!important}.kicker{color:var(--bim-accent)!important;letter-spacing:.16em!important}.hero h1{color:var(--bim-navy)!important;font-family:"Space Grotesk",Arial,sans-serif!important;letter-spacing:-.045em!important}.hero h1 em{color:var(--bim-accent)!important}.hero-text{color:var(--bim-steel)!important}.btn{border-radius:5px!important}.btn.primary{background:var(--bim-navy)!important}.btn.ghost{border-color:#aeb9c3!important;color:var(--bim-navy)!important}.stats{border-top:1px solid var(--bim-line);padding-top:22px}.stats strong{color:var(--bim-navy)!important}.stats span{color:var(--bim-slate)!important}
+.hero-frame{border-radius:4px!important;background:#dfe6ec!important;box-shadow:var(--bim-shadow)!important;border:1px solid #cbd5de}.hero-frame:after{display:none!important}.hero-frame img{opacity:1!important}.hero-badge{background:var(--bim-navy)!important;color:#fff!important;border-radius:4px!important;padding:15px 18px!important}
+.section{background:var(--bim-bg)!important}.section-head{border-bottom:1px solid var(--bim-line);padding-bottom:24px;margin-bottom:44px}.section-number{color:var(--bim-accent)!important}.section h2{color:var(--bim-navy)!important;font-family:"Space Grotesk",Arial,sans-serif!important}.section .kicker{color:var(--bim-accent)!important}.about{background:#fff!important}.about-lead{color:var(--bim-navy)!important}.about-grid p{color:#425364!important}.about-grid .large{color:var(--bim-navy)!important}.pill-row span{border-color:var(--bim-line)!important;background:#fff!important;color:var(--bim-steel)!important;border-radius:4px!important}
+.section.dark{background:var(--bim-navy)!important;color:#fff!important}.section.dark .section-head{border-color:rgba(255,255,255,.15)}.section.dark h2{color:#fff!important}.section.dark .kicker{color:#78bde8!important}.skills-grid{background:#29445c!important;gap:0!important}.skill-card{background:var(--bim-navy-2)!important;border-color:#29445c!important;border-radius:0!important}.skill-no{color:#78bde8!important}.skill-card h3{color:#fff!important}.skill-card p{color:#b9c8d5!important}.achievement{border-color:#29445c!important}.achievement span{color:#78bde8!important}.achievement p{color:#d5dfe7!important}
+.project-grid{background:transparent!important}.project-card{background:#fff!important;border:1px solid var(--bim-line)!important;border-radius:4px!important;box-shadow:0 3px 12px rgba(11,31,51,.06)!important}.project-card:hover{box-shadow:0 12px 28px rgba(11,31,51,.12)!important}.project-media{background:#e8edf2!important}.project-media:after{content:"BIM MODEL"!important;background:var(--bim-navy)!important;color:#fff!important;border-radius:3px!important}.project-body{background:#fff!important}.eyebrow{color:var(--bim-accent)!important}.project-body h3{color:var(--bim-navy)!important}.view-project{color:var(--bim-navy)!important;border-color:var(--bim-accent)!important}.project-carousel-controls{max-width:1040px!important}.project-carousel-label{color:var(--bim-slate)!important}.project-carousel-label b{color:var(--bim-accent)!important}.project-carousel-btn{background:var(--bim-navy)!important;border:1px solid var(--bim-navy)!important;border-radius:4px!important;box-shadow:none!important}.project-carousel-btn:hover{background:var(--bim-accent)!important;box-shadow:none!important}
+#bbs.bbs-carousel-theme{background:var(--bim-navy)!important;border-top:1px solid #29445c!important;border-bottom:1px solid #29445c!important}#bbs.bbs-carousel-theme:before{display:none!important}#bbs.bbs-carousel-theme .section-head h2{background:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important}#bbs.bbs-carousel-theme .bbs-slideshow{background:#091a2b!important;border:1px solid #36536b!important;border-radius:4px!important;box-shadow:0 20px 50px rgba(0,0,0,.25)!important}#bbs.bbs-carousel-theme .bbs-slide{background:#f4f6f8!important;border-radius:2px!important}#bbs.bbs-carousel-theme .bbs-prev,#bbs.bbs-carousel-theme .bbs-next{background:var(--bim-navy)!important;border:1px solid #547188!important;border-radius:4px!important;box-shadow:none!important}#bbs.bbs-carousel-theme .bbs-prev:hover,#bbs.bbs-carousel-theme .bbs-next:hover{background:var(--bim-accent)!important;transform:translateY(-50%)!important}#bbs.bbs-carousel-theme .bbs-counter{background:var(--bim-navy)!important;border:1px solid #547188!important;border-radius:4px!important;backdrop-filter:none!important}#bbs.bbs-carousel-theme .bbs-dot{background:#647b8f!important}#bbs.bbs-carousel-theme .bbs-dot.active{background:var(--bim-accent)!important;box-shadow:none!important}
+.process-section{background:#e9eef2!important}.process-grid{background:#cbd5dd!important}.process-step{background:#fff!important}.process-step span{color:var(--bim-accent)!important}.process-step h3{color:var(--bim-navy)!important}.process-step p{color:var(--bim-steel)!important}.contact{background:#fff!important}.contact-card{background:var(--bim-navy)!important;border-radius:4px!important}.contact-card h2{color:#fff!important}.contact-card p{color:#b9c8d5!important}.contact-details a,.contact-details div{border-color:#29445c!important;color:#fff!important}.contact-details span{color:#82a0b6!important}.availability{background:#153c34!important;color:#9be0bf!important;border-radius:4px!important}.availability i{background:#55c68b!important;box-shadow:none!important}.whatsapp{background:var(--bim-navy)!important;color:#fff!important;border:1px solid #29445c;border-radius:4px!important;box-shadow:var(--bim-shadow)!important}footer{background:#fff!important;color:#71808d!important;border-color:var(--bim-line)!important}.modal-backdrop{background:rgba(6,20,34,.82)!important}.modal-box{background:#fff!important;border-radius:4px!important;border:1px solid var(--bim-line)!important;box-shadow:0 30px 80px rgba(0,0,0,.3)!important}.modal-box h2{color:var(--bim-navy)!important}.modal-close{color:var(--bim-navy)!important}
 
-.site-header{
-  height:74px!important;
-  background:rgba(255,255,255,.96)!important;
-  border-bottom:1px solid var(--bim-line)!important;
-  box-shadow:0 2px 12px rgba(11,31,51,.06)!important;
-  backdrop-filter:none!important;
-}
-.brand{font-family:"Space Grotesk",Arial,sans-serif!important;color:var(--bim-navy)!important}
-.brand span{background:var(--bim-navy)!important;color:#fff!important;border-radius:5px!important}
-.site-header nav a{color:var(--bim-steel)!important}
-.site-header nav a:hover{color:var(--bim-accent)!important}
-.nav-cta{border-color:var(--bim-navy)!important;color:var(--bim-navy)!important;border-radius:5px!important}
-
-.hero{background:linear-gradient(180deg,#fff 0%,#f4f6f8 100%)!important}
-.hero-grid{max-width:1280px!important}
-.kicker{color:var(--bim-accent)!important;letter-spacing:.16em!important}
-.hero h1{color:var(--bim-navy)!important;font-family:"Space Grotesk",Arial,sans-serif!important;letter-spacing:-.045em!important}
-.hero h1 em{color:var(--bim-accent)!important}
-.hero-text{color:var(--bim-steel)!important}
-.btn{border-radius:5px!important}
-.btn.primary{background:var(--bim-navy)!important}
-.btn.ghost{border-color:#aeb9c3!important;color:var(--bim-navy)!important}
-.stats{border-top:1px solid var(--bim-line);padding-top:22px}
-.stats strong{color:var(--bim-navy)!important}
-.stats span{color:var(--bim-slate)!important}
-
-.hero-frame{border-radius:4px!important;background:#dfe6ec!important;box-shadow:var(--bim-shadow)!important;border:1px solid #cbd5de}
-.hero-frame:after{display:none!important}
-.hero-frame img{opacity:1!important}
-.hero-badge{background:var(--bim-navy)!important;color:#fff!important;border-radius:4px!important;padding:15px 18px!important}
-
-.section{background:var(--bim-bg)!important}
-.section-head{border-bottom:1px solid var(--bim-line);padding-bottom:24px;margin-bottom:44px}
-.section-number{color:var(--bim-accent)!important}
-.section h2{color:var(--bim-navy)!important;font-family:"Space Grotesk",Arial,sans-serif!important}
-.section .kicker{color:var(--bim-accent)!important}
-.about{background:#fff!important}
-.about-lead{color:var(--bim-navy)!important}
-.about-grid p{color:#425364!important}
-.about-grid .large{color:var(--bim-navy)!important}
-.pill-row span{border-color:var(--bim-line)!important;background:#fff!important;color:var(--bim-steel)!important;border-radius:4px!important}
-
-.section.dark{background:var(--bim-navy)!important;color:#fff!important}
-.section.dark .section-head{border-color:rgba(255,255,255,.15)}
-.section.dark h2{color:#fff!important}
-.section.dark .kicker{color:#78bde8!important}
-.skills-grid{background:#29445c!important;gap:0!important}
-.skill-card{background:var(--bim-navy-2)!important;border-color:#29445c!important;border-radius:0!important}
-.skill-no{color:#78bde8!important}
-.skill-card h3{color:#fff!important}
-.skill-card p{color:#b9c8d5!important}
-.achievement{border-color:#29445c!important}
-.achievement span{color:#78bde8!important}
-.achievement p{color:#d5dfe7!important}
-
-/* Project cards: technical portfolio, not glass cards. */
-.project-grid{background:transparent!important}
-.project-card{background:#fff!important;border:1px solid var(--bim-line)!important;border-radius:4px!important;box-shadow:0 3px 12px rgba(11,31,51,.06)!important}
-.project-card:hover{box-shadow:0 12px 28px rgba(11,31,51,.12)!important}
-.project-media{background:#e8edf2!important}
-.project-media:after{content:"BIM MODEL"!important;background:var(--bim-navy)!important;color:#fff!important;border-radius:3px!important}
-.project-body{background:#fff!important}
-.eyebrow{color:var(--bim-accent)!important}
-.project-body h3{color:var(--bim-navy)!important}
-.view-project{color:var(--bim-navy)!important;border-color:var(--bim-accent)!important}
-.project-carousel-controls{max-width:1040px!important}
-.project-carousel-label{color:var(--bim-slate)!important}
-.project-carousel-label b{color:var(--bim-accent)!important}
-.project-carousel-btn{background:var(--bim-navy)!important;border:1px solid var(--bim-navy)!important;border-radius:4px!important;box-shadow:none!important}
-.project-carousel-btn:hover{background:var(--bim-accent)!important;box-shadow:none!important}
-
-/* BBS presentation becomes technical/documentation focused. */
-#bbs.bbs-carousel-theme{background:var(--bim-navy)!important;border-top:1px solid #29445c!important;border-bottom:1px solid #29445c!important}
-#bbs.bbs-carousel-theme:before{display:none!important}
-#bbs.bbs-carousel-theme .section-head h2{background:none!important;color:#fff!important;-webkit-text-fill-color:#fff!important}
-#bbs.bbs-carousel-theme .bbs-slideshow{background:#091a2b!important;border:1px solid #36536b!important;border-radius:4px!important;box-shadow:0 20px 50px rgba(0,0,0,.25)!important}
-#bbs.bbs-carousel-theme .bbs-slide{background:#f4f6f8!important;border-radius:2px!important}
-#bbs.bbs-carousel-theme .bbs-prev,#bbs.bbs-carousel-theme .bbs-next{background:var(--bim-navy)!important;border:1px solid #547188!important;border-radius:4px!important;box-shadow:none!important}
-#bbs.bbs-carousel-theme .bbs-prev:hover,#bbs.bbs-carousel-theme .bbs-next:hover{background:var(--bim-accent)!important;transform:translateY(-50%)!important}
-#bbs.bbs-carousel-theme .bbs-counter{background:var(--bim-navy)!important;border:1px solid #547188!important;border-radius:4px!important;backdrop-filter:none!important}
-#bbs.bbs-carousel-theme .bbs-dot{background:#647b8f!important}
-#bbs.bbs-carousel-theme .bbs-dot.active{background:var(--bim-accent)!important;box-shadow:none!important}
-
-.process-section{background:#e9eef2!important}
-.process-grid{background:#cbd5dd!important}
-.process-step{background:#fff!important}
-.process-step span{color:var(--bim-accent)!important}
-.process-step h3{color:var(--bim-navy)!important}
-.process-step p{color:var(--bim-steel)!important}
-
-.contact{background:#fff!important}
-.contact-card{background:var(--bim-navy)!important;border-radius:4px!important}
-.contact-card h2{color:#fff!important}
-.contact-card p{color:#b9c8d5!important}
-.contact-details a,.contact-details div{border-color:#29445c!important;color:#fff!important}
-.contact-details span{color:#82a0b6!important}
-.availability{background:#153c34!important;color:#9be0bf!important;border-radius:4px!important}
-.availability i{background:#55c68b!important;box-shadow:none!important}
-.whatsapp{background:var(--bim-navy)!important;color:#fff!important;border:1px solid #29445c;border-radius:4px!important;box-shadow:var(--bim-shadow)!important}
-footer{background:#fff!important;color:#71808d!important;border-color:var(--bim-line)!important}
-
-/* Modal: engineering-document style. */
-.modal-backdrop{background:rgba(6,20,34,.82)!important}
-.modal-box{background:#fff!important;border-radius:4px!important;border:1px solid var(--bim-line)!important;box-shadow:0 30px 80px rgba(0,0,0,.3)!important}
-.modal-box h2{color:var(--bim-navy)!important}
-.modal-close{color:var(--bim-navy)!important}
-
-@media(max-width:700px){
-  .site-header{height:64px!important}
-  .hero-frame{border-radius:3px!important}
-  .project-card{border-radius:3px!important}
-  .project-carousel-btn{border-radius:3px!important}
-}
-
-/* Remove the last neon/glass effects without touching content or carousel behavior. */
+/* Theme control + semantic theme tokens. Explicit user choice overrides system; System follows prefers-color-scheme. */
+.theme-control{display:flex;align-items:center;gap:0;border:1px solid #b7c2cc;background:#eef2f5;border-radius:7px;padding:2px;margin-left:12px;box-shadow:inset 0 1px 2px rgba(11,31,51,.06)}
+.theme-control button{appearance:none;border:0;background:transparent;color:#506273;font:600 12px/1 "DM Sans",sans-serif;padding:8px 9px;border-radius:5px;cursor:pointer;white-space:nowrap}.theme-control button:hover{background:#dce5eb;color:#0b1f33}.theme-control button[aria-pressed="true"]{background:#0b1f33;color:#fff;box-shadow:0 2px 5px rgba(11,31,51,.18)}
+[data-theme="dark"] body{background:#081522!important;color:#e8eef3!important}[data-theme="dark"] html{background:#081522!important}[data-theme="dark"] .site-header{background:rgba(8,21,34,.97)!important;border-color:#233b4d!important;box-shadow:0 2px 14px rgba(0,0,0,.3)!important}[data-theme="dark"] .brand,[data-theme="dark"] .site-header nav a{color:#e8eef3!important}[data-theme="dark"] .brand span{background:#e8eef3!important;color:#081522!important}[data-theme="dark"] .site-header nav a:hover{color:#67b4e5!important}[data-theme="dark"] .nav-cta{border-color:#6a8397!important;color:#e8eef3!important}[data-theme="dark"] .theme-control{background:#172a3a;border-color:#355267}[data-theme="dark"] .theme-control button{color:#b7c9d6}[data-theme="dark"] .theme-control button:hover{background:#243e52;color:#fff}[data-theme="dark"] .theme-control button[aria-pressed="true"]{background:#e8eef3;color:#081522}
+[data-theme="dark"] .hero{background:linear-gradient(180deg,#081522 0%,#0b1f33 100%)!important}[data-theme="dark"] .hero h1,[data-theme="dark"] .section h2,[data-theme="dark"] .about-lead,[data-theme="dark"] .about-grid .large,[data-theme="dark"] .stats strong{color:#f4f7fa!important}[data-theme="dark"] .hero-text,[data-theme="dark"] .stats span,[data-theme="dark"] .about-grid p{color:#aebfcb!important}[data-theme="dark"] .btn.ghost{border-color:#587286!important;color:#e8eef3!important}[data-theme="dark"] .hero-frame{background:#142b3d!important;border-color:#355267!important}[data-theme="dark"] .hero-badge{background:#e8eef3!important;color:#081522!important}[data-theme="dark"] .stats{border-color:#29465a!important}[data-theme="dark"] .section{background:#0b1f33!important}[data-theme="dark"] .about{background:#0e2538!important}[data-theme="dark"] .pill-row span{background:#102b40!important;border-color:#36556a!important;color:#b7c9d6!important}[data-theme="dark"] .project-card{background:#102536!important;border-color:#355267!important;box-shadow:0 6px 18px rgba(0,0,0,.24)!important}[data-theme="dark"] .project-body{background:#102536!important}[data-theme="dark"] .project-body h3{color:#f4f7fa!important}[data-theme="dark"] .view-project{color:#e8eef3!important;border-color:#67b4e5!important}[data-theme="dark"] .project-carousel-label{color:#9db2c0!important}[data-theme="dark"] .project-carousel-btn{background:#102b40!important;border-color:#4a6a7f!important}[data-theme="dark"] .project-carousel-btn:hover{background:#1479b8!important}[data-theme="dark"] .process-section{background:#10283b!important}[data-theme="dark"] .process-grid{background:#29465a!important}[data-theme="dark"] .process-step{background:#102536!important}[data-theme="dark"] .process-step h3{color:#f4f7fa!important}[data-theme="dark"] .process-step p{color:#aebfcb!important}[data-theme="dark"] .contact{background:#0e2538!important}[data-theme="dark"] footer{background:#081522!important;color:#8fa5b5!important;border-color:#29465a!important}[data-theme="dark"] .modal-box{background:#102536!important;border-color:#355267!important}[data-theme="dark"] .modal-box h2,[data-theme="dark"] .modal-close{color:#f4f7fa!important}
+@media(prefers-color-scheme:dark){html:not([data-theme="light"]){background:#081522}html:not([data-theme="light"]) body{background:#081522!important;color:#e8eef3!important}}
+@media(max-width:900px){.theme-control{margin-left:0}.theme-control button{padding:7px 7px;font-size:11px}}
+@media(max-width:700px){.site-header{height:64px!important}.hero-frame{border-radius:3px!important}.project-card{border-radius:3px!important}.project-carousel-btn{border-radius:3px!important}.theme-control{gap:0}.theme-control button{padding:7px 6px}}
 [style*="backdrop-filter"],.glass,.glass-card{backdrop-filter:none!important}
