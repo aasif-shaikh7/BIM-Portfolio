@@ -16,7 +16,7 @@
     var root=document.querySelector('.bbs-slideshow');if(!root)return;
     var track=root.querySelector('.bbs-slides');if(!track)return;
     var n=track.children.length;if(n<2)return;
-    var cur=root.querySelector('.bbs-current'),total=root.querySelector('.bbs-total'),prev=root.querySelector('.bbs-prev'),next=root.querySelector('.bbs-next'),i=0,timer=null,paused=false,delay=1000;
+    var cur=root.querySelector('#bbs-current'),total=root.querySelector('#bbs-total'),prev=root.querySelector('.bbs-prev'),next=root.querySelector('.bbs-next'),i=0,timer=null,paused=false,delay=1000;
     if(total)total.textContent=n;
     root.classList.add('bbs-carousel-theme');
     track.style.transition='transform 650ms cubic-bezier(.22,.61,.36,1)';
