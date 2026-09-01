@@ -1,8 +1,8 @@
-/* BIM Portfolio — Project Focus Carousel v1.2.6 */
+/* BIM Portfolio — Project Focus Carousel v1.2.3 */
 (function () {
   'use strict';
 
-  var VERSION = '1.2.6';
+  var VERSION = '1.2.3';
 
   function init() {
     var track = document.querySelector('.project-grid');
@@ -11,7 +11,6 @@
     var cards = Array.prototype.slice.call(track.querySelectorAll('.project-card'));
     if (!cards.length) return;
 
-    /* Prevent this module from being initialized twice. */
     if (track.getAttribute('data-focus-carousel-version')) return;
     track.setAttribute('data-focus-carousel-version', VERSION);
 
@@ -19,14 +18,15 @@
     var autoTimer = null;
     var settleTimer = null;
     var resumeTimer = null;
+    var programmaticTimer = null;
     var pointerDown = false;
-    var wheelPauseTimer = null;
+    var isProgrammaticScroll = false;
     var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
     var style = document.createElement('style');
     style.setAttribute('data-project-focus-carousel', VERSION);
     style.textContent = `
-      /* v1.2.6 — the project grid itself is the carousel track. */
+      /* v1.2.3 — stable center-focus carousel. The layout position never changes while scrolling. */
       .project-grid[data-focus-carousel-version] {
         display: flex !important;
         flex-wrap: nowrap !important;
@@ -51,6 +51,7 @@
 
       .project-grid[data-focus-carousel-version] > .carousel-focus-spacer {
         flex: 0 0 0px;
+        width: 0;
         height: 1px;
         pointer-events: none;
       }
@@ -62,7 +63,7 @@
         position: relative;
         transform: scale(.67);
         transform-origin: center center;
-        filter: grayscale(1) brightness(.58) blur(2.5px);
+        filter: grayscale(1) brightness(.55) blur(2.8px);
         opacity: .40;
         z-index: 1;
         transition:
@@ -89,14 +90,26 @@
 
       .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side {
         transform: scale(.67);
-        filter: grayscale(1) brightness(.55) blur(2.8px);
-        opacity: .38;
+        filter: grayscale(1) brightness(.50) blur(3px);
+        opacity: .36;
         z-index: 2;
       }
 
-      /* Do not let the existing hover lift fight the carousel transform. */
-      .project-grid[data-focus-carousel-version] > .project-card:hover {
+      /* The existing project hover rule must never compete with the focus transform. */
+      .project-grid[data-focus-carousel-version] > .project-card:hover,
+      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active:hover,
+      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side:hover {
+        transform: var(--carousel-transform, scale(.67));
         box-shadow: inherit;
+      }
+
+      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
+        --carousel-transform: scale(1.66);
+      }
+
+      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side,
+      .project-grid[data-focus-carousel-version] > .project-card:not(.carousel-focus-active) {
+        --carousel-transform: scale(.67);
       }
 
       @media (max-width: 1050px) {
@@ -106,6 +119,7 @@
         }
         .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
           transform: scale(1.38);
+          --carousel-transform: scale(1.38);
         }
       }
 
@@ -120,18 +134,21 @@
           flex-basis: calc(100% - 56px) !important;
           width: calc(100% - 56px) !important;
           transform: scale(.82);
-          filter: grayscale(1) brightness(.67) blur(1.2px);
+          filter: grayscale(1) brightness(.66) blur(1.2px);
           opacity: .46;
+          --carousel-transform: scale(.82);
         }
         .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
           transform: scale(1.10);
+          --carousel-transform: scale(1.10);
           filter: none;
           opacity: 1;
         }
         .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side {
           transform: scale(.82);
-          filter: grayscale(1) brightness(.64) blur(1.3px);
-          opacity: .43;
+          --carousel-transform: scale(.82);
+          filter: grayscale(1) brightness(.63) blur(1.3px);
+          opacity: .42;
         }
       }
 
@@ -149,14 +166,13 @@
     endSpacer.className = 'carousel-focus-spacer carousel-focus-spacer-end';
     startSpacer.setAttribute('aria-hidden', 'true');
     endSpacer.setAttribute('aria-hidden', 'true');
-
     track.insertBefore(startSpacer, cards[0]);
     track.appendChild(endSpacer);
 
     function layout() {
       if (!cards[0]) return;
+
       var cardWidth = cards[0].offsetWidth;
-      var gap = parseFloat(window.getComputedStyle(track).columnGap || window.getComputedStyle(track).gap) || 0;
       var sideSpace = Math.max(0, (track.clientWidth - cardWidth) / 2);
       startSpacer.style.flexBasis = sideSpace + 'px';
       endSpacer.style.flexBasis = sideSpace + 'px';
@@ -164,6 +180,7 @@
 
     function setClasses(index) {
       activeIndex = (index + cards.length) % cards.length;
+
       cards.forEach(function (card, i) {
         card.classList.remove('carousel-focus-active', 'carousel-focus-side');
         if (i === activeIndex) {
@@ -174,19 +191,34 @@
       });
     }
 
-    function centerCard(index, behavior) {
+    function getTarget(index) {
       var card = cards[index];
-      if (!card) return;
+      if (!card) return 0;
 
       layout();
+
+      /* Use the untransformed layout box. CSS scale must never affect centering math. */
       var target = card.offsetLeft - ((track.clientWidth - card.offsetWidth) / 2);
       var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
-      target = Math.max(0, Math.min(target, maxScroll));
+      return Math.max(0, Math.min(target, maxScroll));
+    }
+
+    function centerCard(index, behavior) {
+      var target = getTarget(index);
+      var useBehavior = reducedMotion ? 'auto' : (behavior || 'smooth');
+
+      isProgrammaticScroll = true;
+      if (programmaticTimer) window.clearTimeout(programmaticTimer);
 
       track.scrollTo({
         left: target,
-        behavior: reducedMotion ? 'auto' : (behavior || 'smooth')
+        behavior: useBehavior
       });
+
+      /* Keep the lock active for the full CSS scroll animation, not just the first scroll event. */
+      programmaticTimer = window.setTimeout(function () {
+        isProgrammaticScroll = false;
+      }, useBehavior === 'smooth' ? 750 : 60);
     }
 
     function nearestCard() {
@@ -212,35 +244,40 @@
         autoTimer = null;
       }
       if (resumeTimer) window.clearTimeout(resumeTimer);
+
       if (duration !== Infinity) {
         resumeTimer = window.setTimeout(startAutoplay, duration || 1400);
       }
     }
 
     function startAutoplay() {
-      if (reducedMotion || document.hidden) return;
+      if (reducedMotion || document.hidden || pointerDown) return;
       if (cards.length < 2) return;
       if (autoTimer) window.clearInterval(autoTimer);
 
-      /* Exactly 1 second per card, as requested. */
+      /* Exactly 1 second between carousel advances. */
       autoTimer = window.setInterval(function () {
         if (pointerDown || document.hidden) return;
-        setClasses(activeIndex + 1);
-        centerCard(activeIndex, 'smooth');
+        var nextIndex = (activeIndex + 1) % cards.length;
+        setClasses(nextIndex);
+        centerCard(nextIndex, 'smooth');
       }, 1000);
     }
 
-    function settle() {
+    function settleUserScroll() {
       if (settleTimer) window.clearTimeout(settleTimer);
+
       settleTimer = window.setTimeout(function () {
+        if (isProgrammaticScroll) return;
+
         var index = nearestCard();
         setClasses(index);
         centerCard(index, 'smooth');
         pauseAutoplay(1200);
-      }, 110);
+      }, 130);
     }
 
-    /* Touch / pointer interaction pauses autoplay while the user is holding the carousel. */
+    /* User interaction: holding/hovering pauses autoplay. */
     track.addEventListener('pointerdown', function () {
       pointerDown = true;
       pauseAutoplay(Infinity);
@@ -248,27 +285,12 @@
 
     track.addEventListener('pointerup', function () {
       pointerDown = false;
-      settle();
+      settleUserScroll();
     }, { passive: true });
 
     track.addEventListener('pointercancel', function () {
       pointerDown = false;
-      settle();
-    }, { passive: true });
-
-    track.addEventListener('touchstart', function () {
-      pointerDown = true;
-      pauseAutoplay(Infinity);
-    }, { passive: true });
-
-    track.addEventListener('touchend', function () {
-      pointerDown = false;
-      settle();
-    }, { passive: true });
-
-    track.addEventListener('touchcancel', function () {
-      pointerDown = false;
-      settle();
+      settleUserScroll();
     }, { passive: true });
 
     track.addEventListener('mouseenter', function () {
@@ -281,13 +303,18 @@
 
     track.addEventListener('wheel', function () {
       pauseAutoplay(1600);
-      settle();
+      settleUserScroll();
     }, { passive: true });
 
+    /*
+     * Critical stability fix:
+     * Do NOT change the active class on every scroll event. During smooth scrolling,
+     * changing scale/filter while the browser is animating scroll causes the visual
+     * position to jump and produces the reported shake/glitch.
+     */
     track.addEventListener('scroll', function () {
-      if (!pointerDown) {
-        var index = nearestCard();
-        if (index !== activeIndex) setClasses(index);
+      if (!isProgrammaticScroll && !pointerDown) {
+        settleUserScroll();
       }
     }, { passive: true });
 
@@ -305,17 +332,17 @@
       centerCard(activeIndex, 'auto');
     }, { passive: true });
 
-    /* Initial state: project 01 / GENESIS is always centered. */
+    /* Initial state: project 01 is centered before autoplay starts. */
     setClasses(0);
     layout();
     centerCard(0, 'auto');
 
-    /* Fonts and responsive CSS can change card dimensions after first paint. */
+    /* Recalculate after fonts/responsive CSS settle. */
     window.setTimeout(function () {
       layout();
       centerCard(activeIndex, 'auto');
       startAutoplay();
-    }, 250);
+    }, 300);
   }
 
   if (document.readyState === 'loading') {
