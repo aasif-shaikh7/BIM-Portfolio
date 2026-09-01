@@ -1,8 +1,18 @@
-/* BIM Portfolio — Project Focus Carousel v1.2.7 */
+/* BIM Portfolio — Project Focus Carousel v1.3.0 */
 (function () {
   'use strict';
 
-  var VERSION = '1.2.7';
+  /* Load the professional BIM visual layer without replacing the existing site structure. */
+  (function loadProfessionalBIMTheme(){
+    if(document.querySelector('link[data-professional-bim-theme]')) return;
+    var link=document.createElement('link');
+    link.rel='stylesheet';
+    link.href='professional-bim.css?v=1.3.0';
+    link.setAttribute('data-professional-bim-theme','1.3.0');
+    document.head.appendChild(link);
+  }());
+
+  var VERSION = '1.3.0';
   var AUTOPLAY_MS = 2000;
 
   function init() {
@@ -27,20 +37,20 @@
     var style = document.createElement('style');
     style.setAttribute('data-project-focus-carousel', VERSION);
     style.textContent = `
-      .project-grid[data-focus-v127]{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:28px!important;width:100%!important;max-width:none!important;overflow-x:auto!important;overflow-y:visible!important;padding-top:115px!important;padding-bottom:115px!important;margin:-115px 0!important;padding-left:0!important;padding-right:0!important;scrollbar-width:none!important;-ms-overflow-style:none!important;scroll-behavior:auto!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
-      .project-grid[data-focus-v127]::-webkit-scrollbar{display:none!important}
-      .project-grid[data-focus-v127]>.project-card{flex:0 0 var(--focus-card-width)!important;width:var(--focus-card-width)!important;min-width:var(--focus-card-width)!important;transform:scale(.67);transform-origin:center center;filter:grayscale(1) brightness(.50) blur(3px);opacity:.38;z-index:1;transition:transform 650ms cubic-bezier(.22,.61,.36,1),filter 650ms ease,opacity 650ms ease,box-shadow 650ms ease,border-color 650ms ease;will-change:transform,filter,opacity}
-      .project-grid[data-focus-v127]>.project-card.carousel-focus-active{transform:scale(1.35);filter:none;opacity:1;z-index:10;border-color:rgba(255,79,163,.86);box-shadow:0 26px 68px rgba(0,0,0,.44),0 0 0 2px rgba(118,88,255,.32),0 0 40px rgba(255,79,163,.22),0 0 76px rgba(118,88,255,.16)}
-      .project-grid[data-focus-v127]>.project-card.carousel-focus-side{transform:scale(.67);filter:grayscale(1) brightness(.46) blur(3.2px);opacity:.34;z-index:2}
-      .project-grid[data-focus-v127]>.project-card:hover{transform:var(--focus-hover-transform)}
-      .project-grid[data-focus-v127]>.project-card{--focus-hover-transform:scale(.67)}
-      .project-grid[data-focus-v127]>.project-card.carousel-focus-active{--focus-hover-transform:scale(1.35)}
-      @media(max-width:1050px){.project-grid[data-focus-v127]{gap:22px!important}.project-grid[data-focus-v127]>.project-card.carousel-focus-active{transform:scale(1.28);--focus-hover-transform:scale(1.28)}}
-      @media(max-width:700px){.project-grid[data-focus-v127]{gap:16px!important;padding-top:70px!important;padding-bottom:70px!important;margin:-70px 0!important}.project-grid[data-focus-v127]>.project-card{transform:scale(.82);filter:grayscale(1) brightness(.63) blur(1.2px);opacity:.46;--focus-hover-transform:scale(.82)}.project-grid[data-focus-v127]>.project-card.carousel-focus-active{transform:scale(1.10);--focus-hover-transform:scale(1.10);filter:none;opacity:1}.project-grid[data-focus-v127]>.project-card.carousel-focus-side{transform:scale(.82);--focus-hover-transform:scale(.82);filter:grayscale(1) brightness(.60) blur(1.3px);opacity:.42}}
-      @media(prefers-reduced-motion:reduce){.project-grid[data-focus-v127]>.project-card{transition:none!important}}
+      .project-grid[data-focus-v130]{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;gap:28px!important;width:100%!important;max-width:none!important;overflow-x:auto!important;overflow-y:visible!important;padding-top:115px!important;padding-bottom:115px!important;margin:-115px 0!important;padding-left:0!important;padding-right:0!important;scrollbar-width:none!important;-ms-overflow-style:none!important;scroll-behavior:auto!important;overscroll-behavior-x:contain;-webkit-overflow-scrolling:touch}
+      .project-grid[data-focus-v130]::-webkit-scrollbar{display:none!important}
+      .project-grid[data-focus-v130]>.project-card{flex:0 0 var(--focus-card-width)!important;width:var(--focus-card-width)!important;min-width:var(--focus-card-width)!important;transform:scale(.67);transform-origin:center center;filter:grayscale(1) brightness(.50) blur(3px);opacity:.38;z-index:1;transition:transform 650ms cubic-bezier(.22,.61,.36,1),filter 650ms ease,opacity 650ms ease,box-shadow 650ms ease,border-color 650ms ease;will-change:transform,filter,opacity}
+      .project-grid[data-focus-v130]>.project-card.carousel-focus-active{transform:scale(1.35);filter:none;opacity:1;z-index:10;border-color:rgba(20,121,184,.72);box-shadow:0 22px 55px rgba(11,31,51,.18)}
+      .project-grid[data-focus-v130]>.project-card.carousel-focus-side{transform:scale(.67);filter:grayscale(1) brightness(.46) blur(3.2px);opacity:.34;z-index:2}
+      .project-grid[data-focus-v130]>.project-card:hover{transform:var(--focus-hover-transform)}
+      .project-grid[data-focus-v130]>.project-card{--focus-hover-transform:scale(.67)}
+      .project-grid[data-focus-v130]>.project-card.carousel-focus-active{--focus-hover-transform:scale(1.35)}
+      @media(max-width:1050px){.project-grid[data-focus-v130]{gap:22px!important}.project-grid[data-focus-v130]>.project-card.carousel-focus-active{transform:scale(1.28);--focus-hover-transform:scale(1.28)}}
+      @media(max-width:700px){.project-grid[data-focus-v130]{gap:16px!important;padding-top:70px!important;padding-bottom:70px!important;margin:-70px 0!important}.project-grid[data-focus-v130]>.project-card{transform:scale(.82);filter:grayscale(1) brightness(.63) blur(1.2px);opacity:.46;--focus-hover-transform:scale(.82)}.project-grid[data-focus-v130]>.project-card.carousel-focus-active{transform:scale(1.10);--focus-hover-transform:scale(1.10);filter:none;opacity:1}.project-grid[data-focus-v130]>.project-card.carousel-focus-side{transform:scale(.82);--focus-hover-transform:scale(.82);filter:grayscale(1) brightness(.60) blur(1.3px);opacity:.42}}
+      @media(prefers-reduced-motion:reduce){.project-grid[data-focus-v130]>.project-card{transition:none!important}}
     `;
     document.head.appendChild(style);
-    track.setAttribute('data-focus-v127', 'true');
+    track.setAttribute('data-focus-v130', 'true');
 
     function nativeScrollTo(left, behavior) { Element.prototype.scrollTo.call(track, {left:left, behavior:behavior || 'auto'}); }
 
