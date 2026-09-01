@@ -1,8 +1,8 @@
-/* BIM Portfolio — Project Focus Carousel v1.2.4 */
+/* BIM Portfolio — Project Focus Carousel v1.2.5 */
 (function () {
   'use strict';
 
-  var VERSION = '1.2.4';
+  var VERSION = '1.2.5';
 
   function init() {
     var track = document.querySelector('.project-grid');
@@ -10,8 +10,6 @@
 
     var cards = Array.prototype.slice.call(track.querySelectorAll('.project-card'));
     if (!cards.length) return;
-
-    /* Prevent duplicate initialization if another script/page fragment calls init. */
     if (track.getAttribute('data-focus-carousel-version')) return;
     track.setAttribute('data-focus-carousel-version', VERSION);
 
@@ -27,162 +25,57 @@
     var style = document.createElement('style');
     style.setAttribute('data-project-focus-carousel', VERSION);
     style.textContent = `
-      /*
-       * v1.2.4
-       * The carousel uses fixed layout widths + symmetric horizontal padding.
-       * This gives every card, including the first and last, enough scroll room
-       * to sit at the exact visual center after scaling.
-       */
       .project-grid[data-focus-carousel-version] {
-        display: flex !important;
-        flex-wrap: nowrap !important;
-        align-items: center !important;
-        gap: 28px !important;
-        overflow-x: auto !important;
-        overflow-y: visible !important;
-        width: 100% !important;
-        max-width: none !important;
-        padding-top: 110px !important;
-        padding-bottom: 110px !important;
-        padding-left: 0 !important;
-        padding-right: 0 !important;
-        margin: -110px 0 !important;
-        scroll-snap-type: none !important;
-        scroll-behavior: auto !important;
-        scrollbar-width: none !important;
-        -ms-overflow-style: none !important;
-        overscroll-behavior-x: contain;
-        -webkit-overflow-scrolling: touch;
+        display:flex!important; flex-wrap:nowrap!important; align-items:center!important;
+        gap:28px!important; overflow-x:auto!important; overflow-y:visible!important;
+        width:100%!important; max-width:none!important; padding-top:110px!important;
+        padding-bottom:110px!important; padding-left:0!important; padding-right:0!important;
+        margin:-110px 0!important; scroll-snap-type:none!important; scroll-behavior:auto!important;
+        scrollbar-width:none!important; -ms-overflow-style:none!important;
+        overscroll-behavior-x:contain; -webkit-overflow-scrolling:touch;
       }
-
-      .project-grid[data-focus-carousel-version]::-webkit-scrollbar {
-        display: none !important;
+      .project-grid[data-focus-carousel-version]::-webkit-scrollbar{display:none!important}
+      .project-grid[data-focus-carousel-version]>.project-card{
+        flex:0 0 var(--carousel-card-width)!important; width:var(--carousel-card-width)!important;
+        min-width:var(--carousel-card-width)!important; position:relative;
+        transform:scale(.67); transform-origin:center center;
+        filter:grayscale(1) brightness(.52) blur(3px); opacity:.38; z-index:1;
+        transition:transform 620ms cubic-bezier(.22,.61,.36,1),filter 620ms ease,opacity 620ms ease,box-shadow 620ms ease,border-color 620ms ease;
+        will-change:transform,filter,opacity;
       }
-
-      .project-grid[data-focus-carousel-version] > .project-card {
-        flex: 0 0 var(--carousel-card-width) !important;
-        width: var(--carousel-card-width) !important;
-        min-width: var(--carousel-card-width) !important;
-        position: relative;
-        transform: scale(.67);
-        transform-origin: center center;
-        filter: grayscale(1) brightness(.52) blur(3px);
-        opacity: .38;
-        z-index: 1;
-        transition:
-          transform 620ms cubic-bezier(.22,.61,.36,1),
-          filter 620ms ease,
-          opacity 620ms ease,
-          box-shadow 620ms ease,
-          border-color 620ms ease;
-        will-change: transform, filter, opacity;
+      .project-grid[data-focus-carousel-version]>.project-card.carousel-focus-active{
+        transform:scale(1.66); filter:none; opacity:1; z-index:10;
+        border-color:rgba(255,79,163,.85);
+        box-shadow:0 30px 80px rgba(0,0,0,.46),0 0 0 2px rgba(118,88,255,.34),0 0 44px rgba(255,79,163,.24),0 0 84px rgba(118,88,255,.18);
       }
-
-      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
-        transform: scale(1.66);
-        filter: none;
-        opacity: 1;
-        z-index: 10;
-        border-color: rgba(255,79,163,.85);
-        box-shadow:
-          0 30px 80px rgba(0,0,0,.46),
-          0 0 0 2px rgba(118,88,255,.34),
-          0 0 44px rgba(255,79,163,.24),
-          0 0 84px rgba(118,88,255,.18);
+      .project-grid[data-focus-carousel-version]>.project-card.carousel-focus-side{
+        transform:scale(.67); filter:grayscale(1) brightness(.48) blur(3.2px); opacity:.34; z-index:2;
       }
-
-      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side {
-        transform: scale(.67);
-        filter: grayscale(1) brightness(.48) blur(3.2px);
-        opacity: .34;
-        z-index: 2;
+      .project-grid[data-focus-carousel-version]>.project-card:hover{transform:var(--carousel-transform)}
+      .project-grid[data-focus-carousel-version]>.project-card{--carousel-transform:scale(.67)}
+      .project-grid[data-focus-carousel-version]>.project-card.carousel-focus-active{--carousel-transform:scale(1.66)}
+      @media(max-width:1050px){
+        .project-grid[data-focus-carousel-version]{gap:22px!important}
+        .project-grid[data-focus-carousel-version]>.project-card.carousel-focus-active{transform:scale(1.42);--carousel-transform:scale(1.42)}
       }
-
-      /* Existing hover styles must not override the focus transform. */
-      .project-grid[data-focus-carousel-version] > .project-card:hover,
-      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active:hover,
-      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side:hover {
-        transform: var(--carousel-transform);
+      @media(max-width:700px){
+        .project-grid[data-focus-carousel-version]{gap:16px!important;padding-top:65px!important;padding-bottom:65px!important;margin:-65px 0!important}
+        .project-grid[data-focus-carousel-version]>.project-card{transform:scale(.82);filter:grayscale(1) brightness(.64) blur(1.2px);opacity:.46;--carousel-transform:scale(.82)}
+        .project-grid[data-focus-carousel-version]>.project-card.carousel-focus-active{transform:scale(1.10);--carousel-transform:scale(1.10);filter:none;opacity:1}
+        .project-grid[data-focus-carousel-version]>.project-card.carousel-focus-side{transform:scale(.82);--carousel-transform:scale(.82);filter:grayscale(1) brightness(.62) blur(1.3px);opacity:.42}
       }
-
-      .project-grid[data-focus-carousel-version] > .project-card {
-        --carousel-transform: scale(.67);
-      }
-
-      .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
-        --carousel-transform: scale(1.66);
-      }
-
-      @media (max-width: 1050px) {
-        .project-grid[data-focus-carousel-version] {
-          gap: 22px !important;
-        }
-        .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
-          transform: scale(1.42);
-          --carousel-transform: scale(1.42);
-        }
-      }
-
-      @media (max-width: 700px) {
-        .project-grid[data-focus-carousel-version] {
-          gap: 16px !important;
-          padding-top: 65px !important;
-          padding-bottom: 65px !important;
-          margin: -65px 0 !important;
-        }
-        .project-grid[data-focus-carousel-version] > .project-card {
-          transform: scale(.82);
-          filter: grayscale(1) brightness(.64) blur(1.2px);
-          opacity: .46;
-          --carousel-transform: scale(.82);
-        }
-        .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-active {
-          transform: scale(1.10);
-          --carousel-transform: scale(1.10);
-          filter: none;
-          opacity: 1;
-        }
-        .project-grid[data-focus-carousel-version] > .project-card.carousel-focus-side {
-          transform: scale(.82);
-          --carousel-transform: scale(.82);
-          filter: grayscale(1) brightness(.62) blur(1.3px);
-          opacity: .42;
-        }
-      }
-
-      @media (prefers-reduced-motion: reduce) {
-        .project-grid[data-focus-carousel-version] > .project-card {
-          transition: none !important;
-        }
-      }
+      @media(prefers-reduced-motion:reduce){.project-grid[data-focus-carousel-version]>.project-card{transition:none!important}}
     `;
     document.head.appendChild(style);
 
     function layout() {
-      /*
-       * Use an explicit pixel width instead of percentage flex-basis. The track
-       * itself is also the viewport, so this prevents the card width from changing
-       * when horizontal padding is added for first/last-card centering.
-       */
       var trackWidth = track.clientWidth;
       var gap = window.innerWidth <= 700 ? 16 : (window.innerWidth <= 1050 ? 22 : 28);
       var cardWidth;
-
-      if (window.innerWidth <= 700) {
-        cardWidth = Math.max(220, trackWidth - 56);
-      } else if (window.innerWidth <= 1050) {
-        cardWidth = Math.max(260, (trackWidth - gap) / 2);
-      } else {
-        cardWidth = Math.max(280, (trackWidth - (gap * 2)) / 3);
-      }
-
+      if (window.innerWidth <= 700) cardWidth = Math.max(220, trackWidth - 56);
+      else if (window.innerWidth <= 1050) cardWidth = Math.max(260, (trackWidth - gap) / 2);
+      else cardWidth = Math.max(280, (trackWidth - gap * 2) / 3);
       track.style.setProperty('--carousel-card-width', cardWidth + 'px');
-
-      /*
-       * Symmetric content gutters are the key fix. They create real scrollable
-       * space before card 01 and after the final card, so neither edge card is
-       * forced away from the center.
-       */
       var gutter = Math.max(0, (trackWidth - cardWidth) / 2);
       track.style.paddingLeft = gutter + 'px';
       track.style.paddingRight = gutter + 'px';
@@ -190,180 +83,87 @@
 
     function setClasses(index) {
       activeIndex = (index + cards.length) % cards.length;
-
-      cards.forEach(function (card, i) {
-        card.classList.remove('carousel-focus-active', 'carousel-focus-side');
-
-        if (i === activeIndex) {
-          card.classList.add('carousel-focus-active');
-        } else if (i === activeIndex - 1 || i === activeIndex + 1) {
-          card.classList.add('carousel-focus-side');
-        }
+      cards.forEach(function(card, i) {
+        card.classList.remove('carousel-focus-active','carousel-focus-side');
+        if (i === activeIndex) card.classList.add('carousel-focus-active');
+        else if (i === activeIndex - 1 || i === activeIndex + 1) card.classList.add('carousel-focus-side');
       });
     }
 
     function getTarget(index) {
       var card = cards[index];
       if (!card) return 0;
-
       layout();
-
-      /* offsetLeft is the untransformed layout position, so scale never affects math. */
       var target = card.offsetLeft - ((track.clientWidth - card.offsetWidth) / 2);
       var maxScroll = Math.max(0, track.scrollWidth - track.clientWidth);
-
       return Math.max(0, Math.min(target, maxScroll));
     }
 
     function centerCard(index, behavior) {
       var target = getTarget(index);
       var useBehavior = reducedMotion ? 'auto' : (behavior || 'smooth');
-
       isProgrammaticScroll = true;
       if (programmaticTimer) window.clearTimeout(programmaticTimer);
-
-      track.scrollTo({
-        left: target,
-        behavior: useBehavior
-      });
-
-      /* Smooth scroll normally settles well below 1 second; keep the lock longer. */
-      programmaticTimer = window.setTimeout(function () {
-        isProgrammaticScroll = false;
-      }, useBehavior === 'smooth' ? 850 : 80);
+      track.scrollTo({left:target, behavior:useBehavior});
+      programmaticTimer = window.setTimeout(function(){isProgrammaticScroll=false}, useBehavior === 'smooth' ? 850 : 80);
     }
 
     function nearestCard() {
-      var center = track.scrollLeft + (track.clientWidth / 2);
-      var best = 0;
-      var bestDistance = Infinity;
-
-      cards.forEach(function (card, index) {
-        var cardCenter = card.offsetLeft + (card.offsetWidth / 2);
-        var distance = Math.abs(cardCenter - center);
-
-        if (distance < bestDistance) {
-          bestDistance = distance;
-          best = index;
-        }
+      var center = track.scrollLeft + track.clientWidth / 2, best=0, bestDistance=Infinity;
+      cards.forEach(function(card,index){
+        var d=Math.abs((card.offsetLeft+card.offsetWidth/2)-center);
+        if(d<bestDistance){bestDistance=d;best=index}
       });
-
       return best;
     }
 
     function pauseAutoplay(duration) {
-      if (autoTimer) {
-        window.clearInterval(autoTimer);
-        autoTimer = null;
-      }
-
-      if (resumeTimer) window.clearTimeout(resumeTimer);
-
-      if (duration !== Infinity) {
-        resumeTimer = window.setTimeout(startAutoplay, duration || 1400);
-      }
+      if(autoTimer){window.clearInterval(autoTimer);autoTimer=null}
+      if(resumeTimer) window.clearTimeout(resumeTimer);
+      if(duration !== Infinity) resumeTimer=window.setTimeout(startAutoplay,duration || 1400);
     }
 
     function startAutoplay() {
-      if (reducedMotion || document.hidden || pointerDown || cards.length < 2) return;
-
-      if (autoTimer) window.clearInterval(autoTimer);
-
-      /* Exactly 1 second between automatic card changes. */
-      autoTimer = window.setInterval(function () {
-        if (pointerDown || document.hidden) return;
-
-        var nextIndex = (activeIndex + 1) % cards.length;
+      if(reducedMotion || document.hidden || pointerDown || cards.length<2) return;
+      if(autoTimer) window.clearInterval(autoTimer);
+      /* v1.2.5: comfortable 2-second interval between automatic card changes. */
+      autoTimer=window.setInterval(function(){
+        if(pointerDown || document.hidden) return;
+        var nextIndex=(activeIndex+1)%cards.length;
         setClasses(nextIndex);
-        centerCard(nextIndex, 'smooth');
-      }, 1000);
+        centerCard(nextIndex,'smooth');
+      },2000);
     }
 
     function settleUserScroll() {
-      if (settleTimer) window.clearTimeout(settleTimer);
-
-      settleTimer = window.setTimeout(function () {
-        if (isProgrammaticScroll) return;
-
-        var index = nearestCard();
+      if(settleTimer) window.clearTimeout(settleTimer);
+      settleTimer=window.setTimeout(function(){
+        if(isProgrammaticScroll) return;
+        var index=nearestCard();
         setClasses(index);
-        centerCard(index, 'smooth');
+        centerCard(index,'smooth');
         pauseAutoplay(1200);
-      }, 130);
+      },130);
     }
 
-    /* Hold/drag pauses autoplay. */
-    track.addEventListener('pointerdown', function () {
-      pointerDown = true;
-      pauseAutoplay(Infinity);
-    }, { passive: true });
+    track.addEventListener('pointerdown',function(){pointerDown=true;pauseAutoplay(Infinity)},{passive:true});
+    track.addEventListener('pointerup',function(){pointerDown=false;settleUserScroll()},{passive:true});
+    track.addEventListener('pointercancel',function(){pointerDown=false;settleUserScroll()},{passive:true});
+    track.addEventListener('mouseenter',function(){pauseAutoplay(Infinity)});
+    track.addEventListener('mouseleave',function(){if(!pointerDown)startAutoplay()});
+    track.addEventListener('wheel',function(){pauseAutoplay(1600);settleUserScroll()},{passive:true});
+    track.addEventListener('scroll',function(){if(!isProgrammaticScroll&&!pointerDown)settleUserScroll()},{passive:true});
 
-    track.addEventListener('pointerup', function () {
-      pointerDown = false;
-      settleUserScroll();
-    }, { passive: true });
-
-    track.addEventListener('pointercancel', function () {
-      pointerDown = false;
-      settleUserScroll();
-    }, { passive: true });
-
-    /* Hover pauses autoplay on desktop. */
-    track.addEventListener('mouseenter', function () {
-      pauseAutoplay(Infinity);
+    document.addEventListener('visibilitychange',function(){
+      if(document.hidden) pauseAutoplay(Infinity);
+      else {layout();centerCard(activeIndex,'auto');startAutoplay()}
     });
+    window.addEventListener('resize',function(){layout();centerCard(activeIndex,'auto')},{passive:true});
 
-    track.addEventListener('mouseleave', function () {
-      if (!pointerDown) startAutoplay();
-    });
-
-    track.addEventListener('wheel', function () {
-      pauseAutoplay(1600);
-      settleUserScroll();
-    }, { passive: true });
-
-    /*
-     * Critical anti-glitch rule: never change scale/filter classes while our own
-     * smooth scroll is running. The previous implementation did that and caused
-     * the card to visually shake because transform and scroll were fighting.
-     */
-    track.addEventListener('scroll', function () {
-      if (!isProgrammaticScroll && !pointerDown) {
-        settleUserScroll();
-      }
-    }, { passive: true });
-
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) {
-        pauseAutoplay(Infinity);
-      } else {
-        layout();
-        centerCard(activeIndex, 'auto');
-        startAutoplay();
-      }
-    });
-
-    window.addEventListener('resize', function () {
-      layout();
-      centerCard(activeIndex, 'auto');
-    }, { passive: true });
-
-    /* Initial state. */
-    setClasses(0);
-    layout();
-    centerCard(0, 'auto');
-
-    /* Re-center once responsive styles/fonts have settled. */
-    window.setTimeout(function () {
-      layout();
-      centerCard(activeIndex, 'auto');
-      startAutoplay();
-    }, 350);
+    setClasses(0); layout(); centerCard(0,'auto');
+    window.setTimeout(function(){layout();centerCard(activeIndex,'auto');startAutoplay()},350);
   }
 
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init, { once: true });
-  } else {
-    init();
-  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init,{once:true});
+  else init();
 }());
