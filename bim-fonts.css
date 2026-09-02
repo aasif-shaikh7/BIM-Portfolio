@@ -1,0 +1,12 @@
+/* BIM Portfolio Typography System v1.3.2 */
+:root{
+  --font-heading:"Chakra Petch",Arial,sans-serif;
+  --font-body:"Inter",Arial,sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Consolas,monospace;
+}
+html,body{font-family:var(--font-body)!important}
+h1,h2,h3,h4,h5,h6,.brand,.hero h1,.section h2,.project-body h3,.about-lead,.contact-card h2,.process-step h3,.skill-card h3,.bbs-list,.bbs-slide-count,.theme-control button{font-family:var(--font-heading)!important}
+.kicker,.section-number,.eyebrow,.project-carousel-label,.skill-no,.visitor-label,.visitor-number{font-family:var(--font-mono)!important}
+.hero-text,.about-grid p,.skill-card p,.achievement p,.process-step p,.contact-card p,.contact-details,.btn,.view-project,.site-header nav a,.nav-cta,.pill-row span,.availability,footer{font-family:var(--font-body)!important}
+.hero h1,.section h2,.project-body h3,.contact-card h2{font-weight:700}
+.kicker,.section-number,.eyebrow,.skill-no,.visitor-label{font-weight:500}
