@@ -1,25 +1,19 @@
-/* BIM Portfolio — Project Focus Carousel v1.3.3 */
+/* BIM Portfolio — Project Focus Carousel v1.3.5 */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    if(document.querySelector('link[data-professional-bim-theme]')) return;
-    var link=document.createElement('link');
-    link.rel='stylesheet';
-    link.href='professional-bim.css?v=1.3.3';
-    link.setAttribute('data-professional-bim-theme','1.3.3');
-    document.head.appendChild(link);
+    if(document.querySelector('link[data-professional-bim-theme]'))return;
+    var link=document.createElement('link');link.rel='stylesheet';link.href='professional-bim.css?v=1.3.5';link.setAttribute('data-professional-bim-theme','1.3.5');document.head.appendChild(link);
+    var bg=document.createElement('link');bg.rel='stylesheet';bg.href='bim-background.css?v=1.3.5';bg.setAttribute('data-bim-background-theme','1.3.5');document.head.appendChild(bg);
   }());
 
   /* Reliable Light / Dark / System theme controller. */
   (function themeController(){
-    var KEY='bim-portfolio-theme';
-    var modes=['system','light','dark'];
-    var media=window.matchMedia ? window.matchMedia('(prefers-color-scheme: dark)') : null;
-    var root=document.documentElement;
+    var KEY='bim-portfolio-theme',modes=['system','light','dark'],media=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null,root=document.documentElement;
     function saved(){var value;try{value=localStorage.getItem(KEY)}catch(e){}return modes.indexOf(value)>=0?value:'system'}
     function effective(mode){return mode==='system'?(media&&media.matches?'dark':'light'):mode}
-    function setMeta(theme){var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme==='dark'?'#100b1c':'#f7f5fa')}
+    function setMeta(theme){var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme==='dark'?'#0b1220':'#f5f7fa')}
     function apply(mode){var effectiveTheme=effective(mode);root.setAttribute('data-theme',effectiveTheme);root.setAttribute('data-theme-mode',mode);root.style.colorScheme=effectiveTheme;setMeta(effectiveTheme);document.querySelectorAll('.theme-control button').forEach(function(btn){btn.setAttribute('aria-pressed',btn.dataset.themeMode===mode?'true':'false')})}
     function save(mode){try{localStorage.setItem(KEY,mode)}catch(e){}apply(mode)}
     function build(){if(document.querySelector('.theme-control'))return;var header=document.querySelector('.site-header');if(!header)return;var box=document.createElement('div');box.className='theme-control';box.setAttribute('role','group');box.setAttribute('aria-label','Color theme');box.innerHTML='<button type="button" data-theme-mode="system" aria-label="Use system theme">System</button><button type="button" data-theme-mode="light" aria-label="Use light theme">Light</button><button type="button" data-theme-mode="dark" aria-label="Use dark theme">Dark</button>';box.querySelectorAll('button').forEach(function(btn){btn.addEventListener('click',function(){save(btn.dataset.themeMode)})});var cta=header.querySelector('.nav-cta');if(cta)cta.parentNode.insertBefore(box,cta);else header.appendChild(box);apply(saved())}
@@ -28,8 +22,7 @@
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   }());
 
-  var VERSION='1.3.3';
-  var AUTOPLAY_MS=2000;
+  var VERSION='1.3.5',AUTOPLAY_MS=2000;
   function init(){
     var track=document.querySelector('.project-grid');if(!track)return;var cards=Array.prototype.slice.call(track.querySelectorAll('.project-card'));if(cards.length<2)return;
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
