@@ -1,0 +1,68 @@
+/* BIM Portfolio — Deep Charcoal/Navy Background Layer v1.3.5 */
+:root{
+  --bim-bg-deep:#0b1220;
+  --bim-bg-deep-2:#101a2b;
+  --bim-bg-panel:#152235;
+  --bim-bg-panel-2:#18283c;
+  --bim-grid:rgba(139,61,255,.055);
+}
+
+/* Dark/System-dark: deep charcoal/navy BIM workspace. */
+html[data-theme="dark"] body,
+html[data-theme="dark"]{background:var(--bim-bg-deep)!important}
+html[data-theme="dark"] .hero{background:linear-gradient(180deg,#0b1220 0%,#101a2b 100%)!important}
+html[data-theme="dark"] .section{background:var(--bim-bg-deep-2)!important}
+html[data-theme="dark"] .about{background:#0e1828!important}
+html[data-theme="dark"] .process-section{background:#101b2c!important}
+html[data-theme="dark"] .contact{background:#0e1828!important}
+html[data-theme="dark"] footer{background:#080f1a!important}
+html[data-theme="dark"] .site-header{background:#080f1a!important}
+html[data-theme="dark"] .hero-frame{background:#16263a!important}
+html[data-theme="dark"] .project-card,
+html[data-theme="dark"] .project-body,
+html[data-theme="dark"] .process-step{background:var(--bim-bg-panel)!important}
+html[data-theme="dark"] .pill-row span{background:#142338!important}
+html[data-theme="dark"] .skills-grid{background:#202f43!important}
+html[data-theme="dark"] .skill-card{background:#142237!important}
+html[data-theme="dark"] .bbs-slideshow{background:#080f1a!important}
+
+/* Fine architectural grid: deliberately subtle so it reads as BIM context, not decoration. */
+html[data-theme="dark"] body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:-1;
+  opacity:.55;
+  background-image:
+    linear-gradient(to right,var(--bim-grid) 1px,transparent 1px),
+    linear-gradient(to bottom,var(--bim-grid) 1px,transparent 1px);
+  background-size:48px 48px;
+}
+
+/* System mode follows the browser/device dark preference. */
+@media(prefers-color-scheme:dark){
+  html:not([data-theme="light"]) body{background:var(--bim-bg-deep)!important}
+  html:not([data-theme="light"]) .hero{background:linear-gradient(180deg,#0b1220 0%,#101a2b 100%)!important}
+  html:not([data-theme="light"]) .section{background:var(--bim-bg-deep-2)!important}
+  html:not([data-theme="light"]) .about{background:#0e1828!important}
+  html:not([data-theme="light"]) .process-section{background:#101b2c!important}
+  html:not([data-theme="light"]) .contact{background:#0e1828!important}
+  html:not([data-theme="light"]) footer{background:#080f1a!important}
+  html:not([data-theme="light"]) .site-header{background:#080f1a!important}
+  html:not([data-theme="light"]) .hero-frame{background:#16263a!important}
+  html:not([data-theme="light"]) .project-card,
+  html:not([data-theme="light"]) .project-body,
+  html:not([data-theme="light"]) .process-step{background:var(--bim-bg-panel)!important}
+  html:not([data-theme="light"]) .pill-row span{background:#142338!important}
+  html:not([data-theme="light"]) .skills-grid{background:#202f43!important}
+  html:not([data-theme="light"]) .skill-card{background:#142237!important}
+  html:not([data-theme="light"]) .bbs-slideshow{background:#080f1a!important}
+  html:not([data-theme="light"]) body:after{
+    content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;opacity:.55;
+    background-image:linear-gradient(to right,var(--bim-grid) 1px,transparent 1px),linear-gradient(to bottom,var(--bim-grid) 1px,transparent 1px);
+    background-size:48px 48px;
+  }
+}
+
+@media(prefers-reduced-motion:reduce){html[data-theme="dark"] body:after{opacity:.35}}
