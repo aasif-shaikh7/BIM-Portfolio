@@ -1,17 +1,17 @@
-/* BIM Portfolio — Project Focus Carousel v1.3.5 */
+/* BIM Portfolio — Project Focus Carousel v1.3.6 */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
     if(document.querySelector('link[data-professional-bim-theme]'))return;
-    var link=document.createElement('link');link.rel='stylesheet';link.href='professional-bim.css?v=1.3.5';link.setAttribute('data-professional-bim-theme','1.3.5');document.head.appendChild(link);
-    var bg=document.createElement('link');bg.rel='stylesheet';bg.href='bim-background.css?v=1.3.5';bg.setAttribute('data-bim-background-theme','1.3.5');document.head.appendChild(bg);
+    var link=document.createElement('link');link.rel='stylesheet';link.href='professional-bim.css?v=1.3.6';link.setAttribute('data-professional-bim-theme','1.3.6');document.head.appendChild(link);
+    var bg=document.createElement('link');bg.rel='stylesheet';bg.href='bim-background.css?v=1.3.6';bg.setAttribute('data-bim-background-theme','1.3.6');document.head.appendChild(bg);
   }());
 
-  /* Reliable Light / Dark / System theme controller. */
+  /* Reliable Light / Dark / System theme controller. Dark is the default professional BIM presentation. */
   (function themeController(){
     var KEY='bim-portfolio-theme',modes=['system','light','dark'],media=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null,root=document.documentElement;
-    function saved(){var value;try{value=localStorage.getItem(KEY)}catch(e){}return modes.indexOf(value)>=0?value:'system'}
+    function saved(){var value;try{value=localStorage.getItem(KEY)}catch(e){}return modes.indexOf(value)>=0?value:'dark'}
     function effective(mode){return mode==='system'?(media&&media.matches?'dark':'light'):mode}
     function setMeta(theme){var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme==='dark'?'#0b1220':'#f5f7fa')}
     function apply(mode){var effectiveTheme=effective(mode);root.setAttribute('data-theme',effectiveTheme);root.setAttribute('data-theme-mode',mode);root.style.colorScheme=effectiveTheme;setMeta(effectiveTheme);document.querySelectorAll('.theme-control button').forEach(function(btn){btn.setAttribute('aria-pressed',btn.dataset.themeMode===mode?'true':'false')})}
@@ -22,7 +22,7 @@
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   }());
 
-  var VERSION='1.3.5',AUTOPLAY_MS=2000;
+  var VERSION='1.3.6',AUTOPLAY_MS=2000;
   function init(){
     var track=document.querySelector('.project-grid');if(!track)return;var cards=Array.prototype.slice.call(track.querySelectorAll('.project-card'));if(cards.length<2)return;
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
@@ -37,7 +37,7 @@
     function start(){stop();if(reduced||document.hidden||dragging||hovered)return;timer=setInterval(function(){if(dragging||hovered||document.hidden)return;var next=(active+1)%cards.length;applyState(next);center(next,true)},AUTOPLAY_MS)}
     function pause(ms){stop();if(resumeTimer)clearTimeout(resumeTimer);if(ms!==Infinity)resumeTimer=setTimeout(start,ms||1400)}
     function settle(){if(settleTimer)clearTimeout(settleTimer);settleTimer=setTimeout(function(){if(dragging)return;var index=nearest();applyState(index);center(index,true);pause(1300)},120)}
-    track.addEventListener('mouseenter',function(){hovered=true;pause(Infinity)});track.addEventListener('mouseleave',function(){hovered=false;if(!dragging)start()});track.addEventListener('pointerdown',function(){dragging=true;pause(Infinity)});track.addEventListener('pointerup',function(){dragging=false;settle()});track.addEventListener('pointercancel',function(){dragging=false;settle()});track.addEventListener('touchstart',function(){dragging=true;pause(Infinity)},{passive:true});track.addEventListener('touchend',function(){dragging=false;settle()},{passive:true});track.addEventListener('touchcancel',function(){dragging=false;settle()},{passive:true});track.addEventListener('wheel',function(){pause(1700);settle()},{passive:true});track.addEventListener('scroll',function(){if(!dragging)settle()},{passive:true});
+    track.addEventListener('mouseenter',function(){hovered=true;pause(Infinity)});track.addEventListener('mouseleave',function(){hovered=false;if(!dragging)start()});track.addEventListener('pointerdown',function(){dragging=true;pause(Infinity)});track.addEventListener('pointerup',function(){dragging=false;settle()});track.addEventListener('pointercancel',function(){dragging=false;settle()});track.addEventListener('touchstart',function(){dragging=true;pause(Infinity)},{passive:true});track.addEventListener('touchend',function(){dragging=false;settle()},{passive:true});track.addEventListener('touchcancel',function(){dragging=false;settle()},{passive:true});track.addEventListener('wheel',function(){pause(1700);settle()},{passive:true});track.addEventListener('scroll',function(){if(!dragging)settle()});
     var prev=document.querySelector('.project-carousel-prev'),next=document.querySelector('.project-carousel-next');if(prev)prev.addEventListener('click',function(){pause(1400);var i=(active-1+cards.length)%cards.length;applyState(i);center(i,true)});if(next)next.addEventListener('click',function(){pause(1400);var i=(active+1)%cards.length;applyState(i);center(i,true)});
     document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else{layout();center(active,false);start()}});window.addEventListener('resize',function(){stop();layout();center(active,false);start()},{passive:true});applyState(0);layout();center(0,false);setTimeout(function(){layout();center(active,false);start()},250)
   }
