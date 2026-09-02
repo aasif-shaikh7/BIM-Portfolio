@@ -11,13 +11,6 @@ h1,h2,h3,h4,h5,h6,.brand,.hero h1,.section h2,.project-body h3,.about-lead,.cont
 .hero h1,.section h2,.project-body h3,.contact-card h2{font-weight:700}
 .kicker,.section-number,.eyebrow,.skill-no,.visitor-label{font-weight:500}
 
-/*
-  Professional BIM background
-  --------------------------------
-  Clean architectural grid + restrained purple depth.
-  No glassmorphism, animated gradients, or decorative noise.
-  The background stays subordinate to project imagery and typography.
-*/
 :root{
   --bim-page-bg:#f6f7f9;
   --bim-page-surface:#ffffff;
@@ -27,55 +20,54 @@ h1,h2,h3,h4,h5,h6,.brand,.hero h1,.section h2,.project-body h3,.about-lead,.cont
   --bim-glow-2:rgba(111,43,217,.045);
 }
 html{background:var(--bim-page-bg)!important}
-body{
-  background-color:var(--bim-page-bg)!important;
-  background-image:
-    linear-gradient(var(--bim-grid) 1px,transparent 1px),
-    linear-gradient(90deg,var(--bim-grid) 1px,transparent 1px),
-    radial-gradient(circle at 8% 4%,var(--bim-glow),transparent 28rem),
-    radial-gradient(circle at 92% 22%,var(--bim-glow-2),transparent 24rem)!important;
-  background-size:48px 48px,48px 48px,100% 100%,100% 100%!important;
-  background-attachment:fixed!important;
-}
-body:after{
-  content:"";
-  position:fixed;
-  inset:0;
-  pointer-events:none;
-  z-index:0;
-  background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 26%,rgba(255,255,255,.16) 100%);
-}
+body{background-color:var(--bim-page-bg)!important;background-image:linear-gradient(var(--bim-grid) 1px,transparent 1px),linear-gradient(90deg,var(--bim-grid) 1px,transparent 1px),radial-gradient(circle at 8% 4%,var(--bim-glow),transparent 28rem),radial-gradient(circle at 92% 22%,var(--bim-glow-2),transparent 24rem)!important;background-size:48px 48px,48px 48px,100% 100%,100% 100%!important;background-attachment:fixed!important}
+body:after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 26%,rgba(255,255,255,.16) 100%)}
 .site-header,main,footer{position:relative;z-index:1}
 .site-header{background:rgba(255,255,255,.96)!important}
 .hero,.section,.about,.contact,.process-section,footer{background-color:transparent!important}
 .about,.contact{background-image:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.38))!important}
 .project-grid{background:transparent!important}
-
-/* Keep the BIM work visually dominant while giving sections a clear surface. */
 .section-head{background:rgba(255,255,255,.42);border-radius:6px;padding:18px 20px 24px!important}
 .project-card,.process-step,.pill-row span{background:rgba(255,255,255,.94)!important}
 .hero-frame{background:rgba(255,255,255,.9)!important}
 
-/* Dark mode: charcoal-blue BIM workspace with an extremely subtle purple grid. */
-[data-theme="dark"] html{background:#0d1118!important}
-[data-theme="dark"] body{
-  background-color:#0d1118!important;
-  background-image:
-    linear-gradient(rgba(180,163,207,.035) 1px,transparent 1px),
-    linear-gradient(90deg,rgba(180,163,207,.035) 1px,transparent 1px),
-    radial-gradient(circle at 10% 3%,rgba(139,61,255,.10),transparent 30rem),
-    radial-gradient(circle at 90% 18%,rgba(111,43,217,.07),transparent 28rem)!important;
-  background-size:48px 48px,48px 48px,100% 100%,100% 100%!important;
-  background-attachment:fixed!important;
-}
-[data-theme="dark"] body:after{background:linear-gradient(180deg,rgba(8,10,16,.05),rgba(8,10,16,.16) 100%)}
-[data-theme="dark"] .section-head{background:rgba(23,16,42,.46)!important}
-[data-theme="dark"] .project-card,[data-theme="dark"] .process-step,[data-theme="dark"] .pill-row span{background:rgba(31,23,47,.94)!important}
-[data-theme="dark"] .hero-frame{background:rgba(36,26,52,.94)!important}
+/* v1.3.8 — default professional BIM workspace is dark. */
+html,body{background-color:#0b1220!important;color:#edf2f7!important}
+body{background-image:linear-gradient(rgba(139,61,255,.045) 1px,transparent 1px),linear-gradient(90deg,rgba(139,61,255,.045) 1px,transparent 1px)!important;background-size:48px 48px!important;background-attachment:fixed!important}
+body:after{background:linear-gradient(180deg,rgba(8,10,16,.02),rgba(8,10,16,.14) 100%)}
+.site-header{background:#080f1a!important;border-color:#26364a!important;box-shadow:0 2px 16px rgba(0,0,0,.4)!important}
+.brand,.site-header nav a,.nav-cta{color:#edf2f7!important}
+.brand span{background:#edf2f7!important;color:#0b1220!important}
+.hero,.section,.about,.contact,.process-section,footer{background:#0b1220!important}
+.section{background:#101a2b!important}
+.about,.contact{background:#0e1828!important}
+.section.dark{background:#0a111d!important}
+.section-head{background:rgba(21,34,53,.55)!important;border-color:#30445b!important}
+.hero h1,.section h2,.about-lead,.stats strong,.project-body h3,.process-step h3{color:#f5f7fa!important}
+.hero-text,.stats span,.about-grid p,.process-step p{color:#aebbc9!important}
+.hero h1 em,.kicker,.section-number,.eyebrow{color:#a76cff!important}
+.hero-frame{background:#152235!important;border-color:#30445b!important;box-shadow:0 24px 70px rgba(0,0,0,.4)!important}
+.hero-badge{background:#8b3dff!important}
+.pill-row span,.project-card,.process-step{background:#152235!important;border-color:#30445b!important;color:#b9c5d1!important}
+.project-body{background:#152235!important}
+.skill-card{background:#142237!important;border-color:#273a50!important}
+.skill-card h3{color:#fff!important}.skill-card p{color:#c9d2dc!important}.skill-no,.achievement span{color:#bd91ff!important}.achievement{border-color:#30445b!important}.achievement p{color:#d5dee7!important}
+.project-media{background:#101a28!important}.project-media:after{background:#8b3dff!important}
+.view-project{color:#edf2f7!important;border-color:#8b3dff!important}
+.process-grid{background:#26364a!important}.contact-card{background:#080f1a!important}.contact-card h2{color:#fff!important}.contact-card p{color:#c9d2dc!important}.contact-details a,.contact-details div{color:#fff!important;border-color:#30445b!important}footer{border-color:#26364a!important;color:#91a0af!important}
+.theme-control{background:#142237!important;border-color:#30445b!important}.theme-control button{color:#b9c5d1!important}.theme-control button[aria-pressed="true"]{background:#8b3dff!important;color:#fff!important}
 
-/* Reduce visual complexity on small screens and when the OS requests reduced motion. */
-@media(max-width:700px){
-  body{background-size:36px 36px,36px 36px,100% 100%,100% 100%!important}
-  .section-head{padding-left:14px!important;padding-right:14px!important}
-}
+/* Explicit light mode keeps the existing professional light option available. */
+html[data-theme="light"],html[data-theme="light"] body{background-color:#f6f7f9!important;color:#17122b!important}
+html[data-theme="light"] body{background-image:linear-gradient(rgba(86,70,115,.055) 1px,transparent 1px),linear-gradient(90deg,rgba(86,70,115,.055) 1px,transparent 1px),radial-gradient(circle at 8% 4%,rgba(139,61,255,.075),transparent 28rem),radial-gradient(circle at 92% 22%,rgba(111,43,217,.045),transparent 24rem)!important;background-size:48px 48px,48px 48px,100% 100%,100% 100%!important}
+html[data-theme="light"] .site-header{background:rgba(255,255,255,.96)!important;border-color:#ddd7e8!important}.html[data-theme="light"] .hero{background:transparent!important}
+html[data-theme="light"] .hero,html[data-theme="light"] .section,html[data-theme="light"] .about,html[data-theme="light"] .contact,html[data-theme="light"] .process-section,html[data-theme="light"] footer{background:#f6f7f9!important}
+html[data-theme="light"] .about,html[data-theme="light"] .contact{background:#fff!important}
+html[data-theme="light"] .section.dark{background:#17122b!important}
+html[data-theme="light"] .section-head{background:rgba(255,255,255,.42)!important;border-color:#ddd7e8!important}
+html[data-theme="light"] .hero h1,html[data-theme="light"] .section h2,html[data-theme="light"] .about-lead,html[data-theme="light"] .stats strong,html[data-theme="light"] .project-body h3,html[data-theme="light"] .process-step h3{color:#17122b!important}
+html[data-theme="light"] .hero-text,html[data-theme="light"] .stats span,html[data-theme="light"] .about-grid p,html[data-theme="light"] .process-step p{color:#655f78!important}
+html[data-theme="light"] .project-card,html[data-theme="light"] .process-step,html[data-theme="light"] .pill-row span{background:#fff!important;border-color:#ddd7e8!important}
+
+@media(max-width:700px){body{background-size:36px 36px!important}.section-head{padding-left:14px!important;padding-right:14px!important}}
 @media(prefers-reduced-motion:reduce){body{background-attachment:scroll!important}}
