@@ -1,4 +1,4 @@
-/* BIM Portfolio Typography System v1.3.2 */
+/* BIM Portfolio Typography + Professional Background System v1.3.4 */
 :root{
   --font-heading:"Chakra Petch",Arial,sans-serif;
   --font-body:"Inter",Arial,sans-serif;
@@ -10,3 +10,72 @@ h1,h2,h3,h4,h5,h6,.brand,.hero h1,.section h2,.project-body h3,.about-lead,.cont
 .hero-text,.about-grid p,.skill-card p,.achievement p,.process-step p,.contact-card p,.contact-details,.btn,.view-project,.site-header nav a,.nav-cta,.pill-row span,.availability,footer{font-family:var(--font-body)!important}
 .hero h1,.section h2,.project-body h3,.contact-card h2{font-weight:700}
 .kicker,.section-number,.eyebrow,.skill-no,.visitor-label{font-weight:500}
+
+/*
+  Professional BIM background
+  --------------------------------
+  Clean architectural grid + restrained purple depth.
+  No glassmorphism, animated gradients, or decorative noise.
+  The background stays subordinate to project imagery and typography.
+*/
+:root{
+  --bim-page-bg:#f6f7f9;
+  --bim-page-surface:#ffffff;
+  --bim-grid:rgba(86,70,115,.055);
+  --bim-grid-strong:rgba(139,61,255,.045);
+  --bim-glow:rgba(139,61,255,.075);
+  --bim-glow-2:rgba(111,43,217,.045);
+}
+html{background:var(--bim-page-bg)!important}
+body{
+  background-color:var(--bim-page-bg)!important;
+  background-image:
+    linear-gradient(var(--bim-grid) 1px,transparent 1px),
+    linear-gradient(90deg,var(--bim-grid) 1px,transparent 1px),
+    radial-gradient(circle at 8% 4%,var(--bim-glow),transparent 28rem),
+    radial-gradient(circle at 92% 22%,var(--bim-glow-2),transparent 24rem)!important;
+  background-size:48px 48px,48px 48px,100% 100%,100% 100%!important;
+  background-attachment:fixed!important;
+}
+body:after{
+  content:"";
+  position:fixed;
+  inset:0;
+  pointer-events:none;
+  z-index:0;
+  background:linear-gradient(180deg,rgba(255,255,255,.38),rgba(255,255,255,0) 26%,rgba(255,255,255,.16) 100%);
+}
+.site-header,main,footer{position:relative;z-index:1}
+.site-header{background:rgba(255,255,255,.96)!important}
+.hero,.section,.about,.contact,.process-section,footer{background-color:transparent!important}
+.about,.contact{background-image:linear-gradient(180deg,rgba(255,255,255,.72),rgba(255,255,255,.38))!important}
+.project-grid{background:transparent!important}
+
+/* Keep the BIM work visually dominant while giving sections a clear surface. */
+.section-head{background:rgba(255,255,255,.42);border-radius:6px;padding:18px 20px 24px!important}
+.project-card,.process-step,.pill-row span{background:rgba(255,255,255,.94)!important}
+.hero-frame{background:rgba(255,255,255,.9)!important}
+
+/* Dark mode: charcoal-blue BIM workspace with an extremely subtle purple grid. */
+[data-theme="dark"] html{background:#0d1118!important}
+[data-theme="dark"] body{
+  background-color:#0d1118!important;
+  background-image:
+    linear-gradient(rgba(180,163,207,.035) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(180,163,207,.035) 1px,transparent 1px),
+    radial-gradient(circle at 10% 3%,rgba(139,61,255,.10),transparent 30rem),
+    radial-gradient(circle at 90% 18%,rgba(111,43,217,.07),transparent 28rem)!important;
+  background-size:48px 48px,48px 48px,100% 100%,100% 100%!important;
+  background-attachment:fixed!important;
+}
+[data-theme="dark"] body:after{background:linear-gradient(180deg,rgba(8,10,16,.05),rgba(8,10,16,.16) 100%)}
+[data-theme="dark"] .section-head{background:rgba(23,16,42,.46)!important}
+[data-theme="dark"] .project-card,[data-theme="dark"] .process-step,[data-theme="dark"] .pill-row span{background:rgba(31,23,47,.94)!important}
+[data-theme="dark"] .hero-frame{background:rgba(36,26,52,.94)!important}
+
+/* Reduce visual complexity on small screens and when the OS requests reduced motion. */
+@media(max-width:700px){
+  body{background-size:36px 36px,36px 36px,100% 100%,100% 100%!important}
+  .section-head{padding-left:14px!important;padding-right:14px!important}
+}
+@media(prefers-reduced-motion:reduce){body{background-attachment:scroll!important}}
