@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.1 / Premium horizontal carousel */
+/* BIM Portfolio — Project Focus Carousel v1.5.2 / Reel-inspired cinematic horizontal carousel */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.1';
+    var version='1.5.2';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
@@ -35,44 +35,74 @@
 
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false;
     var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var version='1.5.1',AUTOPLAY_MS=2000;
+    var version='1.5.2',AUTOPLAY_MS=2000;
 
-    /* Override legacy script scrolling so two carousel controllers cannot fight each other. */
+    /* Prevent the legacy carousel in script.js from competing with this controller. */
     var nativeScrollTo=Element.prototype.scrollTo;
-    var legacyScrollTo=track.scrollTo,legacyScrollBy=track.scrollBy;
     track.scrollTo=function(){return nativeScrollTo.apply(track,arguments)};
     track.scrollBy=function(){return nativeScrollTo.apply(track,arguments)};
 
     var style=document.createElement('style');
     style.setAttribute('data-project-focus-carousel',version);
     style.textContent='\
-.project-grid{position:relative;display:flex!important;gap:0!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory!important;scroll-behavior:auto!important;scrollbar-width:none!important;align-items:stretch!important;padding-top:18px;padding-bottom:24px}\
+.project-grid{position:relative;display:flex!important;gap:0!important;overflow-x:auto!important;overflow-y:hidden!important;scroll-snap-type:x mandatory!important;scroll-behavior:auto!important;scrollbar-width:none!important;align-items:stretch!important;padding-top:34px;padding-bottom:30px;isolation:isolate}\
 .project-grid::-webkit-scrollbar{display:none}\
-.project-grid .project-card{flex:0 0 var(--focus-card-width)!important;width:var(--focus-card-width)!important;scroll-snap-align:center!important;transition:transform .42s cubic-bezier(.22,.61,.36,1),opacity .42s ease,filter .42s ease,box-shadow .42s ease,border-color .42s ease!important;transform:scale(.67);transform-origin:center center;opacity:.46;filter:grayscale(.9) blur(1.1px) brightness(.68);z-index:1}\
-.project-grid .project-card.carousel-focus-active{transform:scale(1.35);opacity:1;filter:none;z-index:5;box-shadow:0 28px 70px rgba(0,0,0,.42)!important;border-color:var(--bim-accent)!important}\
-.project-grid .project-card.carousel-focus-side{transform:scale(.67);opacity:.52;filter:grayscale(.75) blur(.8px) brightness(.72);z-index:2}\
-.project-grid .project-card:hover{transform:scale(.69)!important;filter:grayscale(.55) blur(.5px) brightness(.82)}\
-.project-grid .project-card.carousel-focus-active:hover{transform:scale(1.35)!important;filter:none}\
-.project-carousel-label{display:flex;align-items:center;justify-content:center;gap:5px;margin-top:8px}\
-.project-carousel-label b{font-weight:700}\
-@media(max-width:1050px){.project-grid .project-card{transform:scale(.76)}.project-grid .project-card.carousel-focus-active{transform:scale(1.16)}.project-grid .project-card.carousel-focus-side{transform:scale(.76)}}\
-@media(max-width:700px){.project-grid{padding-top:10px;padding-bottom:18px}.project-grid .project-card{transform:scale(.82);filter:grayscale(.35) blur(.35px) brightness(.8)}.project-grid .project-card.carousel-focus-active{transform:scale(1.08);filter:none}.project-grid .project-card.carousel-focus-side{transform:scale(.82);filter:grayscale(.3) blur(.3px) brightness(.8)}.project-grid .project-card:hover{transform:scale(.84)!important}.project-grid .project-card.carousel-focus-active:hover{transform:scale(1.08)!important}}\
-@media(prefers-reduced-motion:reduce){.project-grid .project-card{transition:none!important}}';
+.project-grid:before{content:"";position:absolute;left:0;right:0;top:17px;height:1px;background:linear-gradient(90deg,transparent,var(--bim-border),transparent);pointer-events:none}\
+.project-grid .project-card{position:relative;flex:0 0 var(--focus-card-width)!important;width:var(--focus-card-width)!important;scroll-snap-align:center!important;transition:transform .48s cubic-bezier(.22,.61,.36,1),opacity .48s ease,filter .48s ease,box-shadow .48s ease,border-color .48s ease!important;transform:scale(.72);transform-origin:center center;opacity:.48;filter:grayscale(.82) blur(.8px) brightness(.72);z-index:1}\
+.project-grid .project-card:after{content:"";position:absolute;inset:10px;pointer-events:none;border:1px solid transparent;transition:border-color .4s ease,box-shadow .4s ease}\
+.project-grid .project-card.carousel-focus-active{transform:scale(1.30);opacity:1;filter:none;z-index:5;box-shadow:0 24px 65px rgba(0,0,0,.48)!important;border-color:var(--bim-accent)!important}\
+.project-grid .project-card.carousel-focus-active:after{border-color:rgba(143,182,212,.34);box-shadow:inset 0 0 0 1px rgba(79,134,181,.14)}\
+.project-grid .project-card.carousel-focus-side{transform:scale(.72);opacity:.55;filter:grayscale(.68) blur(.55px) brightness(.76);z-index:2}\
+.project-grid .project-card:hover{transform:scale(.74)!important;filter:grayscale(.45) blur(.35px) brightness(.84)}\
+.project-grid .project-card.carousel-focus-active:hover{transform:scale(1.30)!important;filter:none}\
+.project-grid .project-card .project-body{position:relative}\
+.project-grid .project-card .project-body:before{content:"BIM / PROJECT";display:block;margin-bottom:8px;font:600 10px/1.2 "JetBrains Mono",monospace;letter-spacing:.16em;color:var(--bim-accent-light);opacity:.72}\
+.project-grid .project-card.carousel-focus-active .project-body:before{content:"SELECTED / PROJECT";opacity:1}\
+.project-carousel-label{position:relative;display:flex;align-items:center;justify-content:center;gap:8px;margin:2px auto 0;min-height:28px;font-family:"JetBrains Mono",monospace;letter-spacing:.12em;color:var(--bim-muted)}\
+.project-carousel-label b{font-weight:700;color:var(--bim-text);font-size:13px}\
+.project-carousel-label .carousel-total{font-size:11px;opacity:.6}\
+.project-carousel-label .carousel-dash{opacity:.35}\
+.project-carousel-progress{width:min(280px,48vw);height:2px;margin:5px auto 0;background:var(--bim-border);overflow:hidden}\
+.project-carousel-progress span{display:block;height:100%;width:0;background:var(--bim-accent);transition:width .45s ease}\
+.project-carousel-meta{display:flex;justify-content:space-between;align-items:center;width:min(470px,72vw);margin:7px auto 0;font:500 9px/1 "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--bim-muted);opacity:.65;text-transform:uppercase}\
+@media(max-width:1050px){.project-grid .project-card{transform:scale(.78)}.project-grid .project-card.carousel-focus-active{transform:scale(1.16)}.project-grid .project-card.carousel-focus-side{transform:scale(.78)}.project-grid .project-card:hover{transform:scale(.80)!important}.project-grid .project-card.carousel-focus-active:hover{transform:scale(1.16)!important}}\
+@media(max-width:700px){.project-grid{padding-top:26px;padding-bottom:18px}.project-grid:before{top:12px}.project-grid .project-card{transform:scale(.84);filter:grayscale(.3) blur(.25px) brightness(.82)}.project-grid .project-card.carousel-focus-active{transform:scale(1.07);filter:none}.project-grid .project-card.carousel-focus-side{transform:scale(.84);filter:grayscale(.25) blur(.2px) brightness(.82)}.project-grid .project-card:hover{transform:scale(.86)!important}.project-grid .project-card.carousel-focus-active:hover{transform:scale(1.07)!important}.project-carousel-progress{width:min(220px,58vw)}.project-carousel-meta{width:min(360px,82vw)}}\
+@media(prefers-reduced-motion:reduce){.project-grid .project-card,.project-carousel-progress span{transition:none!important}}';
     document.head.appendChild(style);
 
+    function ensureHud(){
+      var label=document.querySelector('.project-carousel-label');
+      if(!label){
+        label=document.createElement('div');
+        label.className='project-carousel-label';
+        track.parentNode.insertBefore(label,track.nextSibling);
+      }
+      label.innerHTML='<b>01</b><span class="carousel-dash">/</span><span class="carousel-total">'+String(cards.length).padStart(2,'0')+'</span>';
+      var progress=document.createElement('div');
+      progress.className='project-carousel-progress';
+      progress.innerHTML='<span></span>';
+      if(!label.nextElementSibling||!label.nextElementSibling.classList.contains('project-carousel-progress'))label.parentNode.insertBefore(progress,label.nextSibling);
+      var meta=document.createElement('div');
+      meta.className='project-carousel-meta';
+      meta.innerHTML='<span>SELECTED WORK</span><span>AUTOPLAY 02S</span>';
+      if(!progress.nextElementSibling||!progress.nextElementSibling.classList.contains('project-carousel-meta'))progress.parentNode.insertBefore(meta,progress.nextSibling);
+    }
+
     function layout(){
-      var width=track.clientWidth;
-      var viewport=window.innerWidth;
-      var gap=viewport<=700?16:(viewport<=1050?22:30);
-      var cardWidth;
+      var width=track.clientWidth,viewport=window.innerWidth;
+      var gap=viewport<=700?16:(viewport<=1050?24:32),cardWidth;
       if(viewport<=700)cardWidth=Math.max(250,width-44);
       else if(viewport<=1050)cardWidth=Math.max(330,(width-gap)/2);
       else cardWidth=Math.max(360,Math.min(470,(width-gap*2)/3));
       track.style.setProperty('--focus-card-width',cardWidth+'px');
       var gutter=Math.max(0,(width-cardWidth)/2);
-      track.style.paddingLeft=gutter+'px';
-      track.style.paddingRight=gutter+'px';
-      track.style.columnGap=gap+'px';
+      track.style.paddingLeft=gutter+'px';track.style.paddingRight=gutter+'px';track.style.columnGap=gap+'px';
+    }
+    function updateHud(){
+      var label=document.querySelector('.project-carousel-label');
+      if(label){var current=label.querySelector('b');if(current)current.textContent=String(active+1).padStart(2,'0')}
+      var progress=document.querySelector('.project-carousel-progress span');
+      if(progress)progress.style.width=((active+1)/cards.length*100)+'%';
     }
     function applyState(index){
       active=(index+cards.length)%cards.length;
@@ -81,8 +111,7 @@
         if(i===active)card.classList.add('carousel-focus-active');
         else if(i===active-1||i===active+1)card.classList.add('carousel-focus-side');
       });
-      var counter=document.querySelector('.project-carousel-label b');
-      if(counter)counter.textContent=String(active+1).padStart(2,'0');
+      updateHud();
     }
     function targetFor(index){
       layout();
@@ -104,9 +133,10 @@
     function pause(ms){stop();if(resumeTimer)clearTimeout(resumeTimer);if(ms!==Infinity)resumeTimer=setTimeout(start,ms||1400)}
     function settle(){
       if(settleTimer)clearTimeout(settleTimer);
-      settleTimer=setTimeout(function(){if(dragging)return;var index=nearest();applyState(index);center(index,true);pause(1300)},120);
+      settleTimer=setTimeout(function(){if(dragging)return;var index=nearest();applyState(index);center(index,true);pause(1300)},130);
     }
 
+    ensureHud();
     track.addEventListener('mouseenter',function(){hovered=true;pause(Infinity)});
     track.addEventListener('mouseleave',function(){hovered=false;if(!dragging)start()});
     track.addEventListener('pointerdown',function(){dragging=true;pause(Infinity)});
@@ -116,7 +146,7 @@
     track.addEventListener('touchend',function(){dragging=false;settle()},{passive:true});
     track.addEventListener('touchcancel',function(){dragging=false;settle()},{passive:true});
     track.addEventListener('wheel',function(){pause(1700);settle()},{passive:true});
-    track.addEventListener('scroll',function(){if(!dragging)settle()});
+    track.addEventListener('scroll',function(){if(!dragging)settle()},{passive:true});
 
     var prev=document.querySelector('.project-carousel-prev'),next=document.querySelector('.project-carousel-next');
     if(prev)prev.addEventListener('click',function(){pause(1400);var i=(active-1+cards.length)%cards.length;applyState(i);center(i,true)});
