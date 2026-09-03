@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.3 / stable autoplay controller */
+/* BIM Portfolio — Project Focus Carousel v1.5.4 / stable 1s autoplay controller */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.3';
+    var version='1.5.4';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
@@ -35,7 +35,7 @@
 
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,programmaticScroll=false;
     var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var version='1.5.3',AUTOPLAY_MS=2000;
+    var version='1.5.4',AUTOPLAY_MS=1000;
 
     var nativeScrollTo=Element.prototype.scrollTo;
     track.scrollTo=function(){return nativeScrollTo.apply(track,arguments)};
@@ -76,7 +76,7 @@
       var progress=document.querySelector('.project-carousel-progress');
       if(!progress){progress=document.createElement('div');progress.className='project-carousel-progress';progress.innerHTML='<span></span>';label.parentNode.insertBefore(progress,label.nextSibling)}
       var meta=document.querySelector('.project-carousel-meta');
-      if(!meta){meta=document.createElement('div');meta.className='project-carousel-meta';meta.innerHTML='<span>SELECTED WORK</span><span>AUTOPLAY 02S</span>';progress.parentNode.insertBefore(meta,progress.nextSibling)}
+      if(!meta){meta=document.createElement('div');meta.className='project-carousel-meta';meta.innerHTML='<span>SELECTED WORK</span><span>AUTOPLAY 01S</span>';progress.parentNode.insertBefore(meta,progress.nextSibling)}
     }
 
     function layout(){
