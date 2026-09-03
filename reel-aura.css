@@ -1,0 +1,172 @@
+/* BIM Portfolio — Reel Aura Presentation Layer v1.5.0 */
+/* Inspired by the supplied reel's editorial, stacked-card portfolio presentation. */
+
+:root{
+  --aura-top:92px;
+  --aura-card-radius:22px;
+  --aura-blue:#4f86b5;
+  --aura-blue-soft:#8fb6d4;
+  --aura-ink:#eef3f7;
+  --aura-muted:#9eacb9;
+  --aura-panel:#121c26;
+  --aura-panel-2:#172330;
+  --aura-line:#2a3a4b;
+}
+
+/* Editorial hero treatment */
+.hero{position:relative;isolation:isolate;overflow:clip}
+.hero:before{
+  content:"BIM  /  REVIT  /  STRUCTURE  /  DOCUMENTATION";
+  position:absolute;z-index:-1;left:4vw;top:4vh;
+  font:700 clamp(38px,8vw,120px)/.82 "Chakra Petch",sans-serif;
+  letter-spacing:-.055em;color:rgba(143,182,212,.055);
+  white-space:nowrap;pointer-events:none;
+}
+.hero-copy:after{
+  content:"01 — INTRODUCTION";
+  display:block;margin-top:34px;
+  font:500 10px "JetBrains Mono",monospace;letter-spacing:.16em;color:var(--aura-muted);
+}
+.hero h1{max-width:900px}
+.hero h1 em{font-style:italic;color:var(--aura-blue-soft)}
+.hero-frame{border:1px solid rgba(143,182,212,.28);box-shadow:0 35px 100px rgba(0,0,0,.38)}
+.hero-frame:before{
+  content:"BIM / 001";position:absolute;left:18px;top:15px;z-index:3;
+  font:700 9px "JetBrains Mono",monospace;letter-spacing:.12em;color:#eef3f7;
+  background:rgba(8,14,20,.72);padding:7px 9px;border:1px solid rgba(143,182,212,.24);border-radius:4px;
+}
+
+/* Main reel-like project stage */
+#projects{max-width:none;padding-left:5vw;padding-right:5vw;overflow:clip}
+#projects .section-head{max-width:1440px;margin-left:auto;margin-right:auto;position:relative;z-index:5}
+#projects .section-head h2{max-width:920px}
+#projects .section-head:after{
+  content:"SCROLL TO EXPLORE / SELECTED BIM WORK";
+  display:block;grid-column:2;margin-top:18px;
+  font:500 9px "JetBrains Mono",monospace;letter-spacing:.14em;color:var(--aura-muted);
+}
+
+.reel-aura-projects{
+  position:relative;display:block!important;max-width:1280px;margin:0 auto;
+  padding:3vh 0 18vh!important;overflow:visible!important;
+}
+.reel-aura-projects .project-card{
+  --aura-scale:1;
+  --aura-lift:0px;
+  --aura-rotate:0deg;
+  position:sticky!important;top:var(--aura-top)!important;
+  width:min(100%,1120px);min-height:min(68vh,720px);
+  margin:0 auto 12vh!important;
+  display:grid;grid-template-columns:1.08fr .92fr;
+  overflow:hidden!important;border:1px solid var(--aura-line)!important;
+  border-radius:var(--aura-card-radius)!important;
+  background:linear-gradient(145deg,var(--aura-panel),var(--aura-panel-2))!important;
+  box-shadow:0 28px 80px rgba(0,0,0,.34),0 1px 0 rgba(255,255,255,.035) inset!important;
+  transform:translate3d(0,var(--aura-lift),0) scale(var(--aura-scale)) rotateX(var(--aura-rotate));
+  transform-origin:center top;will-change:transform,filter,opacity;
+  transition:transform .16s linear,filter .16s linear,opacity .16s linear;
+}
+.reel-aura-projects .project-card:nth-child(1){z-index:10}
+.reel-aura-projects .project-card:nth-child(2){z-index:11}
+.reel-aura-projects .project-card:nth-child(3){z-index:12}
+.reel-aura-projects .project-card:nth-child(4){z-index:13}
+.reel-aura-projects .project-card:nth-child(5){z-index:14}
+.reel-aura-projects .project-card:nth-child(6){z-index:15}
+.reel-aura-projects .project-card:nth-child(7){z-index:16}
+.reel-aura-projects .project-card:nth-child(8){z-index:17}
+.reel-aura-projects .project-card:nth-child(9){z-index:18}
+.reel-aura-projects .project-card:nth-child(10){z-index:19}
+.reel-aura-projects .project-card:nth-child(11){z-index:20}
+.reel-aura-projects .project-card:nth-child(12){z-index:21}
+.reel-aura-projects .project-card:nth-child(13){z-index:22}
+.reel-aura-projects .project-card:nth-child(14){z-index:23}
+.reel-aura-projects .project-card:nth-child(15){z-index:24}
+
+.reel-aura-projects .project-card:before{
+  content:attr(data-aura-index);position:absolute;right:20px;top:18px;z-index:8;
+  font:700 10px "JetBrains Mono",monospace;letter-spacing:.1em;color:rgba(238,243,247,.7);
+  background:rgba(8,14,20,.65);border:1px solid rgba(143,182,212,.22);padding:7px 9px;border-radius:4px;
+}
+.reel-aura-projects .project-card:after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:linear-gradient(110deg,transparent 45%,rgba(143,182,212,.055) 50%,transparent 55%);
+  opacity:.6;
+}
+.reel-aura-projects .project-media{
+  height:100%!important;min-height:min(68vh,720px);aspect-ratio:auto!important;
+  display:block!important;background:#0b1118!important;position:relative;overflow:hidden!important;
+  border-right:1px solid var(--aura-line);
+}
+.reel-aura-projects .project-media img:first-child{
+  display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;
+  filter:saturate(.86) contrast(1.04);transition:transform .8s cubic-bezier(.2,.7,.2,1),filter .5s ease;
+}
+.reel-aura-projects .project-card:hover .project-media img:first-child{transform:scale(1.035);filter:saturate(1) contrast(1.06)}
+.reel-aura-projects .project-media:after{
+  content:"BIM PROJECT";position:absolute;left:18px;top:18px;right:auto;
+  background:rgba(8,14,20,.78);color:#eef3f7;border:1px solid rgba(143,182,212,.22);
+  padding:7px 10px;border-radius:4px;font:700 8px "JetBrains Mono",monospace;letter-spacing:.12em;
+}
+.reel-aura-projects .project-body{
+  padding:clamp(30px,4vw,64px)!important;display:flex;flex-direction:column;justify-content:flex-end;
+  min-height:min(68vh,720px);position:relative;z-index:3;
+}
+.reel-aura-projects .project-body:before{
+  content:"ARCHITECTURAL / STRUCTURAL / BIM";position:absolute;left:clamp(30px,4vw,64px);top:clamp(30px,4vw,64px);
+  font:500 9px "JetBrains Mono",monospace;letter-spacing:.13em;color:var(--aura-muted);
+}
+.reel-aura-projects .project-body h3{
+  font-size:clamp(42px,6vw,86px)!important;line-height:.9!important;letter-spacing:-.055em!important;
+  color:var(--aura-ink)!important;margin:10px 0 24px!important;text-wrap:balance;
+}
+.reel-aura-projects .project-body .eyebrow{font:600 10px "JetBrains Mono",monospace!important;letter-spacing:.1em;color:var(--aura-blue-soft)!important;max-width:500px;white-space:normal!important}
+.reel-aura-projects .view-project{
+  align-self:flex-start;color:var(--aura-ink)!important;border:1px solid var(--aura-line)!important;
+  border-radius:999px!important;padding:10px 16px!important;margin-top:8px;
+  background:transparent!important;font:600 11px "Inter",sans-serif!important;letter-spacing:.05em;
+  transition:background .2s ease,border-color .2s ease,transform .2s ease;
+}
+.reel-aura-projects .view-project:hover{background:var(--aura-blue)!important;border-color:var(--aura-blue)!important;transform:translateY(-2px)}
+
+/* Number rail */
+.reel-aura-projects:before{
+  content:"01\A02\A03\A04\A05\A06";white-space:pre;position:absolute;left:-34px;top:6vh;
+  font:500 9px/4.4 "JetBrains Mono",monospace;color:rgba(158,172,185,.5);letter-spacing:.08em;
+}
+
+/* Prevent old horizontal-carousel affordances from appearing in stack mode */
+.reel-aura-projects::-webkit-scrollbar{display:none}
+
+/* Other sections receive the same editorial rhythm */
+#about,#skills,#bbs,#process,#contact{position:relative}
+#about .section-head,#skills .section-head,#bbs .section-head,#process .section-head,#contact .section-head{position:relative}
+#about .section-number,#skills .section-number,#bbs .section-number,#process .section-number{font-family:"JetBrains Mono",monospace}
+
+@media(max-width:1050px){
+  :root{--aura-top:82px}
+  .reel-aura-projects .project-card{grid-template-columns:1fr;min-height:auto;margin-bottom:10vh!important}
+  .reel-aura-projects .project-media{height:min(48vh,520px)!important;min-height:0!important;border-right:0;border-bottom:1px solid var(--aura-line)}
+  .reel-aura-projects .project-body{min-height:330px}
+  .reel-aura-projects .project-body h3{font-size:clamp(40px,8vw,70px)!important}
+}
+
+@media(max-width:700px){
+  :root{--aura-top:76px}
+  .hero:before{font-size:42px;top:3vh;white-space:normal;max-width:90vw}
+  .hero-copy:after{margin-top:24px}
+  #projects{padding-left:4vw;padding-right:4vw}
+  #projects .section-head:after{grid-column:1;margin-top:12px}
+  .reel-aura-projects{padding-top:2vh!important;padding-bottom:10vh!important}
+  .reel-aura-projects .project-card{width:100%;border-radius:17px!important;margin-bottom:9vh!important}
+  .reel-aura-projects .project-media{height:58vw!important;min-height:220px!important;max-height:380px!important}
+  .reel-aura-projects .project-body{padding:25px!important;min-height:280px}
+  .reel-aura-projects .project-body:before{left:25px;top:25px;font-size:8px}
+  .reel-aura-projects .project-body h3{font-size:clamp(34px,12vw,56px)!important}
+  .reel-aura-projects .project-card:before{right:14px;top:14px}
+  .reel-aura-projects .project-media:after{left:14px;top:14px}
+  .reel-aura-projects:before{display:none}
+}
+
+@media(prefers-reduced-motion:reduce){
+  .reel-aura-projects .project-card,.reel-aura-projects .project-media img:first-child{transition:none!important}
+}
