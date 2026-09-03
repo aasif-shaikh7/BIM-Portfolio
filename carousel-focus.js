@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.5 / stable 1s autoplay controller */
+/* BIM Portfolio — Project Focus Carousel v1.5.6 / stable 1s autoplay controller */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.5';
+    var version='1.5.6';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
@@ -35,10 +35,10 @@
 
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,programmaticScroll=false;
     var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var version='1.5.5',AUTOPLAY_MS=1000;
+    var version='1.5.6',AUTOPLAY_MS=1000;
 
     var nativeScrollTo=Element.prototype.scrollTo;
-    /* The legacy carousel in script.js also calls scrollTo/scrollBy. Keep those calls inert so two controllers cannot fight each other. */
+    /* Keep the legacy controller in script.js from issuing competing programmatic scrolls. */
     track.scrollTo=function(){return undefined};
     track.scrollBy=function(){return undefined};
 
@@ -118,10 +118,10 @@
     function stop(){if(timer){clearTimeout(timer);timer=null}}
     function schedule(){
       stop();
-      if(reduced||document.hidden||dragging||hovered)return;
+      if(document.hidden||dragging||hovered)return;
       timer=setTimeout(function(){
         timer=null;
-        if(reduced||document.hidden||dragging||hovered)return schedule();
+        if(document.hidden||dragging||hovered)return schedule();
         var next=(active+1)%cards.length;
         applyState(next);
         center(next,true);
