@@ -8,3 +8,6 @@ html[data-theme="light"],html[data-theme="light"] body{background:#f4f6f8!import
 @media(max-width:700px){body{background-size:36px 36px!important}.section-head{padding-left:14px!important;padding-right:14px!important}.theme-control{margin-left:6px}.theme-control button{padding:7px 6px;font-size:11px}}@media(prefers-reduced-motion:reduce){body{background-attachment:scroll!important}}
 /* Theme selector: keep System / Light / Dark text, remove only any decorative icon/pseudo-element. */
 .theme-control::before,.theme-control::after,.theme-control > svg,.theme-control > img,.theme-control > i,.theme-control > span:not(.theme-control button span){display:none!important;content:none!important;width:0!important;height:0!important;margin:0!important;padding:0!important}
+/* Theme selector icon fix: the visible half-circle / sun / moon graphics are button pseudo-elements/backgrounds. Keep only text. */
+html .theme-control button::before,html .theme-control button::after{content:none!important;display:none!important;width:0!important;height:0!important;margin:0!important;padding:0!important;border:0!important;background:none!important;box-shadow:none!important}
+html .theme-control,html .theme-control button{background-image:none!important;background-position:initial!important;background-repeat:no-repeat!important;background-size:0 0!important}
