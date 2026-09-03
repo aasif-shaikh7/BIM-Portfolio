@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.4 / stable 1s autoplay controller */
+/* BIM Portfolio — Project Focus Carousel v1.5.5 / stable 1s autoplay controller */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.4';
+    var version='1.5.5';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
@@ -35,11 +35,12 @@
 
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,programmaticScroll=false;
     var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var version='1.5.4',AUTOPLAY_MS=1000;
+    var version='1.5.5',AUTOPLAY_MS=1000;
 
     var nativeScrollTo=Element.prototype.scrollTo;
-    track.scrollTo=function(){return nativeScrollTo.apply(track,arguments)};
-    track.scrollBy=function(){return nativeScrollTo.apply(track,arguments)};
+    /* The legacy carousel in script.js also calls scrollTo/scrollBy. Keep those calls inert so two controllers cannot fight each other. */
+    track.scrollTo=function(){return undefined};
+    track.scrollBy=function(){return undefined};
 
     var style=document.createElement('style');
     style.setAttribute('data-project-focus-carousel',version);
