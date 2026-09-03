@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.2 / Reel-inspired cinematic horizontal carousel */
+/* BIM Portfolio — Project Focus Carousel v1.5.3 / stable autoplay controller */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.2';
+    var version='1.5.3';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
@@ -33,11 +33,10 @@
     var cards=Array.prototype.slice.call(track.querySelectorAll('.project-card'));
     if(cards.length<2)return;
 
-    var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false;
+    var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,programmaticScroll=false;
     var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var version='1.5.2',AUTOPLAY_MS=2000;
+    var version='1.5.3',AUTOPLAY_MS=2000;
 
-    /* Prevent the legacy carousel in script.js from competing with this controller. */
     var nativeScrollTo=Element.prototype.scrollTo;
     track.scrollTo=function(){return nativeScrollTo.apply(track,arguments)};
     track.scrollBy=function(){return nativeScrollTo.apply(track,arguments)};
@@ -72,25 +71,16 @@
 
     function ensureHud(){
       var label=document.querySelector('.project-carousel-label');
-      if(!label){
-        label=document.createElement('div');
-        label.className='project-carousel-label';
-        track.parentNode.insertBefore(label,track.nextSibling);
-      }
+      if(!label){label=document.createElement('div');label.className='project-carousel-label';track.parentNode.insertBefore(label,track.nextSibling)}
       label.innerHTML='<b>01</b><span class="carousel-dash">/</span><span class="carousel-total">'+String(cards.length).padStart(2,'0')+'</span>';
-      var progress=document.createElement('div');
-      progress.className='project-carousel-progress';
-      progress.innerHTML='<span></span>';
-      if(!label.nextElementSibling||!label.nextElementSibling.classList.contains('project-carousel-progress'))label.parentNode.insertBefore(progress,label.nextSibling);
-      var meta=document.createElement('div');
-      meta.className='project-carousel-meta';
-      meta.innerHTML='<span>SELECTED WORK</span><span>AUTOPLAY 02S</span>';
-      if(!progress.nextElementSibling||!progress.nextElementSibling.classList.contains('project-carousel-meta'))progress.parentNode.insertBefore(meta,progress.nextSibling);
+      var progress=document.querySelector('.project-carousel-progress');
+      if(!progress){progress=document.createElement('div');progress.className='project-carousel-progress';progress.innerHTML='<span></span>';label.parentNode.insertBefore(progress,label.nextSibling)}
+      var meta=document.querySelector('.project-carousel-meta');
+      if(!meta){meta=document.createElement('div');meta.className='project-carousel-meta';meta.innerHTML='<span>SELECTED WORK</span><span>AUTOPLAY 02S</span>';progress.parentNode.insertBefore(meta,progress.nextSibling)}
     }
 
     function layout(){
-      var width=track.clientWidth,viewport=window.innerWidth;
-      var gap=viewport<=700?16:(viewport<=1050?24:32),cardWidth;
+      var width=track.clientWidth,viewport=window.innerWidth,gap=viewport<=700?16:(viewport<=1050?24:32),cardWidth;
       if(viewport<=700)cardWidth=Math.max(250,width-44);
       else if(viewport<=1050)cardWidth=Math.max(330,(width-gap)/2);
       else cardWidth=Math.max(360,Math.min(470,(width-gap*2)/3));
@@ -106,11 +96,7 @@
     }
     function applyState(index){
       active=(index+cards.length)%cards.length;
-      cards.forEach(function(card,i){
-        card.classList.remove('carousel-focus-active','carousel-focus-side');
-        if(i===active)card.classList.add('carousel-focus-active');
-        else if(i===active-1||i===active+1)card.classList.add('carousel-focus-side');
-      });
+      cards.forEach(function(card,i){card.classList.remove('carousel-focus-active','carousel-focus-side');if(i===active)card.classList.add('carousel-focus-active');else if(i===active-1||i===active+1)card.classList.add('carousel-focus-side')});
       updateHud();
     }
     function targetFor(index){
@@ -118,19 +104,34 @@
       var card=cards[index],max=Math.max(0,track.scrollWidth-track.clientWidth);
       return Math.max(0,Math.min(card.offsetLeft-(track.clientWidth-card.offsetWidth)/2,max));
     }
-    function center(index,smooth){nativeScrollTo.call(track,{left:targetFor(index),behavior:(!reduced&&smooth)?'smooth':'auto'})}
+    function center(index,smooth){
+      programmaticScroll=true;
+      nativeScrollTo.call(track,{left:targetFor(index),behavior:(!reduced&&smooth)?'smooth':'auto'});
+      window.setTimeout(function(){programmaticScroll=false},smooth?650:50);
+    }
     function nearest(){
       var centerX=track.scrollLeft+track.clientWidth/2,best=0,distance=Infinity;
       cards.forEach(function(card,index){var d=Math.abs(card.offsetLeft+card.offsetWidth/2-centerX);if(d<distance){distance=d;best=index}});
       return best;
     }
-    function stop(){if(timer){clearInterval(timer);timer=null}}
-    function start(){
+    function stop(){if(timer){clearTimeout(timer);timer=null}}
+    function schedule(){
       stop();
       if(reduced||document.hidden||dragging||hovered)return;
-      timer=setInterval(function(){if(dragging||hovered||document.hidden)return;var next=(active+1)%cards.length;applyState(next);center(next,true)},AUTOPLAY_MS);
+      timer=setTimeout(function(){
+        timer=null;
+        if(reduced||document.hidden||dragging||hovered)return schedule();
+        var next=(active+1)%cards.length;
+        applyState(next);
+        center(next,true);
+        schedule();
+      },AUTOPLAY_MS);
     }
-    function pause(ms){stop();if(resumeTimer)clearTimeout(resumeTimer);if(ms!==Infinity)resumeTimer=setTimeout(start,ms||1400)}
+    function pause(ms){
+      stop();
+      if(resumeTimer)clearTimeout(resumeTimer);
+      if(ms!==Infinity)resumeTimer=setTimeout(schedule,ms||1400);
+    }
     function settle(){
       if(settleTimer)clearTimeout(settleTimer);
       settleTimer=setTimeout(function(){if(dragging)return;var index=nearest();applyState(index);center(index,true);pause(1300)},130);
@@ -138,7 +139,7 @@
 
     ensureHud();
     track.addEventListener('mouseenter',function(){hovered=true;pause(Infinity)});
-    track.addEventListener('mouseleave',function(){hovered=false;if(!dragging)start()});
+    track.addEventListener('mouseleave',function(){hovered=false;if(!dragging)schedule()});
     track.addEventListener('pointerdown',function(){dragging=true;pause(Infinity)});
     track.addEventListener('pointerup',function(){dragging=false;settle()});
     track.addEventListener('pointercancel',function(){dragging=false;settle()});
@@ -146,19 +147,19 @@
     track.addEventListener('touchend',function(){dragging=false;settle()},{passive:true});
     track.addEventListener('touchcancel',function(){dragging=false;settle()},{passive:true});
     track.addEventListener('wheel',function(){pause(1700);settle()},{passive:true});
-    track.addEventListener('scroll',function(){if(!dragging)settle()},{passive:true});
+    track.addEventListener('scroll',function(){if(!dragging&&!programmaticScroll)settle()},{passive:true});
 
     var prev=document.querySelector('.project-carousel-prev'),next=document.querySelector('.project-carousel-next');
-    if(prev)prev.addEventListener('click',function(){pause(1400);var i=(active-1+cards.length)%cards.length;applyState(i);center(i,true)});
-    if(next)next.addEventListener('click',function(){pause(1400);var i=(active+1)%cards.length;applyState(i);center(i,true)});
+    if(prev)prev.addEventListener('click',function(){pause(1400);var i=(active-1+cards.length)%cards.length;applyState(i);center(i,true);schedule()});
+    if(next)next.addEventListener('click',function(){pause(1400);var i=(active+1)%cards.length;applyState(i);center(i,true);schedule()});
 
-    document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else{layout();center(active,false);start()}});
-    window.addEventListener('resize',function(){stop();layout();center(active,false);start()},{passive:true});
+    document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else{layout();center(active,false);schedule()}});
+    window.addEventListener('resize',function(){stop();layout();center(active,false);schedule()},{passive:true});
 
     applyState(0);
     layout();
     center(0,false);
-    setTimeout(function(){layout();center(active,false);start()},250);
+    setTimeout(function(){layout();center(active,false);schedule()},350);
   }
 
   if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',initCarousel,{once:true});else initCarousel();
