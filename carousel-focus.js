@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.8 / isolated text-only theme selector */
+/* BIM Portfolio — Project Focus Carousel v1.5.9 / isolated text-only theme selector */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.8';
+    var version='1.5.9';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
