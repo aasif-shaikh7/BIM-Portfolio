@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.6 / stable 1s autoplay controller */
+/* BIM Portfolio — Project Focus Carousel v1.5.7 / text-only theme selector */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.6';
+    var version='1.5.7';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
@@ -14,16 +14,90 @@
     loadCss('bim-background.css?v='+version,'data-bim-background-theme');
   }());
 
+  /* Theme selector: completely replace any previous/icon-based implementation. */
   (function themeController(){
-    var KEY='bim-portfolio-theme',modes=['system','light','dark'],media=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null,root=document.documentElement;
-    function saved(){var value;try{value=localStorage.getItem(KEY)}catch(e){}return modes.indexOf(value)>=0?value:'dark'}
-    function effective(mode){return mode==='system'?(media&&media.matches?'dark':'light'):mode}
-    function setMeta(theme){var meta=document.querySelector('meta[name="theme-color"]');if(meta)meta.setAttribute('content',theme==='dark'?'#0b1118':'#f4f6f8')}
-    function apply(mode){var theme=effective(mode);root.setAttribute('data-theme',theme);root.setAttribute('data-theme-mode',mode);root.style.colorScheme=theme;setMeta(theme);document.querySelectorAll('.theme-control button').forEach(function(btn){btn.setAttribute('aria-pressed',btn.dataset.themeMode===mode?'true':'false')})}
-    function save(mode){try{localStorage.setItem(KEY,mode)}catch(e){}apply(mode)}
-    function build(){if(document.querySelector('.theme-control'))return;var header=document.querySelector('.site-header');if(!header)return;var box=document.createElement('div');box.className='theme-control';box.setAttribute('role','group');box.setAttribute('aria-label','Color theme');box.innerHTML='<button type="button" data-theme-mode="system">System</button><button type="button" data-theme-mode="light">Light</button><button type="button" data-theme-mode="dark">Dark</button>';box.querySelectorAll('button').forEach(function(btn){btn.addEventListener('click',function(){save(btn.dataset.themeMode)})});var cta=header.querySelector('.nav-cta');if(cta)cta.parentNode.insertBefore(box,cta);else header.appendChild(box);apply(saved())}
+    var KEY='bim-portfolio-theme';
+    var modes=['system','light','dark'];
+    var media=window.matchMedia?window.matchMedia('(prefers-color-scheme: dark)'):null;
+    var root=document.documentElement;
+
+    function saved(){
+      var value='';
+      try{value=localStorage.getItem(KEY)||''}catch(e){}
+      return modes.indexOf(value)>=0?value:'dark';
+    }
+    function effective(mode){
+      return mode==='system'?(media&&media.matches?'dark':'light'):mode;
+    }
+    function setMeta(theme){
+      var meta=document.querySelector('meta[name="theme-color"]');
+      if(meta)meta.setAttribute('content',theme==='dark'?'#0b1118':'#f4f6f8');
+    }
+    function apply(mode){
+      var theme=effective(mode);
+      root.setAttribute('data-theme',theme);
+      root.setAttribute('data-theme-mode',mode);
+      root.style.colorScheme=theme;
+      setMeta(theme);
+      document.querySelectorAll('.theme-control-text-only button').forEach(function(btn){
+        btn.setAttribute('aria-pressed',btn.getAttribute('data-theme-mode')===mode?'true':'false');
+      });
+    }
+    function save(mode){
+      try{localStorage.setItem(KEY,mode)}catch(e){}
+      apply(mode);
+    }
+    function installStyle(){
+      var old=document.getElementById('theme-text-only-style');
+      if(old)old.remove();
+      var style=document.createElement('style');
+      style.id='theme-text-only-style';
+      style.textContent='\
+html body header.site-header .theme-control-text-only{display:flex!important;align-items:center!important;gap:0!important;margin-left:12px!important;padding:2px!important;border:1px solid #304252!important;border-radius:7px!important;background:#121c26!important;line-height:1!important;box-sizing:border-box!important;overflow:visible!important}\
+html body header.site-header .theme-control-text-only button{all:unset!important;display:flex!important;align-items:center!important;justify-content:center!important;box-sizing:border-box!important;position:relative!important;min-width:58px!important;height:34px!important;padding:0 9px!important;border:0!important;border-radius:5px!important;background:transparent!important;background-image:none!important;mask:none!important;-webkit-mask:none!important;box-shadow:none!important;color:#b9c6d1!important;font-family:"Chakra Petch",Arial,sans-serif!important;font-size:12px!important;font-weight:600!important;line-height:1!important;letter-spacing:0!important;text-indent:0!important;white-space:nowrap!important;cursor:pointer!important}\
+html body header.site-header .theme-control-text-only button:before,html body header.site-header .theme-control-text-only button:after{display:none!important;content:none!important;background:none!important;background-image:none!important;mask:none!important;-webkit-mask:none!important;box-shadow:none!important;border:0!important}\
+html body header.site-header .theme-control-text-only button svg,html body header.site-header .theme-control-text-only button img,html body header.site-header .theme-control-text-only button i,html body header.site-header .theme-control-text-only button span{display:none!important;width:0!important;height:0!important;overflow:hidden!important}\
+html body header.site-header .theme-control-text-only button[aria-pressed="true"]{background:var(--bim-accent,#4f86b5)!important;color:#071019!important}\
+html[data-theme="light"] body header.site-header .theme-control-text-only{background:#f0f3f6!important;border-color:#c8d2dc!important}\
+html[data-theme="light"] body header.site-header .theme-control-text-only button{color:#526270!important}\
+@media(max-width:700px){html body header.site-header .theme-control-text-only{margin-left:6px!important}html body header.site-header .theme-control-text-only button{min-width:50px!important;height:30px!important;padding:0 6px!important;font-size:11px!important}}';
+      document.head.appendChild(style);
+    }
+    function build(){
+      var header=document.querySelector('.site-header');
+      if(!header)return;
+
+      /* Remove every old selector so no cached/icon implementation can remain in the DOM. */
+      header.querySelectorAll('.theme-control,.theme-control-text-only').forEach(function(el){el.remove()});
+
+      installStyle();
+      var box=document.createElement('div');
+      box.className='theme-control-text-only';
+      box.id='theme-control-text-only';
+      box.setAttribute('role','group');
+      box.setAttribute('aria-label','Color theme');
+
+      modes.forEach(function(mode){
+        var btn=document.createElement('button');
+        btn.type='button';
+        btn.setAttribute('data-theme-mode',mode);
+        btn.setAttribute('aria-label',mode==='system'?'System theme':mode==='light'?'Light theme':'Dark theme');
+        btn.setAttribute('aria-pressed','false');
+        /* Use a plain text node only — no icon markup, no innerHTML, no icon font. */
+        btn.appendChild(document.createTextNode(mode.charAt(0).toUpperCase()+mode.slice(1)));
+        btn.addEventListener('click',function(){save(mode)});
+        box.appendChild(btn);
+      });
+
+      var cta=header.querySelector('.nav-cta');
+      if(cta)cta.parentNode.insertBefore(box,cta);else header.appendChild(box);
+      apply(saved());
+    }
     function init(){build();apply(saved())}
-    if(media){var listener=function(){if(root.getAttribute('data-theme-mode')==='system')apply('system')};if(media.addEventListener)media.addEventListener('change',listener);else if(media.addListener)media.addListener(listener)}
+    if(media){
+      var listener=function(){if(root.getAttribute('data-theme-mode')==='system')apply('system')};
+      if(media.addEventListener)media.addEventListener('change',listener);else if(media.addListener)media.addListener(listener);
+    }
     if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init,{once:true});else init();
   }());
 
@@ -35,10 +109,9 @@
 
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,programmaticScroll=false;
     var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var version='1.5.6',AUTOPLAY_MS=1000;
-
+    var version='1.5.7',AUTOPLAY_MS=1000;
     var nativeScrollTo=Element.prototype.scrollTo;
-    /* Keep the legacy controller in script.js from issuing competing programmatic scrolls. */
+
     track.scrollTo=function(){return undefined};
     track.scrollBy=function(){return undefined};
 
@@ -79,7 +152,6 @@
       var meta=document.querySelector('.project-carousel-meta');
       if(!meta){meta=document.createElement('div');meta.className='project-carousel-meta';meta.innerHTML='<span>SELECTED WORK</span><span>AUTOPLAY 01S</span>';progress.parentNode.insertBefore(meta,progress.nextSibling)}
     }
-
     function layout(){
       var width=track.clientWidth,viewport=window.innerWidth,gap=viewport<=700?16:(viewport<=1050?24:32),cardWidth;
       if(viewport<=700)cardWidth=Math.max(250,width-44);
@@ -123,9 +195,7 @@
         timer=null;
         if(document.hidden||dragging||hovered)return schedule();
         var next=(active+1)%cards.length;
-        applyState(next);
-        center(next,true);
-        schedule();
+        applyState(next);center(next,true);schedule();
       },AUTOPLAY_MS);
     }
     function pause(ms){
@@ -157,9 +227,7 @@
     document.addEventListener('visibilitychange',function(){if(document.hidden)stop();else{layout();center(active,false);schedule()}});
     window.addEventListener('resize',function(){stop();layout();center(active,false);schedule()},{passive:true});
 
-    applyState(0);
-    layout();
-    center(0,false);
+    applyState(0);layout();center(0,false);
     setTimeout(function(){layout();center(active,false);schedule()},350);
   }
 
