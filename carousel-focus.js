@@ -1,9 +1,9 @@
-/* BIM Portfolio — Project Focus Carousel v1.5.7 / text-only theme selector */
+/* BIM Portfolio — Project Focus Carousel v1.5.8 / isolated text-only theme selector */
 (function () {
   'use strict';
 
   (function loadProfessionalBIMTheme(){
-    var version='1.5.7';
+    var version='1.5.8';
     function loadCss(href,attr){
       if(!document.querySelector('link['+attr+']')){
         var link=document.createElement('link');
@@ -14,7 +14,7 @@
     loadCss('bim-background.css?v='+version,'data-bim-background-theme');
   }());
 
-  /* Theme selector: completely replace any previous/icon-based implementation. */
+  /* Theme selector: isolated attribute names prevent legacy icon CSS from matching these buttons. */
   (function themeController(){
     var KEY='bim-portfolio-theme';
     var modes=['system','light','dark'];
@@ -40,7 +40,7 @@
       root.style.colorScheme=theme;
       setMeta(theme);
       document.querySelectorAll('.theme-control-text-only button').forEach(function(btn){
-        btn.setAttribute('aria-pressed',btn.getAttribute('data-theme-mode')===mode?'true':'false');
+        btn.setAttribute('aria-pressed',btn.getAttribute('data-theme-choice')===mode?'true':'false');
       });
     }
     function save(mode){
@@ -67,7 +67,6 @@ html[data-theme="light"] body header.site-header .theme-control-text-only button
       var header=document.querySelector('.site-header');
       if(!header)return;
 
-      /* Remove every old selector so no cached/icon implementation can remain in the DOM. */
       header.querySelectorAll('.theme-control,.theme-control-text-only').forEach(function(el){el.remove()});
 
       installStyle();
@@ -80,10 +79,9 @@ html[data-theme="light"] body header.site-header .theme-control-text-only button
       modes.forEach(function(mode){
         var btn=document.createElement('button');
         btn.type='button';
-        btn.setAttribute('data-theme-mode',mode);
+        btn.setAttribute('data-theme-choice',mode);
         btn.setAttribute('aria-label',mode==='system'?'System theme':mode==='light'?'Light theme':'Dark theme');
         btn.setAttribute('aria-pressed','false');
-        /* Use a plain text node only — no icon markup, no innerHTML, no icon font. */
         btn.appendChild(document.createTextNode(mode.charAt(0).toUpperCase()+mode.slice(1)));
         btn.addEventListener('click',function(){save(mode)});
         box.appendChild(btn);
@@ -109,7 +107,7 @@ html[data-theme="light"] body header.site-header .theme-control-text-only button
 
     var active=0,timer=null,resumeTimer=null,settleTimer=null,dragging=false,hovered=false,programmaticScroll=false;
     var reduced=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var version='1.5.7',AUTOPLAY_MS=1000;
+    var version='1.5.8',AUTOPLAY_MS=1000;
     var nativeScrollTo=Element.prototype.scrollTo;
 
     track.scrollTo=function(){return undefined};
