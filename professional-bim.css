@@ -17,3 +17,13 @@ html .theme-control button::before,html .theme-control button::after,html .theme
 html .theme-control button{font-family:"Chakra Petch",Arial,sans-serif!important;font-size:12px!important;font-weight:600!important;line-height:1!important;letter-spacing:0!important;text-indent:0!important}
 html .theme-control button svg,html .theme-control button img,html .theme-control button i,html .theme-control button span,html .theme-control [class*="icon"],html .theme-control [class*="theme-icon"],html .theme-control [aria-hidden="true"]{display:none!important;visibility:hidden!important;width:0!important;height:0!important;overflow:hidden!important}
 @media(max-width:700px){html .theme-control button{font-size:11px!important}}
+/* Definitive text-only fallback: hide any icon/glyph mechanism and render the labels ourselves. */
+html body header.site-header .theme-control button{all:unset!important;box-sizing:border-box!important;display:inline-flex!important;align-items:center!important;justify-content:center!important;min-width:58px!important;height:34px!important;padding:0 9px!important;border-radius:5px!important;cursor:pointer!important;color:#b9c6d1!important;font-family:"Chakra Petch",Arial,sans-serif!important;font-size:12px!important;font-weight:600!important;line-height:1!important;letter-spacing:0!important;text-indent:-9999px!important;overflow:hidden!important;background:transparent!important;background-image:none!important;mask:none!important;-webkit-mask:none!important}
+html body header.site-header .theme-control button::before{display:none!important;content:none!important}
+html body header.site-header .theme-control button::after{display:block!important;width:auto!important;height:auto!important;margin:0!important;padding:0!important;border:0!important;background:none!important;mask:none!important;-webkit-mask:none!important;color:inherit!important;font:inherit!important;line-height:inherit!important;text-indent:0!important}
+html body header.site-header .theme-control button[data-theme-mode="system"]::after{content:"System"!important}
+html body header.site-header .theme-control button[data-theme-mode="light"]::after{content:"Light"!important}
+html body header.site-header .theme-control button[data-theme-mode="dark"]::after{content:"Dark"!important}
+html body header.site-header .theme-control button[aria-pressed="true"]{background:var(--bim-accent)!important;color:#071019!important}
+html[data-theme="light"] body header.site-header .theme-control button{color:#526270!important}
+@media(max-width:700px){html body header.site-header .theme-control button{min-width:50px!important;height:30px!important;padding:0 6px!important;font-size:11px!important}}
