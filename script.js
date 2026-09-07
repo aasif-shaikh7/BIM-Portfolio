@@ -1,106 +1,187 @@
-/* BIM Portfolio — Visual System v1.1.2 */
-(function(){
+/* ============================================================
+   ASIF SHAIKH — BIM Portfolio · script.js v2.0.0 "Reel Edition"
+   Modules: header, mobile nav, reveal, services accordion,
+   hero parallax, project modal, BBS carousel, visitor counter,
+   WhatsApp contact form. No dependencies.
+   ============================================================ */
+(function () {
   'use strict';
 
-  /* Core modal */
-  var modal=document.getElementById('projectModal'),title=document.getElementById('modalTitle'),gallery=document.getElementById('modalGallery');
-  document.querySelectorAll('.view-project').forEach(function(btn){btn.addEventListener('click',function(){if(!modal||!title||!gallery)return;title.textContent=btn.dataset.title||'Project';var imgs=[];try{imgs=JSON.parse(btn.dataset.images||'[]')}catch(e){}gallery.innerHTML=imgs.map(function(x){return '<img src="assets/'+x.replace(/[^a-zA-Z0-9._-]/g,'')+'" alt="'+(btn.dataset.title||'Project')+' project image" loading="lazy">'}).join('');modal.classList.add('open');modal.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'})});
-  function closeModal(){if(!modal)return;modal.classList.remove('open');modal.setAttribute('aria-hidden','true');document.body.style.overflow=''}
-  var closeBtn=document.querySelector('.modal-close'),backdrop=document.querySelector('.modal-backdrop');if(closeBtn)closeBtn.addEventListener('click',closeModal);if(backdrop)backdrop.addEventListener('click',closeModal);document.addEventListener('keydown',function(e){if(e.key==='Escape')closeModal()});
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
-  /* Reveal animation */
-  var obs=new IntersectionObserver(function(entries){entries.forEach(function(e){if(e.isIntersecting)e.target.classList.add('visible')})},{threshold:.08});document.querySelectorAll('.reveal').forEach(function(el){obs.observe(el)});
+  /* ---------- Header: blur state on scroll ---------- */
+  var header = document.getElementById('siteHeader');
+  function headerState() { if (header) header.classList.toggle('scrolled', window.scrollY > 30); }
+  headerState();
+  window.addEventListener('scroll', headerState, { passive: true });
 
-  /* BBS carousel — reference-style card, smooth 1s autoplay, pause on hover/hold/touch. */
-  (function(){
-    var root=document.querySelector('.bbs-slideshow');if(!root)return;
-    var track=root.querySelector('.bbs-slides');if(!track)return;
-    var n=track.children.length;if(n<2)return;
-    var cur=root.querySelector('#bbs-current'),total=root.querySelector('#bbs-total'),prev=root.querySelector('.bbs-prev'),next=root.querySelector('.bbs-next'),i=0,timer=null,paused=false,delay=1000;
-    if(total)total.textContent=n;
-    root.classList.add('bbs-carousel-theme');
-    track.style.transition='transform 650ms cubic-bezier(.22,.61,.36,1)';
-    track.style.willChange='transform';
+  /* ---------- Mobile navigation ---------- */
+  var navToggle = document.getElementById('navToggle');
+  var mainNav = document.getElementById('mainNav');
+  function closeNav() {
+    document.body.classList.remove('nav-open');
+    if (navToggle) navToggle.setAttribute('aria-expanded', 'false');
+  }
+  if (navToggle && mainNav) {
+    navToggle.addEventListener('click', function () {
+      var open = document.body.classList.toggle('nav-open');
+      navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    mainNav.addEventListener('click', function (e) { if (e.target.tagName === 'A') closeNav(); });
+    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
+  }
 
-    var dots=root.querySelector('.bbs-carousel-dots');
-    if(!dots){
-      dots=document.createElement('div');dots.className='bbs-carousel-dots';
-      for(var d=0;d<n;d++){var dot=document.createElement('button');dot.type='button';dot.className='bbs-dot';dot.setAttribute('aria-label','Show BBS slide '+(d+1));dot.dataset.index=d;dots.appendChild(dot)}
-      root.appendChild(dots);
+  /* ---------- Reveal on scroll ---------- */
+  var revealObs = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+  }, { threshold: .08 });
+  document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+
+  /* ---------- Services accordion (click/touch; hover handled in CSS) ---------- */
+  document.querySelectorAll('.svc').forEach(function (svc) {
+    var row = svc.querySelector('.svc-row');
+    if (!row) return;
+    row.addEventListener('click', function () {
+      var isOpen = svc.classList.contains('open');
+      document.querySelectorAll('.svc.open').forEach(function (o) {
+        o.classList.remove('open');
+        var b = o.querySelector('.svc-row'); if (b) b.setAttribute('aria-expanded', 'false');
+      });
+      if (!isOpen) { svc.classList.add('open'); row.setAttribute('aria-expanded', 'true'); }
+    });
+  });
+
+  /* ---------- Hero parallax backdrop ---------- */
+  var backdrop = document.getElementById('heroBackdrop');
+  if (backdrop && !reducedMotion) {
+    var ticking = false;
+    window.addEventListener('scroll', function () {
+      if (ticking) return;
+      ticking = true;
+      requestAnimationFrame(function () {
+        var y = window.scrollY;
+        if (y < window.innerHeight * 1.2) backdrop.style.transform = 'translateY(' + (y * .22) + 'px)';
+        ticking = false;
+      });
+    }, { passive: true });
+  }
+
+  
+  /* ---------- Project modal ---------- */
+  var modal = document.getElementById('projectModal'),
+      title = document.getElementById('modalTitle'),
+      gallery = document.getElementById('modalGallery');
+  function openModal(btn) {
+    if (!modal || !title || !gallery) return;
+    title.textContent = btn.dataset.title || 'Project';
+    var imgs = [];
+    try { imgs = JSON.parse(btn.dataset.images || '[]'); } catch (e) { imgs = []; }
+    gallery.innerHTML = imgs.map(function (x) {
+      return '<img src="assets/' + String(x).replace(/[^a-zA-Z0-9._-]/g, '') + '" alt="' + (btn.dataset.title || 'Project') + ' project image" loading="lazy">';
+    }).join('');
+    modal.classList.add('open');
+    modal.setAttribute('aria-hidden', 'false');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal() {
+    if (!modal) return;
+    modal.classList.remove('open');
+    modal.setAttribute('aria-hidden', 'true');
+    document.body.style.overflow = '';
+  }
+  document.querySelectorAll('.view-project').forEach(function (btn) {
+    btn.addEventListener('click', function () { openModal(btn); });
+  });
+  var closeBtn = document.querySelector('.modal-close'), mBackdrop = document.querySelector('.modal-backdrop');
+  if (closeBtn) closeBtn.addEventListener('click', closeModal);
+  if (mBackdrop) mBackdrop.addEventListener('click', closeModal);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModal(); closeNav(); } });
+
+  /* ---------- BBS carousel: autoplay, dots, counter, pause on hover/touch ---------- */
+  (function () {
+    var root = document.querySelector('.bbs-slideshow');
+    if (!root) return;
+    var track = root.querySelector('.bbs-slides');
+    if (!track) return;
+    var n = track.children.length;
+    if (n < 2) return;
+    var cur = root.querySelector('#bbs-current'), total = root.querySelector('#bbs-total'),
+        prev = root.querySelector('.bbs-prev'), next = root.querySelector('.bbs-next'),
+        i = 0, timer = null, paused = false, delay = 3200;
+    if (total) total.textContent = n;
+    track.style.transition = 'transform 650ms cubic-bezier(.22,.61,.36,1)';
+    track.style.willChange = 'transform';
+    var dots = document.createElement('div');
+    dots.className = 'bbs-carousel-dots';
+    for (var d = 0; d < n; d++) {
+      var dot = document.createElement('button');
+      dot.type = 'button'; dot.className = 'bbs-dot';
+      dot.setAttribute('aria-label', 'Show slide ' + (d + 1));
+      dot.dataset.index = d;
+      dots.appendChild(dot);
     }
-    var dotButtons=dots.querySelectorAll('.bbs-dot');
-    function updateDots(){dotButtons.forEach(function(dot,index){dot.classList.toggle('active',index===i)})}
-    function go(idx){i=(idx+n)%n;track.style.transform='translate3d('+(-i*100)+'%,0,0)';if(cur)cur.textContent=i+1;updateDots()}
-    function stop(){if(timer){clearInterval(timer);timer=null}}
-    function start(){stop();if(!paused)timer=setInterval(function(){go(i+1)},delay)}
-    function pause(){paused=true;stop()}
-    function resume(){paused=false;start()}
-    if(prev)prev.addEventListener('click',function(){go(i-1);start()});
-    if(next)next.addEventListener('click',function(){go(i+1);start()});
-    dotButtons.forEach(function(dot){dot.addEventListener('click',function(){go(parseInt(dot.dataset.index,10)||0);start()})});
-    root.addEventListener('mouseenter',pause);
-    root.addEventListener('mouseleave',resume);
-    root.addEventListener('touchstart',pause,{passive:true});
-    root.addEventListener('touchend',resume,{passive:true});
-    root.addEventListener('touchcancel',resume,{passive:true});
-    root.addEventListener('pointerdown',pause);
-    root.addEventListener('pointerup',function(){if(!root.matches(':hover'))resume()});
-    root.addEventListener('pointercancel',resume);
-    new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){paused=false;start()}else{pause()}})},{threshold:.2}).observe(root);
-    var style=document.createElement('style');style.textContent=`
-      #bbs.bbs-carousel-theme{position:relative;max-width:1380px;margin:0 auto;padding:76px 5vw 84px;background:radial-gradient(circle at 10% 35%,rgba(255,79,163,.10),transparent 28%),radial-gradient(circle at 90% 65%,rgba(49,168,255,.10),transparent 28%),linear-gradient(180deg,#080a18,#0b0d1c);border-top:1px solid rgba(118,88,255,.22);border-bottom:1px solid rgba(118,88,255,.22);overflow:hidden}
-      #bbs.bbs-carousel-theme:before{content:"BBS";position:absolute;right:5%;top:4%;font:400 130px/1 "Patrick Hand",cursive;color:rgba(255,255,255,.025);pointer-events:none}
-      #bbs.bbs-carousel-theme .section-head{position:relative;z-index:2;margin-bottom:30px}
-      #bbs.bbs-carousel-theme .section-head h2{font-family:"Patrick Hand",cursive;background:linear-gradient(90deg,#fff,var(--pink),var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}
-      #bbs.bbs-carousel-theme .bbs-slideshow{position:relative;max-width:1080px;margin:0 auto;padding:18px;border:1px solid rgba(118,88,255,.34);border-radius:30px;background:linear-gradient(145deg,rgba(20,22,39,.96),rgba(9,11,24,.96));box-shadow:0 25px 75px rgba(0,0,0,.38),0 0 45px rgba(118,88,255,.08);overflow:hidden}
-      #bbs.bbs-carousel-theme .bbs-slides{display:flex;transition:transform 650ms cubic-bezier(.22,.61,.36,1);will-change:transform;border-radius:22px;overflow:hidden}
-      #bbs.bbs-carousel-theme .bbs-slide{min-width:100%;position:relative;display:flex;align-items:center;justify-content:center;background:#0e101c;border-radius:22px;overflow:hidden}
-      #bbs.bbs-carousel-theme .bbs-slide img{width:100%;height:auto;max-height:620px;object-fit:contain;display:block}
-      #bbs.bbs-carousel-theme .bbs-prev,#bbs.bbs-carousel-theme .bbs-next{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:52px;height:52px;border-radius:50%;border:1px solid rgba(255,255,255,.22);background:linear-gradient(135deg,rgba(255,79,163,.92),rgba(118,88,255,.92));color:#fff;display:grid;place-items:center;font:400 34px/1 "DM Sans",sans-serif;cursor:pointer;box-shadow:0 12px 32px rgba(118,88,255,.28);transition:transform .2s ease,box-shadow .2s ease}
-      #bbs.bbs-carousel-theme .bbs-prev{left:32px}#bbs.bbs-carousel-theme .bbs-next{right:32px}
-      #bbs.bbs-carousel-theme .bbs-prev:hover,#bbs.bbs-carousel-theme .bbs-next:hover{transform:translateY(-50%) scale(1.08);box-shadow:0 16px 38px rgba(255,79,163,.35)}
-      #bbs.bbs-carousel-theme .bbs-counter{position:absolute;left:38px;bottom:34px;z-index:5;padding:9px 15px;border-radius:999px;background:rgba(5,7,16,.78);border:1px solid rgba(255,255,255,.14);color:#fff;font:600 15px "DM Sans",sans-serif;backdrop-filter:blur(10px)}
-      #bbs.bbs-carousel-theme .bbs-carousel-dots{display:flex;justify-content:center;align-items:center;gap:7px;margin:20px auto 2px;position:relative;z-index:4}
-      #bbs.bbs-carousel-theme .bbs-dot{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:#45465a;cursor:pointer;transition:width .25s ease,background .25s ease,transform .25s ease}
-      #bbs.bbs-carousel-theme .bbs-dot.active{width:22px;background:linear-gradient(90deg,var(--pink),var(--purple));box-shadow:0 0 12px rgba(255,79,163,.35)}
-      @media(max-width:700px){#bbs.bbs-carousel-theme{padding:60px 4vw 68px}#bbs.bbs-carousel-theme .bbs-slideshow{padding:10px;border-radius:22px}#bbs.bbs-carousel-theme .bbs-prev,#bbs.bbs-carousel-theme .bbs-next{width:42px;height:42px;font-size:27px}#bbs.bbs-carousel-theme .bbs-prev{left:18px}#bbs.bbs-carousel-theme .bbs-next{right:18px}#bbs.bbs-carousel-theme .bbs-counter{left:20px;bottom:26px;font-size:13px;padding:7px 11px}#bbs.bbs-carousel-theme .bbs-slide img{max-height:430px}}
-    `;document.head.appendChild(style);
-    updateDots();start();
+    root.appendChild(dots);
+    var dotButtons = dots.querySelectorAll('.bbs-dot');
+    function updateDots() { dotButtons.forEach(function (dot, idx) { dot.classList.toggle('active', idx === i); }); }
+    function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); updateDots(); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function start() { stop(); if (!paused) timer = setInterval(function () { go(i + 1); }, delay); }
+    function pause() { paused = true; stop(); }
+    function resume() { paused = false; start(); }
+    if (prev) prev.addEventListener('click', function () { go(i - 1); start(); });
+    if (next) next.addEventListener('click', function () { go(i + 1); start(); });
+    dotButtons.forEach(function (dot) { dot.addEventListener('click', function () { go(parseInt(dot.dataset.index, 10) || 0); start(); }); });
+    root.addEventListener('mouseenter', pause);
+    root.addEventListener('mouseleave', resume);
+    root.addEventListener('touchstart', pause, { passive: true });
+    root.addEventListener('touchend', resume, { passive: true });
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { paused = false; start(); } else pause(); });
+    }, { threshold: .2 }).observe(root);
+    updateDots(); start();
   })();
 
-  /* GoatCounter */
-  (function(){var el=document.getElementById('goatcounter-counter');if(!el)return;var tries=0;function url(){var s=document.querySelector('script[data-goatcounter]');if(!s||!s.dataset.goatcounter)return null;return s.dataset.goatcounter.replace(/\/count\/?$/,'')+'/counter/TOTAL.json?no_branding=1'}function render(){if(!window.goatcounter){if(tries++<40){setTimeout(render,250);return}el.textContent='—';return}var u=url();if(!u){el.textContent='—';return}fetch(u).then(function(r){if(!r.ok)throw new Error();return r.json()}).then(function(d){el.textContent=d&&typeof d.count==='string'?d.count:'—'}).catch(function(){el.textContent='—'})}render()})();
-
-  /* Put the reference-inspired order in the DOM: Hero → Featured Projects → Stats → About. */
-  (function(){var main=document.querySelector('main'),home=document.getElementById('home'),projects=document.getElementById('projects'),stats=document.querySelector('.stats'),about=document.getElementById('about');if(!main||!home||!projects)return;if(about)main.insertBefore(projects,about);if(stats)projects.after(stats);var h=projects.querySelector('.section-head h2'),k=projects.querySelector('.section-head .kicker'),head=projects.querySelector('.section-head');if(h)h.textContent='Featured Projects';if(k)k.textContent='SELECTED BIM WORK';if(head&&!head.querySelector('.section-subtitle')){var sub=document.createElement('p');sub.className='section-subtitle';sub.textContent='A selection of my BIM modelling, coordination and construction documentation work.';head.querySelector('div').appendChild(sub)}})();
-
-  /* Project carousel: one card per second, smooth, pause on hover/hold/touch. */
-  (function(){var grid=document.querySelector('.project-grid');if(!grid)return;var cards=grid.querySelectorAll('.project-card');if(cards.length<2)return;var section=grid.closest('#projects')||grid.parentElement;section.classList.add('project-carousel-section');grid.classList.add('project-carousel');var controls=document.createElement('div');controls.className='project-carousel-controls';controls.innerHTML='<button type="button" class="project-carousel-btn project-carousel-prev" aria-label="Previous projects">‹</button><span class="project-carousel-label">PROJECTS <b>01</b> / '+String(cards.length).padStart(2,'0')+'</span><button type="button" class="project-carousel-btn project-carousel-next" aria-label="Next projects">›</button>';grid.parentNode.insertBefore(controls,grid);var prev=controls.querySelector('.project-carousel-prev'),next=controls.querySelector('.project-carousel-next'),current=controls.querySelector('.project-carousel-label b');var style=document.createElement('style');style.textContent=`
-.project-carousel-section{position:relative}.project-carousel-controls{display:flex;align-items:center;justify-content:space-between;max-width:1040px;margin:0 auto 18px;padding:0 8px;position:relative;z-index:3}.project-carousel-label{font-family:"DM Sans",sans-serif!important;font-size:11px!important;letter-spacing:.18em;color:#9695a5}.project-carousel-label b{color:#ff5aa8;font-size:16px}.project-carousel{display:flex!important;grid-template-columns:none!important;gap:18px!important;overflow-x:auto;overflow-y:visible;scroll-snap-type:x mandatory;scroll-behavior:smooth;padding:8px 8px 22px;margin:0 auto;-ms-overflow-style:none;scrollbar-width:none;max-width:1040px;cursor:grab}.project-carousel::-webkit-scrollbar{display:none}.project-carousel:active{cursor:grabbing}.project-carousel .project-card{flex:0 0 calc((100% - 36px)/3);min-width:0;scroll-snap-align:start}.project-carousel-btn{width:42px;height:42px;border-radius:50%;border:1px solid rgba(123,92,255,.4)!important;background:linear-gradient(135deg,#ff4fa3,#7658ff)!important;color:#fff!important;font:400 30px/1 "DM Sans";cursor:pointer;display:grid;place-items:center;box-shadow:0 10px 28px rgba(123,92,255,.2);transition:transform .2s ease,box-shadow .2s ease}.project-carousel-btn:hover{transform:scale(1.08);box-shadow:0 14px 34px rgba(123,92,255,.32)}.section-subtitle{margin:10px 0 0;color:#aaa7ba;font-size:15px;max-width:700px}@media(max-width:1050px){.project-carousel .project-card{flex-basis:calc((100% - 18px)/2)}}@media(max-width:700px){.project-carousel-controls{margin-bottom:12px}.project-carousel .project-card{flex-basis:88%}.project-carousel{gap:14px!important}.project-carousel-btn{width:38px;height:38px;font-size:26px}.section-subtitle{font-size:13px}}`;document.head.appendChild(style);function step(){var first=cards[0];return first.getBoundingClientRect().width+(parseFloat(getComputedStyle(grid).gap)||18)}function go(dir){grid.scrollBy({left:dir*step(),behavior:'smooth'})}prev.addEventListener('click',function(){go(-1)});next.addEventListener('click',function(){go(1)});grid.addEventListener('scroll',function(){var idx=Math.round(grid.scrollLeft/step());idx=Math.max(0,Math.min(cards.length-1,idx));if(current)current.textContent=String(idx+1).padStart(2,'0')},{passive:true});var timer=null,paused=false,delay=1000;function stop(){if(timer){clearInterval(timer);timer=null}}function start(){stop();if(!paused)timer=setInterval(function(){var max=grid.scrollWidth-grid.clientWidth;if(grid.scrollLeft>=max-3)grid.scrollTo({left:0,behavior:'smooth'});else go(1)},delay)}function pause(){paused=true;stop()}function resume(){paused=false;start()}grid.addEventListener('mouseenter',pause);grid.addEventListener('mouseleave',resume);grid.addEventListener('touchstart',pause,{passive:true});grid.addEventListener('touchend',resume,{passive:true});grid.addEventListener('touchcancel',resume,{passive:true});grid.addEventListener('pointerdown',pause);grid.addEventListener('pointerup',function(){if(!grid.matches(':hover'))resume()});grid.addEventListener('pointercancel',resume);window.addEventListener('resize',function(){stop();if(!paused)start()});start()})();
-
-  /* Reference-inspired visual system. */
-  (function(){
-    var style=document.createElement('style');style.textContent=`
-      :root{--pink:#ff4fa3;--purple:#7658ff;--blue:#31a8ff;--cyan:#5be7ff;--green:#55e68a;--yellow:#ffd45a}
-      body{font-family:"DM Sans",sans-serif;background:#070916;color:#f7f5ff;overflow-x:hidden}
-      body:before{content:"";position:fixed;inset:0;pointer-events:none;z-index:-1;background-image:linear-gradient(rgba(255,255,255,.018) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.018) 1px,transparent 1px);background-size:42px 42px;mask-image:linear-gradient(to bottom,black,transparent 75%)}
-      .site-header{height:78px;padding:0 5vw;background:rgba(7,9,22,.78);border-bottom:1px solid rgba(123,92,255,.18);backdrop-filter:blur(18px);box-shadow:0 10px 40px rgba(0,0,0,.18)}
-      .brand,.hero h1,h2,h3,.about-lead,.stats strong,.hero-badge,.section-number{font-family:"Patrick Hand",cursive;letter-spacing:0}.brand{font-size:27px;line-height:1;color:#fff;display:flex;align-items:center;gap:7px}.brand span{width:39px;height:39px;border-radius:13px;background:linear-gradient(135deg,var(--pink),var(--purple));box-shadow:0 8px 28px rgba(118,88,255,.35);font:700 12px "DM Sans"}.site-header nav{font:400 18px "Patrick Hand",cursive;color:#d8d4e3;gap:25px}.site-header nav a:hover{color:#fff}.nav-cta{font:400 17px "Patrick Hand",cursive;color:#fff;border:1px solid rgba(255,79,163,.65);background:linear-gradient(90deg,rgba(255,79,163,.08),rgba(118,88,255,.1))}
-      .hero{min-height:calc(100svh - 78px);padding:42px 5vw 38px;display:flex;align-items:center}.hero-grid{max-width:1380px;width:100%;grid-template-columns:1fr 1fr;gap:5vw;position:relative}.hero-copy{max-width:650px}.hero-copy:before{content:"✦ BIM  •  REVIT  •  3D  •  BOQ  •  BBS ✦";display:block;font:400 16px "Patrick Hand",cursive;letter-spacing:.08em;color:var(--purple);margin-bottom:17px}.hero h1{font-size:clamp(62px,7vw,108px);line-height:.88;color:#fff;margin:0;text-shadow:0 4px 28px rgba(118,88,255,.13)}.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--pink),#b65cff,var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent;position:relative}.hero h1 em:after{content:"♡";position:absolute;right:-.42em;top:-.25em;color:var(--pink);font:400 .42em "Patrick Hand"}.hero-text{font-size:16px;color:#b8b5c6;max-width:650px;margin:25px 0}.hero-actions{margin:26px 0 35px}.btn{font:400 19px "Patrick Hand",cursive;padding:11px 23px}.btn.primary{background:linear-gradient(100deg,var(--pink),var(--purple));color:#fff;border:0;box-shadow:0 12px 35px rgba(118,88,255,.28)}.btn.ghost{border:1px solid rgba(118,88,255,.55);color:#fff;background:rgba(255,255,255,.03)}
-      .hero-visual{position:relative}.hero-frame{aspect-ratio:1/1;min-height:0;border-radius:34px;background:#11172b;border:1px solid rgba(118,88,255,.38);box-shadow:0 35px 90px rgba(0,0,0,.38);overflow:hidden}.hero-frame:before{content:"";position:absolute;inset:-10px;border-radius:42px;background:linear-gradient(135deg,rgba(255,79,163,.7),transparent 38%,rgba(49,168,255,.6));filter:blur(20px);opacity:.55;z-index:-1}.hero-frame:after{content:"BIM";position:absolute;right:-4px;top:28px;font:400 100px "Patrick Hand";color:rgba(255,255,255,.07);transform:rotate(90deg);pointer-events:none}.hero-frame img{opacity:.96}.hero-badge{background:linear-gradient(135deg,var(--purple),var(--pink));color:#fff;border-radius:20px;box-shadow:0 16px 45px rgba(118,88,255,.4);font-size:30px}
-      .stats{width:min(100%,1380px);margin:0 auto;padding:18px 24px;border:1px solid rgba(118,88,255,.32);border-radius:22px;background:linear-gradient(90deg,rgba(255,79,163,.06),rgba(118,88,255,.09),rgba(49,168,255,.05));box-shadow:0 18px 55px rgba(0,0,0,.2);display:grid;grid-template-columns:repeat(3,1fr);gap:0}.stats div{padding:10px 28px;border-right:1px solid rgba(255,255,255,.1)}.stats div:last-child{border-right:0}.stats strong{font-size:32px;background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}.stats span{font-size:10px;letter-spacing:.13em;color:#a7a5b4}
-      .section{max-width:1380px;padding:90px 5vw;color:#eee}.section-head{margin-bottom:40px}.section h2{font-size:clamp(48px,6vw,82px);color:#fff}.section-number{font-size:24px;color:var(--pink)}.kicker{font:400 17px "Patrick Hand",cursive;letter-spacing:.06em;color:#a58dff}
-      #projects{max-width:none;margin:0;padding:76px 5vw 70px;background:radial-gradient(circle at 12% 45%,rgba(255,79,163,.08),transparent 27%),radial-gradient(circle at 88% 45%,rgba(118,88,255,.09),transparent 27%),rgba(8,10,24,.65);border-top:1px solid rgba(118,88,255,.16);border-bottom:1px solid rgba(118,88,255,.16)}#projects .section-head{max-width:1080px;margin-left:auto;margin-right:auto}.project-card{background:linear-gradient(145deg,rgba(22,24,42,.96),rgba(13,15,29,.96));border:1px solid rgba(118,88,255,.25);border-radius:22px;box-shadow:0 20px 55px rgba(0,0,0,.25);overflow:hidden}.project-media{background:#15182b}.project-media:after{background:linear-gradient(90deg,var(--pink),var(--purple));font:400 12px "Patrick Hand"}.project-body h3{font-size:34px;background:linear-gradient(90deg,#fff,var(--blue));-webkit-background-clip:text;background-clip:text;color:transparent}.eyebrow{font:400 15px "Patrick Hand";letter-spacing:.03em;color:#a9a4bd}.view-project{font:400 17px "Patrick Hand";color:#fff;border-bottom:2px solid var(--pink)}
-      #about,#skills,#bbs,#process,#contact{background:#070916}#about .large,#about p{color:#b8b5c5}.about-lead{background:linear-gradient(90deg,var(--pink),var(--purple));-webkit-background-clip:text;background-clip:text;color:transparent}.pill-row span{font:400 16px "Patrick Hand";color:#ddd;border-color:rgba(118,88,255,.3);background:rgba(118,88,255,.05)}.section.dark{background:radial-gradient(circle at 12% 8%,rgba(118,88,255,.18),transparent 28%),radial-gradient(circle at 85% 80%,rgba(255,79,163,.12),transparent 28%),#0a0b18;border-top:1px solid rgba(118,88,255,.18);border-bottom:1px solid rgba(118,88,255,.18)}.skill-card{background:rgba(13,15,29,.92);border-color:rgba(118,88,255,.18)}.skill-no{font:400 18px "Patrick Hand";color:var(--pink)}.skill-card h3{font-size:31px;color:#fff}.skill-card p{color:#aaa8b9}.achievement{border-color:rgba(118,88,255,.25)}.achievement span{font:400 17px "Patrick Hand";color:var(--cyan)}
-      .process-section{background:linear-gradient(135deg,#101126,#180d1e)!important}.process-step{background:rgba(17,19,36,.8);color:#fff}.process-step h3{font-size:33px;color:#fff}.process-step p{color:#aaa8b9}.process-step span{font:400 17px "Patrick Hand";color:var(--purple)}.contact-card{background:radial-gradient(circle at 80% 20%,rgba(118,88,255,.32),transparent 28%),linear-gradient(135deg,#111226,#1c0e28);border:1px solid rgba(118,88,255,.3);box-shadow:0 30px 80px rgba(0,0,0,.35)}.contact-card h2{color:#fff}.contact-card p{color:#aaa8b9}.contact-details a,.contact-details div{border-color:rgba(255,255,255,.13)}footer{background:#070916;border-color:rgba(118,88,255,.18);color:#77748a}.modal-box{background:#0d0f1d;color:#fff;border:1px solid rgba(118,88,255,.3)}
-      /* Theme switcher styles removed in v1.1.2 (switcher element removed). */
-      /* Explicit light mode, including Android/Chrome system-light preference. */
-      html[data-theme="light"] body,html[data-theme="light"] #about,html[data-theme="light"] #skills,html[data-theme="light"] #bbs,html[data-theme="light"] #process,html[data-theme="light"] #contact{background:#f3f1eb;color:#17151d}html[data-theme="light"] .site-header{background:rgba(243,241,235,.82);border-color:#ddd8e8}html[data-theme="light"] .brand{color:#24202e}html[data-theme="light"] .site-header nav{color:#514d5a}html[data-theme="light"] .nav-cta{color:#26222f;background:linear-gradient(90deg,rgba(255,79,163,.07),rgba(118,88,255,.07))}html[data-theme="light"] .hero h1{color:#292434}html[data-theme="light"] .hero-text{color:#575361}html[data-theme="light"] .btn.ghost{color:#352d46;background:rgba(255,255,255,.55)}html[data-theme="light"] .section{color:#292434}html[data-theme="light"] .section h2{color:#292434}html[data-theme="light"] .section-subtitle{color:#77758a}html[data-theme="light"] .project-card{background:#fff;border-color:#ddd7ea;box-shadow:0 18px 50px rgba(80,55,120,.11)}html[data-theme="light"] .project-body h3{color:#352d46;background:none}html[data-theme="light"] .eyebrow{color:#6d5f83}html[data-theme="light"] .view-project{color:#352d46}html[data-theme="light"] .stats{background:linear-gradient(90deg,rgba(255,79,163,.08),rgba(118,88,255,.08),rgba(49,168,255,.06));box-shadow:0 18px 45px rgba(70,50,120,.12)}html[data-theme="light"] .stats div{border-color:rgba(80,60,120,.12)}html[data-theme="light"] .stats span{color:#6d6878}html[data-theme="light"] .pill-row span{color:#514d5a;background:rgba(255,255,255,.55)}html[data-theme="light"] .process-section{background:linear-gradient(135deg,#f1edff,#fff1f7)!important}html[data-theme="light"] .process-step{background:rgba(255,255,255,.72);color:#292434}html[data-theme="light"] .process-step h3{color:#463b66}html[data-theme="light"] .process-step p{color:#62605b}html[data-theme="light"] footer{background:#f3f1eb;color:#777}html[data-theme="light"] .modal-box{background:#f3f1eb;color:#17151d}
-      @media(prefers-color-scheme:light){html:not([data-theme="dark"]) body,html:not([data-theme="dark"]) #about,html:not([data-theme="dark"]) #skills,html:not([data-theme="dark"]) #bbs,html:not([data-theme="dark"]) #process,html:not([data-theme="dark"]) #contact{background:#f3f1eb;color:#17151d}html:not([data-theme="dark"]) .site-header{background:rgba(243,241,235,.82);border-color:#ddd8e8}html:not([data-theme="dark"]) .brand{color:#24202e}html:not([data-theme="dark"]) .site-header nav{color:#514d5a}html:not([data-theme="dark"]) .hero h1,html:not([data-theme="dark"]) .section h2{color:#292434}html:not([data-theme="dark"]) .hero-text{color:#575361}html:not([data-theme="dark"]) .btn.ghost{color:#352d46;background:rgba(255,255,255,.55)}html:not([data-theme="dark"]) .project-card{background:#fff;border-color:#ddd7ea;box-shadow:0 18px 50px rgba(80,55,120,.11)}html:not([data-theme="dark"]) .project-body h3{color:#352d46;background:none}html:not([data-theme="dark"]) .view-project{color:#352d46}html:not([data-theme="dark"]) .stats{background:linear-gradient(90deg,rgba(255,79,163,.08),rgba(118,88,255,.08),rgba(49,168,255,.06))}html:not([data-theme="dark"]) .stats span{color:#6d6878}html:not([data-theme="dark"]) footer{background:#f3f1eb;color:#777}}
-      @media(max-width:850px){.site-header{height:70px}.brand{font-size:23px}.hero{padding-top:30px}.hero-grid{grid-template-columns:1fr}.hero-visual{order:-1}.hero-frame{aspect-ratio:4/3}.hero h1{font-size:clamp(55px,15vw,78px)}.stats{grid-template-columns:1fr;gap:0}.stats div{border-right:0;border-bottom:1px solid rgba(255,255,255,.1)}.stats div:last-child{border-bottom:0}.section{padding-top:70px;padding-bottom:70px}}
-      @media(max-width:560px){.site-header{padding:0 4vw}.nav-cta{display:none}.hero{padding-left:5vw;padding-right:5vw}.hero h1{font-size:clamp(48px,14vw,70px)}.hero-frame{border-radius:22px}.stats{padding:12px 16px}.stats div{padding:9px 12px}.stats strong{font-size:28px}}
-    `;document.head.appendChild(style);
-    if(!document.querySelector('link[data-portfolio-font]')){var font=document.createElement('link');font.rel='stylesheet';font.dataset.portfolioFont='true';font.href='https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Patrick+Hand&family=Space+Grotesk:wght@500;600;700&display=swap';document.head.appendChild(font)}
-      /* Legacy glyph theme switcher removed in v1.1.2: the text-only theme control in carousel-focus.js owns theme switching now. */
+  
+  /* ---------- GoatCounter visitor counter ---------- */
+  (function () {
+    var el = document.getElementById('goatcounter-counter');
+    if (!el) return;
+    var tries = 0;
+    function url() {
+      var s = document.querySelector('script[data-goatcounter]');
+      if (!s || !s.dataset.goatcounter) return null;
+      return s.dataset.goatcounter.replace(/\/count\/?$/, '') + '/counter/TOTAL.json?no_branding=1';
+    }
+    function render() {
+      if (!window.goatcounter) {
+        if (tries++ < 40) { setTimeout(render, 250); return; }
+        el.textContent = '—'; return;
+      }
+      var u = url();
+      if (!u) { el.textContent = '—'; return; }
+      fetch(u).then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
+        .then(function (d) { el.textContent = d && typeof d.count === 'string' ? d.count : '—'; })
+        .catch(function () { el.textContent = '—'; });
+    }
+    render();
   })();
+
+  /* ---------- Contact form → WhatsApp ---------- */
+  var form = document.getElementById('contactForm');
+  if (form) {
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var name = (form.elements.name.value || '').trim();
+      var msg = (form.elements.message.value || '').trim();
+      if (!msg) { form.elements.message.focus(); return; }
+      var text = 'Hi Asif! ' + (name ? "I'm " + name + '. ' : '') + msg;
+      window.open('https://wa.me/918291834576?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    });
+  }
+
+  /* ---------- Footer year ---------- */
+  var year = document.getElementById('year');
+  if (year) year.textContent = new Date().getFullYear();
+})();
+})();
 })();
