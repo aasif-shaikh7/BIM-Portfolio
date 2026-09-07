@@ -1,9 +1,9 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.4.0 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · v2.4.1 "Reel Edition"
    Dark metallic redesign: pure black, brushed-metal display
    type, neon-lime accent. Single source of truth for styling.
-   v2.4.0: every carousel shows one project at a time with 3s
-   autoplay; lazy images preload one slide ahead (no blanks).
+   v2.4.1: removed 5 torn BBS images (15 healthy slides remain),
+   optimized giant images 57MB→14MB, cache-busted assets.
    ============================================================ */
 
 /* ---------- Tokens ---------- */
