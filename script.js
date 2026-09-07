@@ -1,9 +1,9 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.2.0 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.3.0 "Reel Edition"
    Modules: header, mobile nav, reveal, services accordion,
-   hero parallax, project modal, BBS carousel, projects carousel,
-   floating Let's Talk, visitor counter, WhatsApp contact form.
-   No dependencies.
+   hero parallax, project modal, BBS carousel, featured and
+   grid project carousels, floating Let's Talk, visitor
+   counter, WhatsApp contact form. No dependencies.
    ============================================================ */
 (function () {
   'use strict';
@@ -152,7 +152,7 @@
     if (n < 2) return;
     var cur = root.querySelector('#proj-current'), total = root.querySelector('#proj-total'),
         prev = root.querySelector('.proj-prev'), next = root.querySelector('.proj-next'),
-        i = 0, timer = null, paused = false, delay = 6500;
+        i = 0, timer = null, paused = false, delay = 1500;
     if (total) total.textContent = ('0' + n).slice(-2);
     track.style.transition = 'transform 700ms cubic-bezier(.22,.61,.36,1)';
     track.style.willChange = 'transform';
@@ -192,6 +192,82 @@
       es.forEach(function (e) { if (e.isIntersecting) { paused = false; start(); } else pause(); });
     }, { threshold: .15 }).observe(root);
     updateDots(); start();
+  })();
+
+  /* ---------- More-projects grid carousel: 3/2/1 per view, page slides, 1.5s autoplay ---------- */
+  (function () {
+    var root = document.querySelector('.proj-grid-carousel');
+    var track = document.getElementById('gridTrack');
+    if (!root || !track) return;
+    var n = track.children.length;
+    if (n < 2) return;
+    var cur = root.querySelector('#grid-current'), total = root.querySelector('#grid-total'),
+        prev = root.querySelector('.grid-prev'), next = root.querySelector('.grid-next'),
+        meta = root.querySelector('.proj-grid-meta') || root,
+        page = 0, pages = 2, perView = 3, timer = null, paused = false, delay = 1500,
+        dots = null, dotButtons = [];
+    track.style.transition = 'transform 600ms cubic-bezier(.22,.61,.36,1)';
+    track.style.willChange = 'transform';
+    function perViewNow() {
+      if (window.matchMedia('(max-width:640px)').matches) return 1;
+      if (window.matchMedia('(max-width:960px)').matches) return 2;
+      return 3;
+    }
+    function buildDots() {
+      if (dots) dots.remove();
+      dots = document.createElement('div');
+      dots.className = 'proj-dots';
+      for (var d = 0; d < pages; d++) {
+        var dot = document.createElement('button');
+        dot.type = 'button'; dot.className = 'proj-dot';
+        dot.setAttribute('aria-label', 'Show projects page ' + (d + 1));
+        dot.dataset.index = d;
+        dots.appendChild(dot);
+      }
+      meta.appendChild(dots);
+      dotButtons = dots.querySelectorAll('.proj-dot');
+      dotButtons.forEach(function (dot) {
+        dot.addEventListener('click', function () { go(parseInt(dot.dataset.index, 10) || 0); start(); });
+      });
+    }
+    function apply() {
+      track.style.transform = 'translate3d(' + (-page * 100) + '%,0,0)';
+      if (cur) cur.textContent = ('0' + (page + 1)).slice(-2);
+      dotButtons.forEach(function (dot, idx) { dot.classList.toggle('active', idx === page); });
+    }
+    function layout() {
+      perView = perViewNow();
+      pages = Math.ceil(n / perView);
+      if (page > pages - 1) page = pages - 1;
+      if (total) total.textContent = ('0' + pages).slice(-2);
+      buildDots();
+      apply();
+    }
+    function go(p) { page = (p + pages) % pages; apply(); }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function start() { stop(); if (!paused && !reducedMotion) timer = setInterval(function () { go(page + 1); }, delay); }
+    function pause() { paused = true; stop(); }
+    function resume() { paused = false; start(); }
+    if (prev) prev.addEventListener('click', function () { go(page - 1); start(); });
+    if (next) next.addEventListener('click', function () { go(page + 1); start(); });
+    root.addEventListener('mouseenter', pause);
+    root.addEventListener('mouseleave', resume);
+    var sx = null;
+    track.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; pause(); }, { passive: true });
+    track.addEventListener('touchend', function (e) {
+      if (sx !== null) {
+        var dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 42) go(page + (dx < 0 ? 1 : -1));
+        sx = null;
+      }
+      resume();
+    }, { passive: true });
+    new IntersectionObserver(function (es) {
+      es.forEach(function (e) { if (e.isIntersecting) { paused = false; start(); } else pause(); });
+    }, { threshold: .1 }).observe(root);
+    var rT;
+    window.addEventListener('resize', function () { clearTimeout(rT); rT = setTimeout(layout, 150); });
+    layout(); start();
   })();
 
   /* ---------- Floating "Let's Talk" — hide while contact section is on screen ---------- */

@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2.2.0">
+<link rel="stylesheet" href="style.css?v=2.3.0">
 <script data-goatcounter="https://aasif-shaikh7.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -184,13 +184,20 @@
       </div>
     </div>
 
-    <div class="proj-grid">
+    <div class="proj-grid-carousel reveal" role="region" aria-roledescription="carousel" aria-label="More projects">
+      <div class="proj-viewport">
+        <div class="proj-track" id="gridTrack">
       <article class="proj-cell reveal"><div class="proj-media"><img src="assets/slide-10-01.jpg" alt="UMA NIWAS project image" loading="lazy"></div><div class="proj-cell-body"><span class="proj-no">07</span><h3>UMA NIWAS</h3><span class="proj-cat">Architectural &amp; Structural Modelling</span><div class="proj-actions"><button class="btn btn-dark view-project" data-title="UMA NIWAS" data-images='["slide-10-01.jpg","slide-10-02.jpg","slide-10-03.jpg","slide-10-04.jpg"]'>View Project ↗</button></div></div></article>
       <article class="proj-cell reveal"><div class="proj-media"><img src="assets/slide-11-01.jpg" alt="SHALIGRAM project image" loading="lazy"></div><div class="proj-cell-body"><span class="proj-no">08</span><h3>SHALIGRAM</h3><span class="proj-cat">Architectural &amp; Structural Modelling · Bhopal</span><div class="proj-actions"><button class="btn btn-dark view-project" data-title="SHALIGRAM" data-images='["slide-11-01.jpg","slide-11-02.jpg","slide-11-03.jpg","slide-11-04.jpg"]'>View Project ↗</button></div></div></article>
       <article class="proj-cell reveal"><div class="proj-media"><img src="assets/slide-12-01.jpg" alt="S RAHEJA CARTER project image" loading="lazy"></div><div class="proj-cell-body"><span class="proj-no">09</span><h3>S RAHEJA CARTER</h3><span class="proj-cat">Sea-Facing Ultra-Luxury Home · Bandra W</span><div class="proj-actions"><button class="btn btn-dark view-project" data-title="S RAHEJA CARTER" data-images='["slide-12-01.jpg","slide-12-02.jpg","slide-12-03.jpg","slide-12-04.jpg","slide-12-05.jpg"]'>View Project ↗</button></div></div></article>
       <article class="proj-cell reveal"><div class="proj-media"><img src="assets/slide-13-01.jpg" alt="RATNARAJ BLESSING MILESTONE project image" loading="lazy"></div><div class="proj-cell-body"><span class="proj-no">10</span><h3>RATNARAJ BLESSING</h3><span class="proj-cat">Sale &amp; Rehab Building · Parel, Mumbai</span><div class="proj-actions"><button class="btn btn-dark view-project" data-title="RATNARAJ BLESSING MILESTONE" data-images='["slide-13-01.jpg","slide-13-02.jpg","slide-13-03.jpg"]'>View Project ↗</button></div></div></article>
       <article class="proj-cell reveal"><div class="proj-media"><img src="assets/slide-14-01.jpg" alt="S RAHEJA LE EMERADE project image" loading="lazy"></div><div class="proj-cell-body"><span class="proj-no">11</span><h3>S RAHEJA LE EMERADE</h3><span class="proj-cat">Ultra-Luxury Residential · Khar W, Mumbai</span><div class="proj-actions"><button class="btn btn-dark view-project" data-title="S RAHEJA LE EMERADE" data-images='["slide-14-01.jpg","slide-14-02.jpg","slide-14-03.jpg"]'>View Project ↗</button></div></div></article>
       <article class="proj-cell reveal"><div class="proj-media"><img src="assets/slide-15-01.jpg" alt="NCC BUSINESS TOWER project image" loading="lazy"></div><div class="proj-cell-body"><span class="proj-no">12</span><h3>NCC BUSINESS TOWER</h3><span class="proj-cat">Architectural &amp; Structural Modelling</span><div class="proj-actions"><button class="btn btn-dark view-project" data-title="NCC BUSINESS TOWER" data-images='["slide-15-01.jpg","slide-15-02.jpg","slide-15-03.jpg"]'>View Project ↗</button></div></div></article>
+        </div>
+      </div>
+      <button class="proj-prev grid-prev" type="button" aria-label="Previous projects">←</button>
+      <button class="proj-next grid-next" type="button" aria-label="Next projects">→</button>
+      <div class="proj-grid-meta"><div class="proj-counter"><span id="grid-current">01</span> / <span id="grid-total">02</span></div></div>
     </div>
   </div>
 </section>
@@ -285,6 +292,6 @@
   <div class="modal-box"><button class="modal-close" aria-label="Close project viewer">×</button><h2 id="modalTitle">Project</h2><div id="modalGallery" class="modal-gallery"></div></div>
 </div>
 
-<script src="script.js?v=2.2.0"></script>
+<script src="script.js?v=2.3.0"></script>
 </body>
 </html>
