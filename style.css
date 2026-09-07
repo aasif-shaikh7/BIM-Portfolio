@@ -1,9 +1,9 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.1.0 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · v2.2.0 "Reel Edition"
    Dark metallic redesign: pure black, brushed-metal display
    type, neon-lime accent. Single source of truth for styling.
-   v2.1.0: restores Skills cards + Achievement and Milestone
-   sections from v1.5.9, restyled for the dark theme.
+   v2.2.0: featured projects become a swipeable carousel;
+   "Let's Talk" moved from the nav to a fixed bottom-center CTA.
    ============================================================ */
 
 /* ---------- Tokens ---------- */
@@ -169,6 +169,21 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .proj-cat{font:600 11px/1.5 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--dim);display:block;margin-bottom:14px}
 .proj-copy p{color:var(--muted);font-size:14.5px;max-width:460px;margin:0 0 26px}
 .proj-actions{display:flex;gap:12px;flex-wrap:wrap}
+
+/* ---------- Projects carousel (v2.2.0) ---------- */
+.proj-carousel{margin-top:4px}
+.proj-stage{position:relative}
+.proj-viewport{overflow:hidden}
+.proj-track{display:flex;will-change:transform}
+.proj-track .proj-feature{flex:0 0 100%;min-width:100%;border-top:0;border-bottom:0;padding:36px 0}
+.proj-prev,.proj-next{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-strong);background:rgba(5,5,5,.72);color:var(--text);font-size:20px;display:grid;place-items:center;backdrop-filter:blur(8px);transition:background .25s ease,color .25s ease,border-color .25s ease}
+.proj-prev{left:18px}
+.proj-next{right:18px}
+.proj-prev:hover,.proj-next:hover{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.proj-counter{position:absolute;left:22px;bottom:22px;z-index:5;padding:9px 15px;border-radius:999px;background:rgba(5,5,5,.78);border:1px solid var(--line-strong);color:var(--text);font:600 12.5px/1 var(--font-mono);letter-spacing:.08em;backdrop-filter:blur(8px)}
+.proj-dots{display:flex;justify-content:center;gap:7px;margin:14px 0 0}
+.proj-dot{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:#2c2c30;transition:width .25s ease,background .25s ease}
+.proj-dot.active{width:24px;background:var(--accent)}
 .proj-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:22px}
 .proj-cell{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .3s ease,border-color .3s ease;display:flex;flex-direction:column}
 .proj-cell:hover{transform:translateY(-6px);border-color:var(--line-strong)}
@@ -284,6 +299,12 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
 .whatsapp-float{position:fixed;right:20px;bottom:20px;z-index:80;width:56px;height:56px;border-radius:50%;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;box-shadow:0 16px 40px rgba(201,255,56,.25);transition:transform .25s ease,box-shadow .25s ease}
 .whatsapp-float:hover{transform:translateY(-4px) scale(1.04);box-shadow:0 20px 48px rgba(201,255,56,.38)}
 .whatsapp-float svg{width:26px;height:26px;fill:currentColor}
+.lets-talk-float{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);z-index:81;display:inline-flex;align-items:center;gap:9px;padding:15px 26px;border-radius:999px;background:var(--accent);color:var(--accent-ink);font:700 13px/1 var(--font-display);letter-spacing:.05em;text-transform:uppercase;box-shadow:0 16px 44px rgba(201,255,56,.3);transition:transform .25s ease,opacity .3s ease,box-shadow .25s ease}
+.lets-talk-float em{font-family:var(--font-serif);font-style:italic;font-weight:500;text-transform:none;font-size:15px}
+.lets-talk-float span{font-size:15px;line-height:1;transition:transform .25s ease}
+.lets-talk-float:hover{transform:translateX(-50%) translateY(-4px);box-shadow:0 22px 54px rgba(201,255,56,.42)}
+.lets-talk-float:hover span{transform:translate(2px,-2px)}
+.lets-talk-float.hide{opacity:0;pointer-events:none;transform:translateX(-50%) translateY(14px)}
 
 /* ---------- Modal ---------- */
 .modal{position:fixed;inset:0;z-index:120;display:none}
@@ -311,6 +332,8 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   .intro-grid,.contact-grid{grid-template-columns:1fr;gap:44px}
   .proj-head{grid-template-columns:1fr;gap:26px;align-items:start}
   .proj-feature{grid-template-columns:1fr;gap:30px;padding:44px 0}
+.proj-prev{left:10px}.proj-next{right:10px}
+.proj-counter{left:12px;bottom:12px}
   .proj-feature.flip .proj-media{order:0}
   .bbs-grid{grid-template-columns:1fr;gap:40px}
   .flow-grid{grid-template-columns:repeat(2,1fr)}
@@ -339,6 +362,8 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   .bbs-counter{left:14px;bottom:14px}
   .visitor-widget{left:14px;bottom:14px;padding:8px 12px}
   .whatsapp-float{right:14px;bottom:14px;width:52px;height:52px}
+.lets-talk-float{bottom:78px;padding:13px 20px;font-size:12px}
+.proj-track .proj-feature{padding:32px 0 26px}
   .foot-right{text-align:left}
   .foot-mail{font-size:clamp(20px,6vw,30px)}
 }

@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2.1.0">
+<link rel="stylesheet" href="style.css?v=2.2.0">
 <script data-goatcounter="https://aasif-shaikh7.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -26,7 +26,6 @@
     <a href="#projects">Projects</a>
     <a href="#bbs">BBS</a>
     <a href="#contact">Contact</a>
-    <a class="btn btn-lime" href="mailto:shaikhaasif582@gmail.com">Let's Talk ↗</a>
   </nav>
   <button class="nav-toggle" id="navToggle" aria-label="Toggle navigation" aria-expanded="false" aria-controls="mainNav"><span></span></button>
 </header>
@@ -144,35 +143,46 @@
       <div class="proj-aside"><p>Architectural &amp; structural BIM delivered on live construction projects — precise models, coordinated sheets, and construction-ready BOQ &amp; BBS documentation.</p><a class="btn btn-lime" href="#contact">Available for work ↗</a></div>
     </div>
 
-    <article class="proj-feature reveal">
+    <div class="proj-carousel reveal" role="region" aria-roledescription="carousel" aria-label="Featured projects">
+      <div class="proj-stage">
+        <div class="proj-viewport">
+          <div class="proj-track" id="projTrack">
+    <article class="proj-feature">
       <div class="proj-media"><img src="assets/slide-04-01.jpg" alt="GENESIS project render" loading="lazy"></div>
       <div class="proj-copy"><span class="proj-no">01</span><span class="proj-cat">Architectural &amp; Structural Modelling · UAE</span><h3>GENESIS <span class="accent-i">uae</span></h3><p>Complete architectural and structural Revit modelling package for a UAE development — model, sheets and BOQ delivered construction-ready.</p><div class="proj-actions"><button class="btn btn-lime view-project" data-title="GENESIS" data-images='["slide-04-01.jpg","slide-04-02.jpg","slide-04-03.jpg","slide-04-04.jpg","slide-04-05.jpg"]'>View Project ↗</button></div></div>
     </article>
 
-    <article class="proj-feature flip reveal">
+    <article class="proj-feature">
       <div class="proj-media"><img src="assets/slide-05-01.jpg" alt="SB PARADISE project render" loading="lazy"></div>
       <div class="proj-copy"><span class="proj-no">02</span><span class="proj-cat">Residential Skyscraper Complex · Bhandup W, Mumbai</span><h3>SB <span class="accent-i">paradise</span></h3><p>High-rise residential complex modelled end-to-end in Revit with full BBS and quantity documentation across all towers.</p><div class="proj-actions"><button class="btn btn-lime view-project" data-title="SB PARADISE" data-images='["slide-05-01.jpg","slide-05-02.jpg","slide-05-03.jpg","slide-05-04.jpg","slide-05-05.jpg","slide-05-06.jpg","slide-05-07.jpg","slide-05-08.jpg","slide-05-09.jpg","slide-05-10.jpg"]'>View Project ↗</button></div></div>
     </article>
 
-    <article class="proj-feature reveal">
+    <article class="proj-feature">
       <div class="proj-media"><img src="assets/slide-06-01.jpg" alt="MORAJ OPULENCE project render" loading="lazy"></div>
       <div class="proj-copy"><span class="proj-no">03</span><span class="proj-cat">Luxury Residential · Mahim, Mumbai</span><h3>MORAJ <span class="accent-i">opulence</span></h3><p>Luxury residential tower — architectural &amp; structural modelling with coordinated layout sheets and BOQ extraction.</p><div class="proj-actions"><button class="btn btn-lime view-project" data-title="MORAJ OPULENCE" data-images='["slide-06-01.jpg","slide-06-02.jpg","slide-06-03.jpg","slide-06-04.jpg","slide-06-05.jpg"]'>View Project ↗</button></div></div>
     </article>
 
-    <article class="proj-feature flip reveal">
+    <article class="proj-feature">
       <div class="proj-media"><img src="assets/slide-07-01.jpg" alt="AMANI KNOWLEDGE PARK project render" loading="lazy"></div>
       <div class="proj-copy"><span class="proj-no">04</span><span class="proj-cat">Grade-A IT/ITES Park · Vikhroli W, Mumbai</span><h3>AMANI <span class="accent-i">knowledge park</span></h3><p>Large-format IT park delivered with multi-building architectural and structural coordination in Revit.</p><div class="proj-actions"><button class="btn btn-lime view-project" data-title="AMANI KNOWLEDGE PARK" data-images='["slide-07-01.jpg","slide-07-02.jpg","slide-07-03.jpg","slide-07-04.jpg","slide-07-05.png","slide-07-06.png"]'>View Project ↗</button></div></div>
     </article>
 
-    <article class="proj-feature reveal">
+    <article class="proj-feature">
       <div class="proj-media"><img src="assets/slide-08-01.jpg" alt="MOHITE MRUGANK project render" loading="lazy"></div>
       <div class="proj-copy"><span class="proj-no">05</span><span class="proj-cat">Luxury Residential Tower · Chembur E, Mumbai</span><h3>MOHITE <span class="accent-i">mrugank</span></h3><p>Premium residential tower modelled to LOD 350 with reinforcement documentation and quantity takeoff.</p><div class="proj-actions"><button class="btn btn-lime view-project" data-title="MOHITE MRUGANK" data-images='["slide-08-01.jpg","slide-08-02.jpg","slide-08-03.jpg","slide-08-04.jpg"]'>View Project ↗</button></div></div>
     </article>
 
-    <article class="proj-feature flip reveal">
+    <article class="proj-feature">
       <div class="proj-media"><img src="assets/slide-09-01.jpg" alt="CANARA BANK project render" loading="lazy"></div>
       <div class="proj-copy"><span class="proj-no">06</span><span class="proj-cat">Residential · Malad W, Mumbai</span><h3>CANARA <span class="accent-i">bank</span></h3><p>Residential development — full Revit modelling, BBS for beam, footing and slab, and GFC drawing issuance.</p><div class="proj-actions"><button class="btn btn-lime view-project" data-title="CANARA BANK" data-images='["slide-09-01.jpg","slide-09-02.jpg","slide-09-03.jpg","slide-09-04.jpg","slide-09-05.jpg","slide-09-06.jpg"]'>View Project ↗</button></div></div>
     </article>
+          </div>
+        </div>
+        <button class="proj-prev" type="button" aria-label="Previous project">←</button>
+        <button class="proj-next" type="button" aria-label="Next project">→</button>
+        <div class="proj-counter"><span id="proj-current">01</span> / <span id="proj-total">06</span></div>
+      </div>
+    </div>
 
     <div class="proj-grid">
       <article class="proj-cell reveal"><div class="proj-media"><img src="assets/slide-10-01.jpg" alt="UMA NIWAS project image" loading="lazy"></div><div class="proj-cell-body"><span class="proj-no">07</span><h3>UMA NIWAS</h3><span class="proj-cat">Architectural &amp; Structural Modelling</span><div class="proj-actions"><button class="btn btn-dark view-project" data-title="UMA NIWAS" data-images='["slide-10-01.jpg","slide-10-02.jpg","slide-10-03.jpg","slide-10-04.jpg"]'>View Project ↗</button></div></div></article>
@@ -265,6 +275,7 @@
 </footer>
 
 <!-- ============ FLOATING WIDGETS ============ -->
+<a class="lets-talk-float" href="#contact" aria-label="Let's talk — jump to contact section">Let's <em>talk</em><span aria-hidden="true">↗</span></a>
 <div class="visitor-widget" aria-label="Total website visitors"><span class="visitor-icon">◉</span><div class="visitor-copy"><span class="visitor-label">VISITORS</span><span id="goatcounter-counter" class="visitor-number">Loading…</span></div></div>
 <a class="whatsapp-float" href="https://wa.me/918291834576" target="_blank" rel="noopener" aria-label="Chat on WhatsApp"><svg viewBox="0 0 24 24"><path d="M12 2a10 10 0 0 0-8.5 15.3L2 22l4.9-1.4A10 10 0 1 0 12 2zm5.4 14.1c-.2.6-1.2 1.2-1.7 1.2-.4.1-1 .1-1.6-.1a13 13 0 0 1-1.5-.6c-2.6-1.1-4.3-3.8-4.4-4-.1-.2-1-1.4-1-2.6 0-1.2.6-1.8.9-2 .2-.3.5-.3.7-.3h.5c.2 0 .4-.1.6.4l.9 2.1c.1.2.1.4 0 .6l-.4.6-.5.5c-.1.2-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.2.5.1.7-.1l1-1.1c.2-.3.4-.2.7-.1l2 1c.3.1.5.2.6.4 0 .1 0 .6-.2 1.2z"/></svg></a>
 
@@ -274,6 +285,6 @@
   <div class="modal-box"><button class="modal-close" aria-label="Close project viewer">×</button><h2 id="modalTitle">Project</h2><div id="modalGallery" class="modal-gallery"></div></div>
 </div>
 
-<script src="script.js?v=2.1.0"></script>
+<script src="script.js?v=2.2.0"></script>
 </body>
 </html>
