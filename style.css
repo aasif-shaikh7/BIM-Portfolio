@@ -1,9 +1,9 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.3.0 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · v2.4.0 "Reel Edition"
    Dark metallic redesign: pure black, brushed-metal display
    type, neon-lime accent. Single source of truth for styling.
-   v2.3.0: 1.5s autoplay on the featured carousel; the 6 grid
-   projects become a responsive 3/2/1-per-view carousel too.
+   v2.4.0: every carousel shows one project at a time with 3s
+   autoplay; lazy images preload one slide ahead (no blanks).
    ============================================================ */
 
 /* ---------- Tokens ---------- */
@@ -184,10 +184,9 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .proj-dots{display:flex;justify-content:center;gap:7px;margin:14px 0 0}
 .proj-dot{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:#2c2c30;transition:width .25s ease,background .25s ease}
 .proj-dot.active{width:24px;background:var(--accent)}
-/* ---------- More-projects grid carousel (v2.3.0) ---------- */
+/* ---------- More-projects grid carousel (v2.4.0 — one card per view) ---------- */
 .proj-grid-carousel{position:relative;margin-top:22px}
-.proj-grid-carousel .proj-track{margin:0 -11px}
-.proj-grid-carousel .proj-cell{flex:0 0 33.3333%;min-width:0;padding:0 11px}
+.proj-grid-carousel .proj-cell{flex:0 0 100%;min-width:0}
 .proj-grid-meta{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px}
 .proj-grid-meta .proj-counter{position:static}
 .proj-cell{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .3s ease,border-color .3s ease;display:flex;flex-direction:column}
@@ -324,7 +323,6 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
 
 /* ---------- Responsive ---------- */
 @media(max-width:1080px){
-  .proj-grid-carousel .proj-cell{flex-basis:50%}
   .svc-detail-inner{grid-template-columns:86px 1fr;gap:14px}
   .svc-desc{grid-column:2}
 }
@@ -356,7 +354,6 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   .svc-detail-inner{grid-template-columns:1fr;padding:0 4px 26px}
   .svc-detail-inner .svc-tags{order:2}
   .svc-desc{grid-column:1}
-  .proj-grid-carousel .proj-cell{flex-basis:100%}
   .flow-grid{grid-template-columns:1fr}
   .flow-step h3{margin-top:26px}
   .glass-card,.contact-form{padding:26px 22px}
