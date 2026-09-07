@@ -1,7 +1,9 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.0.0 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · v2.1.0 "Reel Edition"
    Dark metallic redesign: pure black, brushed-metal display
    type, neon-lime accent. Single source of truth for styling.
+   v2.1.0: restores Skills cards + Achievement and Milestone
+   sections from v1.5.9, restyled for the dark theme.
    ============================================================ */
 
 /* ---------- Tokens ---------- */
@@ -235,6 +237,43 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
 .foot-bottom{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-top:26px;padding-top:24px;border-top:1px solid var(--line);font-size:12px;color:var(--dim);position:relative;z-index:1}
 .foot-bottom nav{display:flex;gap:22px}
 .foot-bottom a:hover{color:var(--accent)}
+
+/* ---------- Skills (v2.1.0 — restored from v1.5.9, dark restyle) ---------- */
+.sk-head{margin-bottom:38px}
+.sk-title{font:800 clamp(42px,6.4vw,92px)/0.98 var(--font-display);letter-spacing:-.015em;margin:0;text-transform:uppercase}
+.sk-title .accent-i{color:var(--accent);font-size:.72em}
+.skills-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.skill-card{position:relative;background:var(--card);border:1px solid var(--line);border-radius:var(--radius);padding:30px 28px 27px;overflow:hidden;transition:transform .3s ease,border-color .3s ease,background .3s ease}
+.skill-card::after{content:"";position:absolute;left:0;top:0;height:2px;width:0;background:var(--accent);transition:width .4s ease}
+.skill-card:hover{transform:translateY(-4px);border-color:var(--line-strong);background:var(--card-2)}
+.skill-card:hover::after{width:100%}
+.skill-no{display:block;font:700 12px/1 var(--font-mono);letter-spacing:.18em;color:var(--accent);margin:0 0 18px}
+.skill-card h3{font:800 19px/1.25 var(--font-display);letter-spacing:.02em;text-transform:uppercase;margin:0 0 10px}
+.skill-card p{margin:0;color:var(--muted);font-size:14px;line-height:1.6}
+.achievement{display:flex;align-items:flex-start;gap:26px;margin-top:14px;padding:32px 36px;border:1px solid var(--line-strong);border-radius:var(--radius);background:linear-gradient(115deg,var(--accent-soft),rgba(201,255,56,.03) 45%,transparent 78%)}
+.achievement>span{flex-shrink:0;font:700 11px/1.7 var(--font-mono);letter-spacing:.22em;color:var(--accent);text-transform:uppercase}
+.achievement p{margin:0;font:500 17.5px/1.55 var(--font-body);color:var(--text);max-width:880px}
+@media(max-width:960px){
+  .skills-grid{grid-template-columns:repeat(2,1fr)}
+  .achievement{flex-direction:column;gap:12px;padding:26px 24px}
+}
+@media(max-width:640px){
+  .skills-grid{grid-template-columns:1fr}
+  .skill-card{padding:26px 22px 24px}
+}
+
+/* ---------- Milestone (v2.1.0 — restored from v1.5.9, dark restyle) ---------- */
+.ms-title{font:800 clamp(38px,5.8vw,84px)/1 var(--font-display);letter-spacing:-.015em;margin:0 0 32px;text-transform:uppercase}
+.ms-title .accent-i{color:var(--accent);font-size:.72em}
+.milestone-grid{display:grid;grid-template-columns:1.25fr 1fr 1fr;gap:14px}
+.ms-card{background:var(--bg-soft);border:1px solid var(--line);border-radius:var(--radius);padding:34px 30px;transition:transform .3s ease,border-color .3s ease,background .3s ease}
+.ms-card:hover{transform:translateY(-4px);border-color:var(--accent);background:var(--card)}
+.ms-card strong{display:block;font:800 19px/1.3 var(--font-display);letter-spacing:.02em;text-transform:uppercase;margin:0 0 12px}
+.ms-card p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.65}
+@media(max-width:960px){
+  .milestone-grid{grid-template-columns:1fr}
+  .ms-card{padding:28px 24px}
+}
 
 /* ---------- Floating widgets ---------- */
 .visitor-widget{position:fixed;left:20px;bottom:20px;z-index:80;display:flex;align-items:center;gap:10px;padding:10px 15px;border:1px solid var(--line);border-radius:16px;background:rgba(10,10,12,.85);backdrop-filter:blur(12px);box-shadow:0 14px 38px rgba(0,0,0,.35)}
