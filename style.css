@@ -1,7 +1,8 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.5.5 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · v2.5.7 "Reel Edition"
    Dark metallic redesign: pure black, brushed-metal display
    type, neon-lime accent. Single source of truth for styling.
+   v2.5.7: hero title fully clear of the portrait at every ratio.
    v2.5.5: hero title sized and scaled to the portrait.
    v2.5.4: mobile pass — closed nav no longer ghosts, hero title
    fits, hero foot and footer nav clear the floating widgets.
@@ -80,14 +81,22 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 
 /* ---------- Hero ---------- */
 /* bottom padding keeps the hero's last row clear of the fixed Let's-talk pill */
-.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;overflow:hidden;padding:110px 0 92px}
+/* title sits at the top of the hero and the foot row at the bottom, so the
+   portrait between them is never crossed by the PORTFOLIO wordmark */
+.hero{position:relative;min-height:100svh;display:flex;flex-direction:column;justify-content:space-between;overflow:hidden;padding:110px 0 92px}
 .hero-backdrop{position:absolute;inset:0;z-index:0;pointer-events:none}
 .hero-backdrop img{width:100%;height:118%;object-fit:cover;object-position:center 30%;filter:grayscale(1) brightness(.5) contrast(1.05);opacity:.32;mask-image:linear-gradient(180deg,transparent 0%,#000 32%,#000 78%,transparent 100%);-webkit-mask-image:linear-gradient(180deg,transparent 0%,#000 32%,#000 78%,transparent 100%);will-change:transform}
 .hero::after{content:"";position:absolute;inset:auto 0 0 0;height:45%;z-index:1;background:linear-gradient(180deg,transparent,rgba(5,5,5,.9) 70%,#050505);pointer-events:none}
 .hero-inner{position:relative;z-index:2;width:100%;max-width:1500px;margin:0 auto;padding:0 var(--pad)}
 /* sized to sit across the portrait's shoulders — larger and it dwarfs the figure */
 .hero-title{margin:0;font:800 clamp(64px,13.5vw,196px)/0.95 var(--font-display);letter-spacing:-.015em;text-align:center;white-space:nowrap;user-select:none}
-.hero-photo{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:1;height:80%;max-height:none;width:auto;object-fit:contain;object-position:bottom;filter:grayscale(1) contrast(1.06) drop-shadow(0 30px 60px rgba(0,0,0,.75))}
+/* Bottom-anchored so the cutout's flat chest edge sits at the hero's bottom
+   edge and never shows as a cropped rectangle. Height is capped by the room
+   left under the title: the title scales with viewport WIDTH and a plain
+   height-% portrait scales with HEIGHT, so on wide short screens (1280x800,
+   1440x900) the two collided. Ink runs ~1.17x font-size below the box top at
+   line-height .95, hence the 15.8vw / 229px pairing against 13.5vw / 196px. */
+.hero-photo{position:absolute;left:50%;bottom:0;transform:translateX(-50%);z-index:1;height:min(80%,calc(100svh - 130px - clamp(75px,15.8vw,229px)));max-height:none;width:auto;object-fit:contain;object-position:bottom;filter:grayscale(1) contrast(1.06) drop-shadow(0 30px 60px rgba(0,0,0,.75))}
 .hero-photo[hidden]{display:none}
 .hero-foot{position:relative;z-index:2;display:flex;align-items:flex-end;justify-content:space-between;gap:18px;margin-top:-1.4vw;max-width:1500px;margin-left:auto;margin-right:auto;padding:0 var(--pad)}
 .hero-role{font:700 clamp(20px,2.6vw,34px)/1.2 var(--font-display);letter-spacing:-.01em;margin:0}
@@ -354,13 +363,14 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
 /* stacked layout: float the counter out of the copy column into normal flow */
 .proj-counter{position:static;width:max-content;margin:16px auto 0}
   .proj-feature.flip .proj-media{order:0}
+  .hero-photo{height:min(74%,calc(100svh - 130px - clamp(54px,18.3vw,176px)))}
   .bbs-grid{grid-template-columns:1fr;gap:40px}
   .flow-grid{grid-template-columns:repeat(2,1fr)}
   /* PORTFOLIO is white-space:nowrap and renders ~5.5x the font size wide.
      The content box is 100vw - 2*--pad (88vw here), so anything above
      ~16vw overflowed and got sliced off by body{overflow-x:hidden}. */
   .hero-title{font-size:clamp(46px,15.6vw,150px)}
-  .hero-photo{height:74%}
+
   .section{padding:84px 0}
 }
 @media(max-width:640px){
@@ -368,7 +378,8 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   /* phone: object-fit:contain letterboxes the portrait to the viewport width,
      so it stayed small and the title landed across the face. cover fills the
      slot and crops the shoulders instead; top-anchored so the head is never cut. */
-  .hero-photo{height:70%;max-height:none;object-fit:cover;object-position:center top}
+  /* phone: fill the slot and crop the shoulders so the face reads large */
+  .hero-photo{height:min(70%,calc(100svh - 116px - clamp(54px,18.3vw,176px)));object-fit:cover;object-position:center top}
   /* phone: the Let's-talk pill sits higher (bottom:78px), so reserve more */
   .hero{padding-top:96px;padding-bottom:142px}
   .hero-tag{display:none}
