@@ -1,7 +1,10 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.5.0 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · v2.5.1 "Reel Edition"
    Dark metallic redesign: pure black, brushed-metal display
    type, neon-lime accent. Single source of truth for styling.
+   v2.5.1: BBS clip box moved to a static .bbs-viewport wrapper —
+   overflow:hidden sat on the transformed track, so every slide
+   past the first slid out of the card.
    v2.5.0: the two project rows merged into one 12-project
    carousel (grid-cell styles dropped); BBS restored to 19 slides.
    v2.4.2: opaque AMANI PNG slides converted to JPEG, removed
@@ -198,7 +201,10 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .bbs-list>div{display:flex;align-items:center;gap:22px;padding:17px 4px;border-bottom:1px solid var(--line);font:600 14.5px/1.4 var(--font-body);color:var(--muted)}
 .bbs-list b{font:700 12px/1 var(--font-mono);color:var(--accent);letter-spacing:.12em}
 .bbs-slideshow{position:relative;border:1px solid var(--line);border-radius:24px;padding:14px;background:linear-gradient(150deg,var(--card),var(--bg-soft));box-shadow:0 30px 80px rgba(0,0,0,.5)}
-.bbs-slides{display:flex;border-radius:16px;overflow:hidden;will-change:transform}
+/* The clip box must live on a STATIC wrapper: overflow on a transformed
+   element moves with it, dragging the visible window off the card. */
+.bbs-viewport{border-radius:16px;overflow:hidden}
+.bbs-slides{display:flex;will-change:transform}
 .bbs-slides img{flex:0 0 100%;width:100%;height:min(64vh,620px);object-fit:contain;background:#0a0a0c}
 .bbs-prev,.bbs-next{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-strong);background:rgba(5,5,5,.72);color:var(--text);font-size:20px;display:grid;place-items:center;backdrop-filter:blur(8px);transition:background .25s ease,color .25s ease,border-color .25s ease}
 .bbs-prev{left:26px}
