@@ -1,7 +1,9 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.4.2 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · v2.5.0 "Reel Edition"
    Dark metallic redesign: pure black, brushed-metal display
    type, neon-lime accent. Single source of truth for styling.
+   v2.5.0: the two project rows merged into one 12-project
+   carousel (grid-cell styles dropped); BBS restored to 19 slides.
    v2.4.2: opaque AMANI PNG slides converted to JPEG, removed
    unreferenced 2MB slide-03-01.png leftover, cache-busted.
    v2.4.1: removed 5 torn BBS images (15 healthy slides remain),
@@ -178,6 +180,8 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .proj-viewport{overflow:hidden}
 .proj-track{display:flex;will-change:transform}
 .proj-track .proj-feature{flex:0 0 100%;min-width:100%;border-top:0;border-bottom:0;padding:36px 0}
+/* keep the copy column clear of the absolutely-positioned next arrow */
+.proj-track .proj-copy{padding-right:78px}
 .proj-prev,.proj-next{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:1px solid var(--line-strong);background:rgba(5,5,5,.72);color:var(--text);font-size:20px;display:grid;place-items:center;backdrop-filter:blur(8px);transition:background .25s ease,color .25s ease,border-color .25s ease}
 .proj-prev{left:18px}
 .proj-next{right:18px}
@@ -186,22 +190,6 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .proj-dots{display:flex;justify-content:center;gap:7px;margin:14px 0 0}
 .proj-dot{width:8px;height:8px;padding:0;border:0;border-radius:999px;background:#2c2c30;transition:width .25s ease,background .25s ease}
 .proj-dot.active{width:24px;background:var(--accent)}
-/* ---------- More-projects grid carousel (v2.4.0 — one card per view) ---------- */
-.proj-grid-carousel{position:relative;margin-top:22px}
-.proj-grid-carousel .proj-cell{flex:0 0 100%;min-width:0}
-.proj-grid-meta{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:16px}
-.proj-grid-meta .proj-counter{position:static}
-.proj-cell{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden;transition:transform .3s ease,border-color .3s ease;display:flex;flex-direction:column}
-.proj-cell:hover{transform:translateY(-6px);border-color:var(--line-strong)}
-.proj-cell .proj-media{border:0;border-radius:0}
-.proj-cell .proj-media img{aspect-ratio:16/10}
-.proj-cell-body{padding:20px 20px 22px;display:flex;flex-direction:column;gap:10px;flex:1}
-.proj-cell-body .proj-no{margin-bottom:0}
-.proj-cell-body h3{font:800 18px/1.2 var(--font-display);text-transform:uppercase;letter-spacing:.03em;margin:0}
-.proj-cell-body .proj-cat{margin-bottom:2px}
-.proj-cell-body .proj-actions{margin-top:auto;padding-top:8px}
-.proj-cell .btn{padding:10px 16px;font-size:11.5px}
-
 /* ---------- BBS ---------- */
 .bbs-grid{display:grid;grid-template-columns:.62fr 1.38fr;gap:5vw;align-items:start}
 .bbs-title{font:800 clamp(38px,5.4vw,76px)/1.02 var(--font-display);letter-spacing:-.015em;margin:0 0 22px}
@@ -338,7 +326,12 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   .proj-head{grid-template-columns:1fr;gap:26px;align-items:start}
   .proj-feature{grid-template-columns:1fr;gap:30px;padding:44px 0}
 .proj-prev{left:10px}.proj-next{right:10px}
-.proj-counter{left:12px;bottom:12px}
+/* stacked layout: centre the arrows on the image, not on the whole slide.
+   media is full-bleed here, so its height is (100vw - 2*--pad) * 10.5/16 */
+.proj-prev,.proj-next{top:calc(36px + 29.5vw)}
+.proj-track .proj-copy{padding-right:0}
+/* stacked layout: float the counter out of the copy column into normal flow */
+.proj-counter{position:static;width:max-content;margin:16px auto 0}
   .proj-feature.flip .proj-media{order:0}
   .bbs-grid{grid-template-columns:1fr;gap:40px}
   .flow-grid{grid-template-columns:repeat(2,1fr)}
@@ -368,6 +361,7 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   .whatsapp-float{right:14px;bottom:14px;width:52px;height:52px}
 .lets-talk-float{bottom:78px;padding:13px 20px;font-size:12px}
 .proj-track .proj-feature{padding:32px 0 26px}
+.proj-prev,.proj-next{top:calc(32px + 28.9vw)}
   .foot-right{text-align:left}
   .foot-mail{font-size:clamp(20px,6vw,30px)}
 }
