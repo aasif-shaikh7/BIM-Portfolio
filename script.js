@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.4.1 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.4.2 "Reel Edition"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax, project modal, BBS carousel, featured and
    grid project carousels (one at a time), slide preloading,
