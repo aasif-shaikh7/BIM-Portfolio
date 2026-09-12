@@ -11,7 +11,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2.6.0">
+<link rel="stylesheet" href="style.css?v=2.6.2">
 <script data-goatcounter="https://aasif-shaikh7.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -222,11 +222,12 @@
     <div>
       <p class="kicker">05 · Reinforcement documentation</p>
       <h2 class="bbs-title">BBS &amp; <span class="accent-i">technical drawings</span></h2>
-      <p>From beam reinforcement to footing and slab detailing, the portfolio includes section, elevation and 3D reinforcement documentation.</p>
+      <p>The 19-slide reel covers beam, footing, slab and column detailing — from bar bending schedules to section, elevation and 3D reinforcement documentation.</p>
       <div class="bbs-list">
         <div><b>01</b> Beam Reinforcement (BBS)</div>
         <div><b>02</b> Footing Reinforcement (BBS)</div>
         <div><b>03</b> Slab Reinforcement (BBS)</div>
+        <div><b>04</b> Column Reinforcement (BBS)</div>
       </div>
     </div>
     <div class="bbs-slideshow" role="region" aria-label="Reinforcement documentation slideshow">
@@ -234,6 +235,65 @@
       <button class="bbs-prev" type="button" aria-label="Previous slide">←</button>
       <button class="bbs-next" type="button" aria-label="Next slide">→</button>
       <div class="bbs-counter"><span id="bbs-current">01</span> / <span id="bbs-total">19</span></div>
+    </div>
+  </div>
+
+  <div class="wrap bbs-details">
+    <div class="bbs-details-head"><div><p class="kicker">05.1 · Reinforcement reference</p><h3 class="bbs-sub metal">BBS <span class="accent-i">elements</span></h3></div><p class="bbs-details-lede">The detailing rules every schedule on this reel follows — standards, cover, hooks and unit weights. Typical reference table below; actual quantities always follow the GFC drawings.</p></div>
+
+    <div class="bbs-specs" aria-label="Reinforcement standards and detailing rules">
+      <span>IS 1786 · TMT <b>Fe-500D</b></span>
+      <span><b>IS 456:2000</b></span>
+      <span><b>SP 34</b> Detailing</span>
+      <span>Ld ≈ <b>50–60 ϕ</b> (tension)</span>
+      <span>Hook <b>180°</b> · Bend <b>90°</b></span>
+      <span>Unit Wt = <b>d²/162</b> kg/m</span>
+      <span>Cover · Slab <b>25</b> · Beam <b>30</b> · Col <b>40</b> · Ftg <b>50</b> mm</span>
+    </div>
+
+    <div class="bbs-table-card">
+      <div class="bbs-tabs" role="tablist" aria-label="Typical BBS tables">
+        <button class="bbs-tab active" type="button" role="tab" data-table="beam" aria-selected="true">Beam</button>
+        <button class="bbs-tab" type="button" role="tab" data-table="footing" aria-selected="false">Footing</button>
+        <button class="bbs-tab" type="button" role="tab" data-table="slab" aria-selected="false">Slab</button>
+        <button class="bbs-tab" type="button" role="tab" data-table="column" aria-selected="false">Column</button>
+      </div>
+      <div class="bbs-scroll">
+        <table class="bbs-ref beam active" aria-label="Typical beam bar bending schedule">
+          <thead><tr><th>#</th><th>Description</th><th>Dia (mm)</th><th>Qty</th><th>Len (m)</th><th>Kg/m</th><th>Total (kg)</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>Main bar — bottom straight</td><td>20</td><td>4</td><td>6.40</td><td>2.47</td><td>63.2</td></tr>
+            <tr><td>02</td><td>Main bar — bottom cranked (bent-up)</td><td>16</td><td>2</td><td>6.78</td><td>1.58</td><td>21.4</td></tr>
+            <tr><td>03</td><td>Top bar at support (L/4 both ends)</td><td>16</td><td>2</td><td>2.20</td><td>1.58</td><td>7.0</td></tr>
+            <tr><td>04</td><td>Stirrups 2-leg — @150 then @300 c/c</td><td>10</td><td>20</td><td>1.90</td><td>0.62</td><td>23.5</td></tr>
+          </tbody>
+        </table>
+        <table class="bbs-ref footing" aria-label="Typical footing bar bending schedule">
+          <thead><tr><th>#</th><th>Description</th><th>Dia (mm)</th><th>Qty</th><th>Len (m)</th><th>Kg/m</th><th>Total (kg)</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>Bottom main bars — @200 c/c</td><td>12</td><td>16</td><td>2.85</td><td>0.89</td><td>40.5</td></tr>
+            <tr><td>02</td><td>Bottom distribution bars — @200 c/c</td><td>12</td><td>16</td><td>2.85</td><td>0.89</td><td>40.5</td></tr>
+            <tr><td>03</td><td>Column starter bars (into footing)</td><td>16</td><td>8</td><td>1.10</td><td>1.58</td><td>13.9</td></tr>
+          </tbody>
+        </table>
+        <table class="bbs-ref slab" aria-label="Typical slab bar bending schedule">
+          <thead><tr><th>#</th><th>Description</th><th>Dia (mm)</th><th>Qty</th><th>Len (m)</th><th>Kg/m</th><th>Total (kg)</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>Main bars — short span @150 c/c</td><td>10</td><td>34</td><td>3.65</td><td>0.62</td><td>76.5</td></tr>
+            <tr><td>02</td><td>Distribution bars — long span @150 c/c</td><td>8</td><td>24</td><td>5.05</td><td>0.40</td><td>47.9</td></tr>
+            <tr><td>03</td><td>Edge / curtain bars — perimeter</td><td>8</td><td>10</td><td>3.65</td><td>0.40</td><td>14.4</td></tr>
+          </tbody>
+        </table>
+        <table class="bbs-ref column" aria-label="Typical column bar bending schedule">
+          <thead><tr><th>#</th><th>Description</th><th>Dia (mm)</th><th>Qty</th><th>Len (m)</th><th>Kg/m</th><th>Total (kg)</th></tr></thead>
+          <tbody>
+            <tr><td>01</td><td>Longitudinal main bars</td><td>20</td><td>8</td><td>3.30</td><td>2.47</td><td>65.2</td></tr>
+            <tr><td>02</td><td>Lateral ties — @150 c/c</td><td>10</td><td>20</td><td>1.52</td><td>0.62</td><td>18.8</td></tr>
+            <tr><td>03</td><td>Starter bars (into footing)</td><td>16</td><td>8</td><td>1.10</td><td>1.58</td><td>13.9</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="bbs-note">Typical reference values (unit weights d²/162) — actual schedules always follow the GFC drawings and structural consultant's details for each project.</p>
     </div>
   </div>
 </section>
@@ -306,6 +366,6 @@
   <div class="modal-box"><button class="modal-close" aria-label="Close project viewer">×</button><h2 id="modalTitle">Project</h2><div id="modalGallery" class="modal-gallery"></div></div>
 </div>
 
-<script src="script.js?v=2.6.1"></script>
+<script src="script.js?v=2.6.2"></script>
 </body>
 </html>

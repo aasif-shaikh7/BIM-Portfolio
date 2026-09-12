@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.6.0 "Plum & Peach Glass"
+   ASIF SHAIKH — BIM Portfolio · v2.6.2 "BBS reference"
    v2.6.0: deep-plum & peach theme, glassy frosted carousels for
    the 12 projects and BBS reel (orbs, sheen, peach glows).
    v2.5.7: hero title fully clear of the portrait at every ratio.
@@ -453,4 +453,42 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   .proj-track .proj-feature .proj-copy{padding-right:0}
   .bbs-slides img{height:52vh}
   .bbs-slideshow{padding:10px}
+}
+
+/* ---------- BBS reference details (v2.6.2) ---------- */
+.bbs-details{margin-top:64px}
+.bbs-details-head{display:flex;align-items:flex-end;justify-content:space-between;gap:4vw;margin-bottom:26px}
+.bbs-details-head>div{min-width:0}
+.bbs-sub{font:800 clamp(30px,4.4vw,54px)/1 var(--font-display);letter-spacing:-.015em;margin:0;text-transform:uppercase}
+.bbs-sub .accent-i{text-transform:lowercase;font-size:.8em}
+.bbs-details-lede{color:var(--muted);max-width:420px;margin:0;font-size:14px;line-height:1.6}
+.bbs-specs{display:flex;flex-wrap:wrap;gap:10px;margin:0 0 34px}
+.bbs-specs span{border:1px solid rgba(255,255,255,.14);background:linear-gradient(140deg,rgba(64,30,58,.18),rgba(24,11,24,.05));border-radius:999px;padding:9px 15px;font:600 11.5px/1 var(--font-mono);color:var(--muted);letter-spacing:.04em;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+.bbs-specs span b{color:var(--accent);font-weight:700}
+.bbs-table-card{position:relative;border:1px solid rgba(255,255,255,.11);border-radius:22px;background:linear-gradient(150deg,rgba(52,24,50,.28),rgba(22,10,22,.44));backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 24px 60px rgba(0,0,0,.4),inset 0 1px 0 rgba(255,255,255,.07);overflow:hidden}
+.bbs-tabs{display:flex;gap:8px;padding:14px 18px;border-bottom:1px solid rgba(255,255,255,.1)}
+.bbs-tab{font:700 11.5px/1 var(--font-mono);letter-spacing:.1em;text-transform:uppercase;color:var(--muted);background:transparent;border:1px solid rgba(255,255,255,.12);border-radius:999px;padding:9px 16px;cursor:pointer;transition:background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease}
+.bbs-tab:hover{border-color:var(--accent);color:var(--accent)}
+.bbs-tab.active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
+.bbs-scroll{overflow-x:auto}
+.bbs-ref{width:100%;min-width:640px;border-collapse:collapse;font:400 13.5px/1.4 var(--font-body);table-layout:fixed}
+.bbs-ref.active{display:table}
+.bbs-ref:not(.active){display:none}
+.bbs-ref th{font:700 11px/1 var(--font-mono);letter-spacing:.08em;text-transform:uppercase;color:var(--dim);text-align:left;padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.03)}
+.bbs-ref th:first-child,.bbs-ref td:first-child{width:44px;text-align:center}
+.bbs-ref th:nth-child(n+3),.bbs-ref td:nth-child(n+3){text-align:right;font-variant-numeric:tabular-nums}
+.bbs-ref td{padding:11px 14px;border-bottom:1px solid rgba(255,255,255,.06);color:var(--text)}
+.bbs-ref tbody tr:nth-child(odd){background:rgba(255,255,255,.02)}
+.bbs-ref tbody tr:hover{background:rgba(255,178,122,.06)}
+.bbs-ref td:first-child{color:var(--accent);font:700 11px/1 var(--font-mono)}
+.bbs-ref td:nth-child(2){color:var(--muted)}
+.bbs-table-card .bbs-note{display:block;margin:0;padding:14px 18px 16px;font-size:12px;color:var(--dim);line-height:1.55;border-top:1px solid rgba(255,255,255,.08)}
+@media(max-width:900px){
+  .bbs-details-head{flex-direction:column;gap:16px;align-items:flex-start}
+  .bbs-details-lede{max-width:none}
+}
+@media(max-width:640px){
+  .bbs-details{margin-top:46px}
+  .bbs-specs span{font-size:10.5px}
+  .bbs-tab{padding:8px 13px;font-size:10.5px}
 }

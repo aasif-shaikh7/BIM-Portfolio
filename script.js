@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.6.1 "unique visitor dedup"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.6.2 "BBS tabs + dedup"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax, project modal, BBS carousel, single 12-project
    carousel (one at a time), slide preloading, is-active slide
@@ -260,6 +260,22 @@
         .catch(function () { el.textContent = '—'; });
     }
     render();
+  })();
+
+  /* ---------- BBS reference tables: tab switch (Beam/Footing/Slab/Column) ---------- */
+  (function () {
+    var tabs = Array.prototype.slice.call(document.querySelectorAll('.bbs-tab'));
+    if (!tabs.length) return;
+    var tables = Array.prototype.slice.call(document.querySelectorAll('.bbs-ref'));
+    var byId = {};
+    tables.forEach(function (tb) { var m = /(?:^|\s)(beam|footing|slab|column)(?:\s|$)/.exec(tb.className); if (m) byId[m[1]] = tb; });
+    tabs.forEach(function (t) {
+      t.addEventListener('click', function () {
+        var sel = t.dataset.table;
+        tabs.forEach(function (x) { var on = x === t; x.classList.toggle('active', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
+        tables.forEach(function (tb) { tb.classList.toggle('active', tb === byId[sel]); });
+      });
+    });
   })();
 
   /* ---------- Contact form → WhatsApp ---------- */
