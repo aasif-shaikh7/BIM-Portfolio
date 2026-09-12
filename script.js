@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.6.2 "BBS tabs + dedup"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.6.3 "BBS typical details"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax, project modal, BBS carousel, single 12-project
    carousel (one at a time), slide preloading, is-active slide

@@ -1,0 +1,45 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 480">
+  <rect width="640" height="480" fill="#f4eee6"/>
+  <g font-family="Consolas,monospace">
+    <defs>
+      <marker id="ar" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6 Z" fill="#8f7a89"/></marker>
+    </defs>
+    <text x="24" y="34" font-size="15" font-weight="700" fill="#3a2440">TYPICAL COLUMN REBAR CAGE — ISOMETRIC VIEW</text>
+    <text x="616" y="34" font-size="11" fill="#8f7a89" text-anchor="end">NOT TO SCALE</text>
+
+    <polygon points="150,380 270,380 360,335 260,335" fill="#e8e0d2"/>
+    <polygon points="150,120 270,120 360,75 260,75" fill="#e8e0d2"/>
+
+    <g fill="none" stroke="#3a2440" stroke-width="1.6">
+      <polygon points="150,380 270,380 360,335 260,335"/>
+      <polygon points="150,315 270,315 360,270 260,270"/>
+      <polygon points="150,250 270,250 360,205 260,205"/>
+      <polygon points="150,185 270,185 360,140 260,140"/>
+      <polygon points="150,120 270,120 360,75 260,75"/>
+    </g>
+
+    <g stroke="#a04e88" stroke-width="3">
+      <line x1="150" y1="380" x2="150" y2="120"/>
+      <line x1="270" y1="380" x2="270" y2="120"/>
+      <line x1="360" y1="335" x2="360" y2="75"/>
+      <line x1="260" y1="335" x2="260" y2="75"/>
+      <line x1="210" y1="380" x2="210" y2="120"/>
+      <line x1="310" y1="335" x2="310" y2="75"/>
+    </g>
+
+    <g fill="#a04e88">
+      <circle cx="150" cy="380" r="4.5"/><circle cx="270" cy="380" r="4.5"/>
+      <circle cx="360" cy="335" r="4.5"/><circle cx="260" cy="335" r="4.5"/>
+      <circle cx="210" cy="380" r="4.5"/><circle cx="315" cy="357" r="4.5"/>
+      <circle cx="310" cy="335" r="4.5"/><circle cx="205" cy="357" r="4.5"/>
+    </g>
+
+    <line x1="96" y1="120" x2="96" y2="380" stroke="#8f7a89" marker-start="url(#ar)" marker-end="url(#ar)"/>
+    <text x="84" y="250" transform="rotate(-90 84 250)" font-size="11" fill="#3a2440">3.0 m FLOOR-TO-FLOOR</text>
+
+    <text x="24" y="120" font-size="11" fill="#3a2440">8 nos. 20ϕ bars (plan at cut)</text>
+    <text x="24" y="140" font-size="11" fill="#8f7a89">10ϕ lateral ties @150 c/c</text>
+    <text x="24" y="160" font-size="11" fill="#8f7a89">ties with 135° seismic hooks</text>
+    <text x="430" y="250" font-size="11" fill="#6d5a4e">TIE LEVELS</text>
+  </g>
+</svg>
