@@ -1,8 +1,9 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.5.7 "Reel Edition"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.6.0 "Plum & Peach Glass"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax, project modal, BBS carousel, single 12-project
-   carousel (one at a time), slide preloading, floating Let's Talk,
+   carousel (one at a time), slide preloading, is-active slide
+   highlighting for the glass animations, floating Let's Talk,
    visitor counter, WhatsApp contact form.
    ============================================================ */
 (function () {
@@ -132,8 +133,10 @@
     }
     root.appendChild(dots);
     var dotButtons = dots.querySelectorAll('.bbs-dot');
+    /* mark the visible slide .is-active so glass animations run on it only */
+    function setActive() { Array.prototype.forEach.call(track.children, function (s, k) { if (k === i) s.classList.add('is-active'); else s.classList.remove('is-active'); }); }
     function updateDots() { dotButtons.forEach(function (dot, idx) { dot.classList.toggle('active', idx === i); }); }
-    function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); updateDots(); }
+    function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); setActive(); updateDots(); }
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function start() { stop(); if (!paused) timer = setInterval(function () { go(i + 1); }, delay); }
     function pause() { paused = true; stop(); }
@@ -148,7 +151,7 @@
     new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { paused = false; start(); } else pause(); });
     }, { threshold: .2 }).observe(root);
-    updateDots(); start();
+    setActive(); updateDots(); start();
   })();
 
   
@@ -176,8 +179,10 @@
     }
     root.appendChild(dots);
     var dotButtons = dots.querySelectorAll('.proj-dot');
+    /* mark the visible slide .is-active so glass animations run on it only */
+    function setActive() { Array.prototype.forEach.call(track.children, function (s, k) { if (k === i) s.classList.add('is-active'); else s.classList.remove('is-active'); }); }
     function updateDots() { dotButtons.forEach(function (dot, idx) { dot.classList.toggle('active', idx === i); }); }
-    function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); updateDots(); }
+    function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); setActive(); updateDots(); }
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
     function start() { stop(); if (!paused && !reducedMotion) timer = setInterval(function () { go(i + 1); }, delay); }
     function pause() { paused = true; stop(); }
@@ -200,7 +205,7 @@
     new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { paused = false; start(); } else pause(); });
     }, { threshold: .15 }).observe(root);
-    updateDots(); start();
+    setActive(); updateDots(); start();
   })();
 
   /* ---------- Floating "Let's Talk" — hide while contact section is on screen ---------- */
