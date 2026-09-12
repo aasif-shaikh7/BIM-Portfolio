@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.6.0 "Plum & Peach Glass"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.6.1 "unique visitor dedup"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax, project modal, BBS carousel, single 12-project
    carousel (one at a time), slide preloading, is-active slide
@@ -217,21 +217,42 @@
     }, { threshold: .12 }).observe(sec);
   })();
 
-  /* ---------- GoatCounter visitor counter ---------- */
+  /* ---------- GoatCounter visitor counter ----------
+     Unique-visitor-ish dedup:
+     1) count.js never auto-fires — data-goatcounter-settings has
+        {"no_onload":true} — this module decides *when* to count.
+     2) Same browser counts at most once per calendar day
+        (localStorage), so refreshing the page 100x does not
+        inflate the number.
+     3) The GoatCounter server adds IP/user-agent hysteresis on top. */
   (function () {
     var el = document.getElementById('goatcounter-counter');
     if (!el) return;
     var tries = 0;
+    function guardRead() { try { return JSON.parse(localStorage.getItem('asif-gc-guard') || 'null'); } catch (e) { return null; } }
+    function guardWrite(v) { try { localStorage.setItem('asif-gc-guard', JSON.stringify(v)); } catch (e) {} }
+    function today() {
+      var d = new Date();
+      return d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + d.getUTCDate()).slice(-2);
+    }
+    function mayCount() { var g = guardRead(); return !g || g.day !== today(); }
+    function countIfNew() {
+      if (!window.goatcounter || typeof window.goatcounter.count !== 'function') return;
+      if (!mayCount()) return;
+      try { window.goatcounter.count(); } catch (e) {}
+      guardWrite({ day: today() });
+    }
     function url() {
       var s = document.querySelector('script[data-goatcounter]');
       if (!s || !s.dataset.goatcounter) return null;
       return s.dataset.goatcounter.replace(/\/count\/?$/, '') + '/counter/TOTAL.json?no_branding=1';
     }
     function render() {
-      if (!window.goatcounter) {
+      if (!window.goatcounter || typeof window.goatcounter.count !== 'function') {
         if (tries++ < 40) { setTimeout(render, 250); return; }
         el.textContent = '—'; return;
       }
+      countIfNew();
       var u = url();
       if (!u) { el.textContent = '—'; return; }
       fetch(u).then(function (r) { if (!r.ok) throw new Error(); return r.json(); })
