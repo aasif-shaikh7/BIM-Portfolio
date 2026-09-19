@@ -1,7 +1,7 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.7.0 "14-project edition"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.7.1 "safe cleanup"
    Modules: header, mobile nav, reveal, services accordion,
-   hero parallax, project modal, BBS carousel, single 12-project
+   hero parallax, project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
    highlighting for the glass animations, floating Let's Talk,
    visitor counter, WhatsApp contact form.
@@ -30,7 +30,6 @@
       navToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     });
     mainNav.addEventListener('click', function (e) { if (e.target.tagName === 'A') closeNav(); });
-    document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeNav(); });
   }
 
   /* ---------- Reveal on scroll ---------- */
@@ -100,7 +99,7 @@
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModal(); closeNav(); } });
 
   /* Preload the slide image that is about to enter view. Carousel images use
-     loading="lazy" (57MB of assets must not all load upfront); flipping the
+     loading="lazy" so the entire gallery does not load upfront; flipping the
      attribute to "eager" one slide ahead prevents blank flashes during autoplay. */
   function preloadSlide(track, idx, n) {
     var el = track.children[((idx % n) + n) % n];
@@ -155,7 +154,7 @@
   })();
 
   
-  /* ---------- Projects carousel (01–12): arrows, dots, counter, swipe, autoplay ---------- */
+  /* ---------- Projects carousel (01–14): arrows, dots, counter, swipe, autoplay ---------- */
   (function () {
     var root = document.querySelector('.proj-carousel');
     var track = document.getElementById('projTrack');
