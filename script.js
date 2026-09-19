@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.7.1 "safe cleanup"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.8.0 "mobile and accessibility pass"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax, project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
@@ -71,9 +71,11 @@
   /* ---------- Project modal ---------- */
   var modal = document.getElementById('projectModal'),
       title = document.getElementById('modalTitle'),
-      gallery = document.getElementById('modalGallery');
+      gallery = document.getElementById('modalGallery'),
+      lastFocused = null;
   function openModal(btn) {
     if (!modal || !title || !gallery) return;
+    lastFocused = btn;
     title.textContent = btn.dataset.title || 'Project';
     var imgs = [];
     try { imgs = JSON.parse(btn.dataset.images || '[]'); } catch (e) { imgs = []; }
@@ -83,12 +85,16 @@
     modal.classList.add('open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.style.overflow = 'hidden';
+    if (closeBtn) closeBtn.focus();
   }
   function closeModal() {
-    if (!modal) return;
+    if (!modal || !modal.classList.contains('open')) return;
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    gallery.innerHTML = '';
+    if (lastFocused && document.contains(lastFocused)) lastFocused.focus();
+    lastFocused = null;
   }
   document.querySelectorAll('.view-project').forEach(function (btn) {
     btn.addEventListener('click', function () { openModal(btn); });
@@ -96,7 +102,15 @@
   var closeBtn = document.querySelector('.modal-close'), mBackdrop = document.querySelector('.modal-backdrop');
   if (closeBtn) closeBtn.addEventListener('click', closeModal);
   if (mBackdrop) mBackdrop.addEventListener('click', closeModal);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { closeModal(); closeNav(); } });
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { closeModal(); closeNav(); return; }
+    if (e.key !== 'Tab' || !modal || !modal.classList.contains('open')) return;
+    var focusable = modal.querySelectorAll('button,[href],input,textarea,[tabindex]:not([tabindex="-1"])');
+    if (!focusable.length) { e.preventDefault(); return; }
+    var first = focusable[0], last = focusable[focusable.length - 1];
+    if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+    else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+  });
 
   /* Preload the slide image that is about to enter view. Carousel images use
      loading="lazy" so the entire gallery does not load upfront; flipping the
@@ -117,7 +131,8 @@
     if (n < 2) return;
     var cur = root.querySelector('#bbs-current'), total = root.querySelector('#bbs-total'),
         prev = root.querySelector('.bbs-prev'), next = root.querySelector('.bbs-next'),
-        i = 0, timer = null, paused = false, delay = 3000;
+        toggle = root.querySelector('.bbs-toggle'),
+        i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 5000;
     if (total) total.textContent = n;
     track.style.transition = 'transform 650ms cubic-bezier(.22,.61,.36,1)';
     track.style.willChange = 'transform';
@@ -133,16 +148,18 @@
     root.appendChild(dots);
     var dotButtons = dots.querySelectorAll('.bbs-dot');
     /* mark the visible slide .is-active so glass animations run on it only */
-    function setActive() { Array.prototype.forEach.call(track.children, function (s, k) { if (k === i) s.classList.add('is-active'); else s.classList.remove('is-active'); }); }
-    function updateDots() { dotButtons.forEach(function (dot, idx) { dot.classList.toggle('active', idx === i); }); }
+    function setActive() { Array.prototype.forEach.call(track.children, function (s, k) { var active = k === i; s.classList.toggle('is-active', active); s.setAttribute('aria-hidden', active ? 'false' : 'true'); }); }
+    function updateDots() { dotButtons.forEach(function (dot, idx) { var active = idx === i; dot.classList.toggle('active', active); dot.setAttribute('aria-current', active ? 'true' : 'false'); }); }
     function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); setActive(); updateDots(); }
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
-    function start() { stop(); if (!paused) timer = setInterval(function () { go(i + 1); }, delay); }
+    function start() { stop(); if (!paused && !manualPause) timer = setInterval(function () { go(i + 1); }, delay); }
     function pause() { paused = true; stop(); }
     function resume() { paused = false; start(); }
+    function updateToggle() { if (!toggle) return; toggle.textContent = manualPause ? 'Play' : 'Pause'; toggle.setAttribute('aria-pressed', manualPause ? 'true' : 'false'); toggle.setAttribute('aria-label', (manualPause ? 'Play' : 'Pause') + ' BBS autoplay'); }
     if (prev) prev.addEventListener('click', function () { go(i - 1); start(); });
     if (next) next.addEventListener('click', function () { go(i + 1); start(); });
     dotButtons.forEach(function (dot) { dot.addEventListener('click', function () { go(parseInt(dot.dataset.index, 10) || 0); start(); }); });
+    if (toggle) toggle.addEventListener('click', function () { manualPause = !manualPause; updateToggle(); if (manualPause) stop(); else start(); });
     root.addEventListener('mouseenter', pause);
     root.addEventListener('mouseleave', resume);
     root.addEventListener('touchstart', pause, { passive: true });
@@ -150,7 +167,7 @@
     new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { paused = false; start(); } else pause(); });
     }, { threshold: .2 }).observe(root);
-    setActive(); updateDots(); start();
+    setActive(); updateDots(); updateToggle(); start();
   })();
 
   
@@ -163,7 +180,8 @@
     if (n < 2) return;
     var cur = root.querySelector('#proj-current'), total = root.querySelector('#proj-total'),
         prev = root.querySelector('.proj-prev'), next = root.querySelector('.proj-next'),
-        i = 0, timer = null, paused = false, delay = 3000;
+        toggle = root.querySelector('.proj-toggle'),
+        i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 5000;
     if (total) total.textContent = ('0' + n).slice(-2);
     track.style.transition = 'transform 700ms cubic-bezier(.22,.61,.36,1)';
     track.style.willChange = 'transform';
@@ -179,16 +197,18 @@
     root.appendChild(dots);
     var dotButtons = dots.querySelectorAll('.proj-dot');
     /* mark the visible slide .is-active so glass animations run on it only */
-    function setActive() { Array.prototype.forEach.call(track.children, function (s, k) { if (k === i) s.classList.add('is-active'); else s.classList.remove('is-active'); }); }
-    function updateDots() { dotButtons.forEach(function (dot, idx) { dot.classList.toggle('active', idx === i); }); }
+    function setActive() { Array.prototype.forEach.call(track.children, function (s, k) { var active = k === i; s.classList.toggle('is-active', active); s.setAttribute('aria-hidden', active ? 'false' : 'true'); if ('inert' in s) s.inert = !active; }); }
+    function updateDots() { dotButtons.forEach(function (dot, idx) { var active = idx === i; dot.classList.toggle('active', active); dot.setAttribute('aria-current', active ? 'true' : 'false'); }); }
     function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); setActive(); updateDots(); }
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
-    function start() { stop(); if (!paused && !reducedMotion) timer = setInterval(function () { go(i + 1); }, delay); }
+    function start() { stop(); if (!paused && !manualPause) timer = setInterval(function () { go(i + 1); }, delay); }
     function pause() { paused = true; stop(); }
     function resume() { paused = false; start(); }
+    function updateToggle() { if (!toggle) return; toggle.textContent = manualPause ? 'Play autoplay' : 'Pause autoplay'; toggle.setAttribute('aria-pressed', manualPause ? 'true' : 'false'); toggle.setAttribute('aria-label', (manualPause ? 'Play' : 'Pause') + ' project autoplay'); }
     if (prev) prev.addEventListener('click', function () { go(i - 1); start(); });
     if (next) next.addEventListener('click', function () { go(i + 1); start(); });
     dotButtons.forEach(function (dot) { dot.addEventListener('click', function () { go(parseInt(dot.dataset.index, 10) || 0); start(); }); });
+    if (toggle) toggle.addEventListener('click', function () { manualPause = !manualPause; updateToggle(); if (manualPause) stop(); else start(); });
     root.addEventListener('mouseenter', pause);
     root.addEventListener('mouseleave', resume);
     var sx = null;
@@ -204,16 +224,24 @@
     new IntersectionObserver(function (es) {
       es.forEach(function (e) { if (e.isIntersecting) { paused = false; start(); } else pause(); });
     }, { threshold: .15 }).observe(root);
-    setActive(); updateDots(); start();
+    setActive(); updateDots(); updateToggle(); start();
   })();
 
-  /* ---------- Floating "Let's Talk" — hide while contact section is on screen ---------- */
+  /* ---------- Floating "Let's Talk" — keep interactive sections unobstructed ---------- */
   (function () {
-    var btn = document.querySelector('.lets-talk-float'), sec = document.getElementById('contact');
-    if (!btn || !sec || !('IntersectionObserver' in window)) return;
-    new IntersectionObserver(function (es) {
-      es.forEach(function (e) { btn.classList.toggle('hide', e.isIntersecting); });
-    }, { threshold: .12 }).observe(sec);
+    var btn = document.querySelector('.lets-talk-float');
+    var sections = document.querySelectorAll('.proj-carousel,.bbs-slideshow,#contact');
+    if (!btn || !sections.length || !('IntersectionObserver' in window)) return;
+    var visible = [];
+    var observer = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        var index = visible.indexOf(e.target);
+        if (e.isIntersecting && index < 0) visible.push(e.target);
+        if (!e.isIntersecting && index >= 0) visible.splice(index, 1);
+      });
+      btn.classList.toggle('hide', visible.length > 0);
+    }, { threshold: .12 });
+    sections.forEach(function (sec) { observer.observe(sec); });
   })();
 
   /* ---------- GoatCounter visitor counter ----------
@@ -280,11 +308,15 @@
   /* ---------- Contact form → WhatsApp ---------- */
   var form = document.getElementById('contactForm');
   if (form) {
+    var formError = document.getElementById('cf-error');
+    function clearFormError() { if (formError) formError.hidden = true; form.elements.message.removeAttribute('aria-invalid'); }
+    form.elements.message.addEventListener('input', clearFormError);
     form.addEventListener('submit', function (e) {
       e.preventDefault();
       var name = (form.elements.name.value || '').trim();
       var msg = (form.elements.message.value || '').trim();
-      if (!msg) { form.elements.message.focus(); return; }
+      if (!msg) { if (formError) formError.hidden = false; form.elements.message.setAttribute('aria-invalid', 'true'); form.elements.message.focus(); return; }
+      clearFormError();
       var text = 'Hi Asif! ' + (name ? "I'm " + name + '. ' : '') + msg;
       window.open('https://wa.me/918291834576?text=' + encodeURIComponent(text), '_blank', 'noopener');
     });
