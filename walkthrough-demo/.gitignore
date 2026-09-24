@@ -1,0 +1,10 @@
+# QA artefacts for walkthrough-demo — not part of the repo payload.
+# NOTE: the demo page itself (index.html, qa_demo.py, README.md) is intentionally
+# NOT ignored, so you decide separately whether to commit or drop the folder.
+# To exclude the whole demo from the GitHub Pages payload, add "walkthrough-demo/"
+# to the repository root .gitignore instead.
+
+cdp-profile/
+qa-out.txt
+qa-err.txt
+*.png

@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#150a12">
+<title>Walkthrough &amp; Autoplay Demo v0.1.0 — Asif Shaikh BIM Portfolio</title>
+<!-- ============================================================
+     STANDALONE EVALUATION DEMO — v0.1.0
+     Purpose: let Asif decide between (A) 2.5D cinematic camera
+     move, (B) true 3D walkthrough, (C) recorded video — and pick
+     the autoplay speed (5.0s vs 3.5s) — before anything touches
+     the live site.
+     This file is self-contained: it does NOT load, import or
+     modify style.css / script.js / index.html. Design tokens are
+     copied verbatim from style.css v2.8.0 so it reads on-brand.
+     No fetch(), no modules, no CDN JS -> opens fine over file://.
+     ============================================================ -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* ---------- Tokens (verbatim from style.css v2.8.0) ---------- */
+:root{
+  --bg:#150a12; --bg-soft:#1e0f1a; --card:#251323; --card-2:#2c1826;
+  --line:rgba(255,255,255,.09); --line-strong:rgba(255,255,255,.16);
+  --text:#f8f1ef; --muted:#c2aeb8; --dim:#8f7a89;
+  --accent:#ffb27a; --accent-soft:rgba(255,178,122,.16); --accent-ink:#33101f;
+  --plum:#a04e88;
+  --accent-glow:rgba(255,178,122,.38); --plum-glow:rgba(160,78,136,.40);
+  --warn:#ff8a5c;
+  --white:#fff; --radius:20px; --max:1280px; --pad:5vw;
+  --font-display:"Poppins",Arial,sans-serif;
+  --font-body:"Inter",Arial,sans-serif;
+  --font-serif:"Playfair Display",Georgia,serif;
+  --font-mono:"JetBrains Mono",ui-monospace,Consolas,monospace;
+  --metal:linear-gradient(180deg,#fff8f2 0%,#f7e3d3 22%,#e2b28f 38%,#9d6579 54%,#6d3b53 64%,#b27d90 78%,#f5ece6 94%);
+}
+
+/* ---------- Base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:70px}
+body{margin:0;background:linear-gradient(180deg,var(--bg),var(--bg-soft) 38%,var(--bg) 68%,#1a0c15);color:var(--text);font:400 16px/1.65 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img{max-width:100%;display:block}
+button{font-family:inherit;cursor:pointer}
+:where(a,button,[tabindex]):focus-visible{outline:3px solid var(--accent);outline-offset:4px}
+::selection{background:var(--accent);color:var(--accent-ink)}
+.metal{background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
+.accent-i{font-family:var(--font-serif);font-style:italic;font-weight:500;text-transform:none;letter-spacing:0}
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+.kicker{font:700 11px/1 var(--font-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin:0 0 14px}
+section{padding:56px 0;border-top:1px solid var(--line)}
+h2{font:800 clamp(24px,3.4vw,40px)/1.1 var(--font-display);letter-spacing:-.01em;margin:0 0 14px}
+h3{font:800 17px/1.2 var(--font-display);margin:0 0 8px}
+p{margin:0 0 14px}
+.lede{color:var(--muted);font-size:15px;max-width:78ch}
+.mono{font-family:var(--font-mono);font-size:12.5px}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:12px 20px;font:700 13px/1 var(--font-body);letter-spacing:.02em;border:1px solid transparent;transition:transform .2s ease,background .2s ease,color .2s ease,border-color .2s ease;white-space:nowrap}
+.btn:hover{transform:translateY(-2px)}
+.btn-accent{background:var(--accent);color:var(--accent-ink)}
+.btn-ghost{background:transparent;color:var(--text);border-color:var(--line-strong)}
+.btn-ghost[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+
+/* ---------- Demo banner ---------- */
+.demo-banner{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;background:linear-gradient(90deg,var(--accent),var(--plum));color:var(--accent-ink);font:700 12px/1.4 var(--font-mono);letter-spacing:.06em;padding:12px var(--pad)}
+.demo-banner a{color:var(--accent-ink);text-decoration:underline}
+.hero-demo{padding:64px 0 48px;border-top:0}
+.hero-demo h1{font:800 clamp(32px,5.6vw,68px)/1.02 var(--font-display);letter-spacing:-.02em;margin:0 0 16px;text-transform:uppercase}
+
+/* ---------- Panels ---------- */
+.panel{border:1px solid var(--line);border-radius:22px;background:linear-gradient(150deg,rgba(64,32,58,.32),rgba(28,14,28,.56));box-shadow:0 22px 56px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);padding:22px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.note{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 14px 14px 0;padding:14px 16px;color:var(--muted);font-size:14px}
+.note-warn{border-left-color:var(--warn);background:rgba(255,138,92,.12)}
+.note b,.note strong{color:var(--text)}
+.tag{display:inline-block;font:700 10.5px/1 var(--font-mono);letter-spacing:.14em;text-transform:uppercase;padding:7px 10px;border-radius:999px;border:1px solid var(--line-strong);color:var(--dim);margin:0 6px 6px 0}
+.tag-on{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+.tag-warn{border-color:rgba(255,138,92,.5);color:var(--warn);background:rgba(255,138,92,.12)}
+/* ============================================================
+   §1  A/B autoplay race — 5.0s vs 3.5s, same images, same start
+   ============================================================ */
+.race{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:20px}
+.race-card{border:1px solid var(--line);border-radius:18px;padding:14px;background:rgba(21,10,18,.5)}
+.race-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;margin-bottom:10px}
+.race-head em{font:700 20px/1 var(--font-mono);font-style:normal;color:var(--accent)}
+.race-stage{position:relative;border-radius:12px;overflow:hidden;background:#0d0609;aspect-ratio:4/3}
+.race-track{display:flex;height:100%;transition:transform 600ms cubic-bezier(.22,.61,.36,1)}
+.race-slide{position:relative;flex:0 0 100%;min-width:100%}
+.race-slide img{width:100%;height:100%;object-fit:cover;filter:saturate(.92)}
+.race-no{position:absolute;left:10px;bottom:8px;font:800 30px/1 var(--font-display);color:var(--white);text-shadow:0 2px 14px rgba(0,0,0,.8)}
+.race-rail{position:relative;height:4px;border-radius:999px;background:rgba(255,255,255,.09);margin-top:12px;overflow:hidden}
+.race-fill{position:absolute;inset:0;background:var(--accent);transform:scaleX(0);transform-origin:left}
+.race-fill.run{animation:raceProgress var(--race-dur,5000ms) linear forwards}
+.race-stats{display:flex;justify-content:space-between;gap:8px;margin-top:10px;font:600 11.5px/1.5 var(--font-mono);color:var(--dim)}
+.race-stats b{color:var(--accent)}
+@keyframes raceProgress{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+/* ============================================================
+   §2  Cinematic player — 2.5D camera move + video-player chrome
+   ============================================================ */
+.cine{border:1px solid var(--line);border-radius:24px;padding:14px;background:linear-gradient(150deg,rgba(64,32,58,.32),rgba(28,14,28,.56));box-shadow:0 22px 56px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.cine:focus-visible{outline:3px solid var(--accent);outline-offset:6px}
+/* the stage adopts each slide's real aspect ratio (--ar) so a 3:4 render
+   and a 2:1 drawing both fill the frame with no letterbox bars */
+.cine-stage{position:relative;margin:0 auto;width:100%;max-width:min(100%,660px);aspect-ratio:var(--ar,3/4);max-height:70vh;border-radius:16px;overflow:hidden;background:#0d0609;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+.cine-track{display:flex;height:100%;will-change:transform;transition:transform 600ms cubic-bezier(.22,.61,.36,1)}
+.cine-slide{position:relative;flex:0 0 100%;min-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  perspective:1500px;perspective-origin:50% 42%;
+  --cine-z:-150px;--cine-ry:3deg;--cine-drift:-3%;--cine-op:0deg}
+.cine-slide img{width:100%;height:100%;object-fit:contain;will-change:transform;backface-visibility:hidden}
+/* the move runs only on the active slide and its duration is locked to the
+   autoplay delay (--cine-dur), so it fills the slide exactly like a clip —
+   that sync is what sells the "video" read */
+.cine-slide.is-active.cine-cam img{animation:cineDolly var(--cine-dur,3500ms) cubic-bezier(.25,.1,.25,1) forwards}
+/* fake depth: vignette + floor sheen in front, scaling slower than the
+   render — the only parallax a single still can honestly produce */
+.cine-slide::after{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 40%,transparent 45%,rgba(8,3,10,.55) 100%)}
+.cine-floor{position:absolute;left:0;right:0;bottom:0;height:26%;pointer-events:none;background:linear-gradient(180deg,transparent,rgba(255,178,122,.07))}
+.cine-slide.is-active.cine-cam .cine-floor{animation:cineFloor var(--cine-dur,3500ms) linear forwards}
+@keyframes cineDolly{
+  from{transform:translate3d(0,var(--cine-drift),0) translateZ(var(--cine-z)) rotateY(var(--cine-ry)) rotateX(var(--cine-op)) scale(1.02)}
+  to{transform:translate3d(0,0,0) translateZ(0) rotateY(0deg) rotateX(0deg) scale(1)}
+}
+@keyframes cineFloor{from{opacity:.9}to{opacity:.25}}
+/* intensity presets — swap the rig vars */
+.cine-stage[data-strength="off"] .cine-slide{--cine-z:0px;--cine-ry:0deg;--cine-drift:0%}
+.cine-stage[data-strength="subtle"] .cine-slide{--cine-z:-70px;--cine-ry:1.6deg;--cine-drift:-1.6%}
+.cine-stage[data-strength="medium"] .cine-slide{--cine-z:-150px;--cine-ry:3deg;--cine-drift:-3%}
+.cine-stage[data-strength="strong"] .cine-slide{--cine-z:-280px;--cine-ry:5.2deg;--cine-drift:-5%}
+
+/* ---------- Player chrome ---------- */
+.cine-progress{height:3px;border-radius:999px;background:rgba(255,255,255,.09);overflow:hidden;margin:12px 2px 0}
+.cine-progress span{display:block;height:100%;background:var(--accent);transform:scaleX(0);transform-origin:left}
+.cine-progress.run span{animation:raceProgress var(--cine-dur,3500ms) linear forwards}
+.cine-bar{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin-top:12px}
+.cine-count{font:700 13px/1 var(--font-mono);color:var(--accent);letter-spacing:.1em}
+.cine-count small{color:var(--dim)}
+.cine-btn{width:42px;height:42px;padding:0;border-radius:50%;border:1px solid var(--line-strong);background:rgba(21,10,18,.6);color:var(--text);font-size:15px;display:grid;place-items:center;transition:background .2s ease,color .2s ease,transform .2s ease}
+.cine-btn:hover{background:var(--accent);color:var(--accent-ink);transform:translateY(-2px)}
+.cine-play{width:auto;padding:0 18px;border-radius:999px;font:700 12px/1 var(--font-mono);letter-spacing:.08em}
+.cine-bar .spacer{flex:1 1 auto}
+.cine-meta{font:600 11.5px/1.7 var(--font-mono);color:var(--dim);width:100%}
+.cine-meta b{color:var(--accent)}
+.cine-thumbs{display:flex;gap:8px;overflow-x:auto;padding:4px 2px 6px;margin-top:8px;scrollbar-width:thin}
+.cine-thumb{flex:0 0 auto;width:58px;height:44px;padding:0;border-radius:9px;overflow:hidden;border:1px solid var(--line);background:#0d0609;opacity:.5;transition:opacity .2s ease,border-color .2s ease,transform .2s ease}
+.cine-thumb img{width:100%;height:100%;object-fit:cover}
+.cine-thumb:hover{opacity:.85;transform:translateY(-2px)}
+.cine-thumb.active{opacity:1;border-color:var(--accent)}
+.cine-hint{font:600 11.5px/1.7 var(--font-mono);color:var(--dim);margin-top:10px}
+.kbd{display:inline-block;border:1px solid var(--line-strong);border-radius:6px;padding:2px 6px;font:600 11px/1 var(--font-mono);color:var(--text)}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+
+/* ---------- §3 Limitations + cost table ---------- */
+.tablewrap{overflow-x:auto;margin-top:8px}
+table{width:100%;border-collapse:collapse;font-size:13.5px}
+th,td{text-align:left;padding:11px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:700 11px/1.4 var(--font-mono);letter-spacing:.12em;text-transform:uppercase;color:var(--dim)}
+td b{color:var(--accent)}
+.verdict{color:var(--warn);font-weight:700}
+ul.tight{margin:0 0 14px;padding-left:20px;color:var(--muted);font-size:14.5px}
+ul.tight li{margin-bottom:7px}
+ul.tight b{color:var(--text)}
+footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--dim);font-size:13.5px}
+
+/* ---------- Reduced-motion simulation (.rm on <html>) ---------- */
+.rm *, .rm *::before, .rm *::after{animation:none!important;transition:none!important}
+.rm .cine-slide img{transform:none!important}
+
+@media (max-width:760px){
+  .grid-2,.race{grid-template-columns:1fr}
+  section{padding:44px 0}
+  .cine-stage{max-height:none}
+  .cine-btn{width:46px;height:46px}
+}
+</style>
+</head>
+<body>
+
+<div class="demo-banner">
+  <span>◆ STANDALONE DEMO — v0.1.0</span>
+  <span>live site untouched: style.css / script.js / index.html ko chhua nahi gaya</span>
+  <a href="../index.html">← production portfolio</a>
+</div>
+
+<header class="wrap hero-demo">
+  <p class="kicker">Evaluation build · not deployed</p>
+  <h1>Walkthrough <span class="accent-i">demo</span></h1>
+  <p class="lede">Is page ka kaam: tumhare faisle ke liye evidence dena — autoplay kitna tez theek lage, aur cinematic camera move tumhare renders par kaisa dikhta hai. Teen cheezein live test karo: (1) <b>5.0s vs 3.5s</b> autoplay side-by-side, (2) render par <b>2.5D camera move</b> alag-alag intensity par, (3) wahi move flat plan/drawing par lagane se kyun toota hua lagta hai.</p>
+  <p class="lede"><b>Ye sachi 3D walkthrough nahi hai.</b> Ye flat still par simulated camera move hai — isliye ise "cinematic preview" kaha gaya hai, "walkthrough" nahi. Tumhare <span class="mono">assets/</span> me sirf JPG slides hain (0 video, 0 3D model), aur flat image me depth hoti hi nahi — isliye camera uske andar ghus nahi sakta. Section 3 me sachi 3D walkthrough ke liye kya-kya chahiye, wo likha hai.</p>
+  <div>
+    <span class="tag tag-on">0 naya asset</span>
+    <span class="tag tag-on">ES5 · zero dependency</span>
+    <span class="tag">file:// par chalta hai</span>
+    <span class="tag tag-warn">3 projects · 22 slides</span>
+  </div>
+</header>
+
+<!-- ============ §1  AUTOPLAY SPEED: 5.0s vs 3.5s ============ -->
+<section id="race" class="wrap" aria-labelledby="race-h">
+  <p class="kicker">01 · Autoplay timing</p>
+  <h2 id="race-h">5.0<span class="accent-i">s</span> vs 3.5<span class="accent-i">s</span> — dono ek saath</h2>
+  <p class="lede">Dono panels same 4 images, same start time, same 600 ms slide transition — sirf autoplay delay alag hai. Yahi current production value (5.0 s) vs proposed value (3.5 s) hai. BBS reel ke liye main 4.2 s propose kar raha hoon (drawings ko padhne ka time chahiye), wo is demo me nahi hai.</p>
+
+  <div class="controls">
+    <button class="btn btn-accent" type="button" data-race-start>Start both</button>
+    <button class="btn btn-ghost" type="button" data-race-pause aria-pressed="false">Pause both</button>
+    <button class="btn btn-ghost" type="button" data-race-reset>Reset</button>
+  </div>
+
+  <div class="race">
+    <div class="race-card" data-delay="5000">
+      <div class="race-head"><h3>Current build</h3><em>5.0 s</em></div>
+      <div class="race-stage">
+        <div class="race-track" data-race-track>
+          <div class="race-slide"><img src="../assets/slide-04-01.jpg" alt="GENESIS render, slide 1" loading="eager"><span class="race-no">01</span></div>
+          <div class="race-slide"><img src="../assets/slide-04-02.jpg" alt="GENESIS drawing, slide 2" loading="lazy"><span class="race-no">02</span></div>
+          <div class="race-slide"><img src="../assets/slide-04-03.jpg" alt="GENESIS drawing, slide 3" loading="lazy"><span class="race-no">03</span></div>
+          <div class="race-slide"><img src="../assets/slide-04-04.jpg" alt="GENESIS drawing, slide 4" loading="lazy"><span class="race-no">04</span></div>
+        </div>
+      </div>
+      <div class="race-rail"><div class="race-fill" data-race-fill></div></div>
+      <div class="race-stats">
+        <span>slide <b data-race-slide>01</b> / 04</span>
+        <span>advances <b data-race-count>0</b></span>
+        <span>elapsed <b data-race-elapsed>0.0s</b></span>
+      </div>
+    </div>
+
+    <div class="race-card" data-delay="3500">
+      <div class="race-head"><h3>Proposed</h3><em>3.5 s</em></div>
+      <div class="race-stage">
+        <div class="race-track" data-race-track>
+          <div class="race-slide"><img src="../assets/slide-04-01.jpg" alt="GENESIS render, slide 1" loading="lazy"><span class="race-no">01</span></div>
+          <div class="race-slide"><img src="../assets/slide-04-02.jpg" alt="GENESIS drawing, slide 2" loading="lazy"><span class="race-no">02</span></div>
+          <div class="race-slide"><img src="../assets/slide-04-03.jpg" alt="GENESIS drawing, slide 3" loading="lazy"><span class="race-no">03</span></div>
+          <div class="race-slide"><img src="../assets/slide-04-04.jpg" alt="GENESIS drawing, slide 4" loading="lazy"><span class="race-no">04</span></div>
+        </div>
+      </div>
+      <div class="race-rail"><div class="race-fill" data-race-fill></div></div>
+      <div class="race-stats">
+        <span>slide <b data-race-slide>01</b> / 04</span>
+        <span>advances <b data-race-count>0</b></span>
+        <span>elapsed <b data-race-elapsed>0.0s</b></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="note" id="raceNote" style="margin-top:20px">Ek honest baat: 3.5 s par SB PARADISE ki <b>10 images</b> 35 s me poori ho jaati hain, 5.0 s par 50 s me. Tez karna achha lagta hai, par tumhara hi <span class="mono">audit-2026-09-19/portfolio-audit.md</span> (point 4) kehta hai carousel kaam chhupata hai — isliye main <b>3 s se neeche</b> nahi jaa raha, aur speed badhane ke saath modal ko proper player banane ki salaah de raha hoon.</div>
+</section>
+
+<!-- ============ §2  CINEMATIC PLAYER ============ -->
+<section id="player" class="wrap" aria-labelledby="player-h">
+  <p class="kicker">02 · Cinematic preview</p>
+  <h2 id="player-h">Render par <span class="accent-i">camera move</span></h2>
+  <p class="lede">Player khud neeche ke slide data se banta hai. Render (slide <span class="mono">-01</span>) par camera move chalta hai, plans/drawings static rehte hain. <b>Force camera move on drawings</b> jalake dekho ki flat technical drawing par fake depth kaisi lagti hai — wahi galti hai jo main avoid karna chahta hoon.</p>
+
+  <div class="controls" role="group" aria-label="Project selector">
+    <button class="btn btn-ghost" type="button" data-proj="0" aria-pressed="true">GENESIS · 5 slides</button>
+    <button class="btn btn-ghost" type="button" data-proj="1" aria-pressed="false">SB PARADISE · 10 slides</button>
+    <button class="btn btn-ghost" type="button" data-proj="2" aria-pressed="false">MES · 7 slides · heavy</button>
+  </div>
+
+  <div class="cine" id="cineRoot" tabindex="0" role="region" aria-roledescription="carousel" aria-label="Project cinematic preview. Arrow keys and space work when the player has focus.">
+    <div class="cine-stage" id="cineStage" data-strength="medium">
+      <div class="cine-track" id="cineTrack"></div>
+    </div>
+    <div class="cine-progress" id="cineProgress"><span></span></div>
+    <div class="cine-bar">
+      <button class="cine-btn" type="button" data-cine-prev aria-label="Previous slide">←</button>
+      <button class="cine-btn cine-play" type="button" data-cine-play aria-pressed="false">Pause</button>
+      <button class="cine-btn" type="button" data-cine-next aria-label="Next slide">→</button>
+      <span class="spacer"></span>
+      <span class="cine-count"><b id="cineCur">01</b><small> / <span id="cineTotal">05</span></small></span>
+    </div>
+    <div class="cine-thumbs" id="cineThumbs" aria-label="Choose slide"></div>
+    <p class="cine-meta" id="cineMeta"></p>
+    <p class="cine-hint">Keyboard: <span class="kbd">←</span> <span class="kbd">→</span> prev/next · <span class="kbd">Space</span> play/pause · <span class="kbd">Home</span> restart. Mobile par swipe. Keys sirf player focused hone par chalti hain, isliye page scroll hijack nahi hota.</p>
+  </div>
+
+  <div class="controls" role="group" aria-label="Camera move intensity">
+    <span class="mono" style="align-self:center;color:var(--dim)">Camera move</span>
+    <button class="btn btn-ghost" type="button" data-strength="off" aria-pressed="false">Off</button>
+    <button class="btn btn-ghost" type="button" data-strength="subtle" aria-pressed="false">Subtle</button>
+    <button class="btn btn-ghost" type="button" data-strength="medium" aria-pressed="true">Medium</button>
+    <button class="btn btn-ghost" type="button" data-strength="strong" aria-pressed="false">Strong</button>
+  </div>
+  <div class="controls">
+    <button class="btn btn-ghost" type="button" data-force-cam aria-pressed="false">Force camera move on drawings</button>
+    <button class="btn btn-ghost" type="button" data-sim-rm aria-pressed="false">Simulate prefers-reduced-motion</button>
+  </div>
+  <div class="note note-warn" id="cineWarn" hidden></div>
+</section>
+
+<!-- ============ §3  HONEST LIMITS + COSTS ============ -->
+<section id="limits" class="wrap" aria-labelledby="limits-h">
+  <p class="kicker">03 · Honest limits &amp; costs</p>
+  <h2 id="limits-h">Kya sach me <span class="accent-i">possible</span> hai</h2>
+
+  <div class="tablewrap">
+    <table>
+      <thead>
+        <tr><th>Route</th><th>Tumhe kya milega</th><th>Tumhe kya dena padega</th><th>Repo weight</th><th>Verdict</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>A</b> · 2.5D cinematic preview<br><span class="mono">(yahi demo hai)</span></td>
+          <td>Render par dolly-in + tilt + vertical sweep. Video jaisa feel, par still image hi hai — occlusion/parallax nahi.</td>
+          <td>Kuch nahi. Existing JPGs kaafi hain.</td>
+          <td><b>0 KB</b> naya</td>
+          <td>Aaj ship ho sakta hai. "Walkthrough" bolna mana hai — "cinematic preview" bolo.</td>
+        </tr>
+        <tr>
+          <td><b>B</b> · Sachi 3D walkthrough<br><span class="mono">(browser me ghoomna)</span></td>
+          <td>Asli model navigate — rotate, orbit, defined camera path par fly-through.</td>
+          <td>Revit se GLB/glTF export. Revit me native glTF nahi hai: Revit → IFC → Blender/BlenderBIM → GLB, ya Revit → FBX → Blender → GLB. Materials/UVs manually fix karne padenge.</td>
+          <td>Per project <b>4–12 MB</b> (Draco ke baad) + three.js <b>~165 KB</b> gzip</td>
+          <td class="verdict">1 flagship ke liye theek. 14 ke liye bekaar — mobile par stutter, 1–2 din ka manual 3D kaam per model.</td>
+        </tr>
+        <tr>
+          <td><b>C</b> · Recorded walkthrough<br><span class="mono">(recommended)</span></td>
+          <td>Asli 3D camera move — jo client aur HR "walkthrough" samajhte hain.</td>
+          <td>Enscape / Lumion / Twinmotion / Navisworks se 15–25 s ka clip. Export: <b>MP4 H.264, 720p, ≤3 MB, muted</b>, no audio track.</td>
+          <td>Self-host 14×3 MB ≈ <b>42 MB</b>; YouTube-unlisted = <b>0 MB</b></td>
+          <td class="verdict">Best value. Main YouTube-unlisted facade recommend karta hoon (poster = tumhara existing render, click par load).</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h3 style="margin-top:28px">Isse pehle ek asli problem fix karni hai — file weights</h3>
+  <p class="lede">Player ya video kuch bhi banao, ye theek nahi hua to mobile par sab kuch atkega. Maine tumhare assets measure kiye:</p>
+  <ul class="tight">
+    <li><b>MES (project 14): 7 images, total 48.5 MB.</b> Resolutions <span class="mono">10160×15000</span>, <span class="mono">15000×10633</span>, <span class="mono">12704×15000</span>… A single 15000×10633 JPEG browser me decode hone par <b>~638 MB RAM</b> leta hai. Modal me 4 aise images = ~2.5 GB → mobile tab crash ho sakta hai. Ye abhi live modal me hai.</li>
+    <li><b>ANANTA CARNATION (project 13): 4 images = 17.4 MB</b> — saari images <span class="mono">15000×7406</span>, matlab decode hone par <b>~444 MB RAM</b> each. MES se chhota nahi hai, sirf mb me halka hai.</li>
+    <li>Poora <span class="mono">assets/</span> = <b>81 MB</b> / 88 JPGs (81,353,306 bytes). Baaki 12 projects ka weight iske muqable theek hai (0.03–0.6 MB per image).</li>
+    <li><b>Fix:</b> web derivatives — max <b>2000 px long edge</b>, JPEG quality 80. MES 48.5 MB → <b>~2 MB</b> (≈96% cut). Originals alag folder me rahenge, loss kuch nahi hoga kyunki on-screen 2000 px kaafi hai. Ye ek baar ka kaam hai.</li>
+  </ul>
+  <div class="note note-warn">Isiliye mera order ye hai: <b>(1)</b> image weights fix karo → <b>(2)</b> autoplay 3.5 s / BBS 4.2 s → <b>(3)</b> modal ko player banao → <b>(4)</b> phir video ya 3D add karo. Ulta kiya to player phansi bhi lagega aur tumhe lagega "player kharab hai".</div>
+</section>
+
+<footer class="wrap">
+  <p class="mono">walkthrough-demo v0.1.0 · standalone evaluation build · production files untouched (style.css v2.8.0 / script.js v2.8.0 / index.html v2.8.0).</p>
+  <p class="mono">Poocho, main edits karke dikhata hoon. Ya is poore folder ko delete kar do — kuch bhi nahi tootega. <a href="../index.html" style="color:var(--accent)">← production portfolio</a></p>
+</footer>
+
+<script>
+/* ============================================================
+   walkthrough-demo v0.1.0 — script
+   ES5, IIFE modules, zero dependencies. Written to match the
+   conventions of script.js v2.8.0 (var + function expressions,
+   Array.prototype.slice on NodeLists, .is-active slide marking)
+   so anything approved here can be lifted into production with
+   minimal rewriting.
+   ============================================================ */
+(function () {
+  'use strict';
+
+  /* ---------- Error collection for headless QA ----------
+     Same idea as audit-v2.8.0/cdp_qa.py, which asserts window.__qaErrors is empty. */
+  window.__qaErrors = window.__qaErrors || [];
+  window.addEventListener('error', function (e) { window.__qaErrors.push(String(e.message || e.type)); });
+  window.addEventListener('unhandledrejection', function (e) { window.__qaErrors.push('unhandledrejection: ' + String(e.reason)); });
+
+  /* ---------- Autoplay values under test ----------
+     projects: production is 5000 -> proposed 3500
+     bbs:      proposal only, the BBS reel is not part of this demo */
+  var AUTO = { projects: 3500, bbs: 4200, current: 5000 };
+  var MOVE_MS = 600;                       /* track transition, matches script.js v2.8.0 */
+  var reducedMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ---------- Slide data ----------
+     Width/height/MB measured from assets/ with System.Drawing (see README),
+     so the readouts and stage aspect ratio are real numbers, not invented.
+     cinematic:true only on the -01 render: a flat plan/BBS sheet cannot
+     carry fake depth.
+     MES: I could not verify which of its 6 non-first slides are renders vs
+     model views, so they default to cinematic:false — flip them after you
+     look at the images. */
+  var PROJECTS = [
+    {
+      name: 'GENESIS', note: '', base: '../assets/',
+      slides: [
+        { file: 'slide-04-01.jpg', w: 1756, h: 2473, mb: 0.55, cinematic: true, kind: 'render' },
+        { file: 'slide-04-02.jpg', w: 551, h: 954, mb: 0.07, cinematic: false, kind: 'drawing' },
+        { file: 'slide-04-03.jpg', w: 639, h: 313, mb: 0.03, cinematic: false, kind: 'drawing' },
+        { file: 'slide-04-04.jpg', w: 640, h: 313, mb: 0.03, cinematic: false, kind: 'drawing' },
+        { file: 'slide-04-05.jpg', w: 640, h: 296, mb: 0.04, cinematic: false, kind: 'drawing' }
+      ]
+    },
+    {
+      name: 'SB PARADISE', note: '', base: '../assets/',
+      slides: [
+        { file: 'slide-05-01.jpg', w: 2141, h: 2473, mb: 0.46, cinematic: true, kind: 'render' },
+        { file: 'slide-05-02.jpg', w: 958, h: 523, mb: 0.19, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-03.jpg', w: 1025, h: 523, mb: 0.17, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-04.jpg', w: 884, h: 927, mb: 0.17, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-05.jpg', w: 884, h: 523, mb: 0.18, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-06.jpg', w: 699, h: 735, mb: 0.06, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-07.jpg', w: 603, h: 357, mb: 0.05, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-08.jpg', w: 653, h: 357, mb: 0.05, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-09.jpg', w: 699, h: 357, mb: 0.04, cinematic: false, kind: 'drawing' },
+        { file: 'slide-05-10.jpg', w: 884, h: 927, mb: 0.17, cinematic: false, kind: 'drawing' }
+      ]
+    },
+    {
+      name: 'MES',
+      note: 'MES ke 7 images 10,000–15,000 px wide aur total 48.5 MB hain — pehla load slow lagega. Yahi problem Section 3 me explain ki gayi hai.',
+      base: '../assets/',
+      slides: [
+        { file: 'slide-22-01.jpg', w: 10160, h: 15000, mb: 4.56, cinematic: true, kind: 'model view' },
+        { file: 'slide-22-02.jpg', w: 15000, h: 10633, mb: 8.58, cinematic: false, kind: 'model view' },
+        { file: 'slide-22-03.jpg', w: 12704, h: 15000, mb: 9.39, cinematic: false, kind: 'model view' },
+        { file: 'slide-22-04.jpg', w: 15000, h: 7406, mb: 4.35, cinematic: false, kind: 'model view' },
+        { file: 'slide-22-05.jpg', w: 13247, h: 15000, mb: 9.07, cinematic: false, kind: 'model view' },
+        { file: 'slide-22-06.jpg', w: 15000, h: 7406, mb: 3.81, cinematic: false, kind: 'model view' },
+        { file: 'slide-22-07.jpg', w: 15000, h: 12024, mb: 8.71, cinematic: false, kind: 'model view' }
+      ]
+    }
+  ];
+
+  function $(sel, root) { return (root || document).querySelector(sel); }
+  function $all(sel, root) { return Array.prototype.slice.call((root || document).querySelectorAll(sel)); }
+  function pad2(n) { return ('0' + n).slice(-2); }
+  function mod(i, n) { return ((i % n) + n) % n; }
+  function clamp(v, lo, hi) { return Math.min(hi, Math.max(lo, v)); }
+
+  /* ---------- §1  A/B race — same images, same start, different delay ---------- */
+  var raceCards = [];
+
+  function makeRace(card) {
+    var track = $('[data-race-track]', card),
+        fill = $('[data-race-fill]', card),
+        slideOut = $('[data-race-slide]', card),
+        countOut = $('[data-race-count]', card),
+        elapsedOut = $('[data-race-elapsed]', card),
+        delay = parseInt(card.getAttribute('data-delay'), 10) || 5000,
+        n = track.children.length,
+        i = 0, moves = 0, startedAt = 0, elapsed = 0, timer = null;
+
+    card.style.setProperty('--race-dur', delay + 'ms');
+
+    function restartFill() {
+      fill.classList.remove('run');
+      void fill.offsetWidth;              /* force reflow so the animation restarts */
+      fill.classList.add('run');
+    }
+    function go(idx, count) {
+      i = mod(idx, n);
+      track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)';
+      slideOut.textContent = pad2(i + 1);
+      if (count) moves++;
+      countOut.textContent = moves;
+      restartFill();
+    }
+    function start() {
+      if (timer) return;
+      startedAt = Date.now() - elapsed;
+      fill.style.animationPlayState = 'running';
+      restartFill();
+      timer = setInterval(function () { go(i + 1, true); }, delay);
+    }
+    function pause() {
+      if (timer) { clearInterval(timer); timer = null; }
+      fill.style.animationPlayState = 'paused';
+    }
+    function reset() {
+      pause();
+      fill.classList.remove('run');
+      moves = 0; elapsed = 0; startedAt = 0;
+      countOut.textContent = '0';
+      elapsedOut.textContent = '0.0s';
+      go(0, false);
+    }
+    function tickElapsed() {
+      if (!timer) return;                    /* idle cards do no DOM work */
+      elapsed = Date.now() - startedAt;
+      elapsedOut.textContent = (elapsed / 1000).toFixed(1) + 's';
+    }
+    return { start: start, pause: pause, reset: reset, tickElapsed: tickElapsed, delay: delay };
+  }
+
+  $all('.race-card').forEach(function (card) { raceCards.push(makeRace(card)); });
+
+  /* one shared 100 ms clock drives both elapsed readouts instead of two timers */
+  setInterval(function () {
+    raceCards.forEach(function (r) { r.tickElapsed(); });
+  }, 100);
+
+  var pauseBtn = $('[data-race-pause]');
+  $('[data-race-start]').addEventListener('click', function () {
+    raceCards.forEach(function (r) { r.start(); });
+    pauseBtn.setAttribute('aria-pressed', 'false');
+    pauseBtn.textContent = 'Pause both';
+  });
+  pauseBtn.addEventListener('click', function () {
+    var nowPaused = pauseBtn.getAttribute('aria-pressed') !== 'true';
+    raceCards.forEach(function (r) { if (nowPaused) { r.pause(); } else { r.start(); } });
+    pauseBtn.setAttribute('aria-pressed', nowPaused ? 'true' : 'false');
+    pauseBtn.textContent = nowPaused ? 'Resume both' : 'Pause both';
+  });
+  $('[data-race-reset]').addEventListener('click', function () {
+    raceCards.forEach(function (r) { r.reset(); });
+    pauseBtn.setAttribute('aria-pressed', 'true');
+    pauseBtn.textContent = 'Resume both';
+  });
+
+  /* ---------- §2  Cinematic player ----------
+     Control model deliberately mirrors production script.js v2.8.0:
+     manualPause (reduced-motion aware) + paused (hover/tab-hidden),
+     .is-active slide marking, one-slide-ahead preloading. */
+  (function () {
+    var root = $('#cineRoot');
+    if (!root) return;
+    var stage = $('#cineStage'), track = $('#cineTrack'), thumbsBox = $('#cineThumbs'),
+        progress = $('#cineProgress'), metaOut = $('#cineMeta'), warnOut = $('#cineWarn'),
+        curOut = $('#cineCur'), totalOut = $('#cineTotal'),
+        playBtn = $('[data-cine-play]', root), prevBtn = $('[data-cine-prev]', root), nextBtn = $('[data-cine-next]', root),
+        projIdx = 0, i = 0, n = 0, timer = null, paused = false,
+        manualPause = reducedMotion, forceCam = false, delay = AUTO.projects,
+        advanceLog = [];
+
+    function slidesOf() { return PROJECTS[projIdx].slides; }
+
+    function preload(idx) {
+      var el = track.children[mod(idx, n)];                     /* same idea as script.js preloadSlide() */
+      var img = el ? el.querySelector('img') : null;
+      if (img && img.getAttribute('loading') === 'lazy') img.setAttribute('loading', 'eager');
+    }
+    function restartProgress() {
+      /* set on the player root, not the bar: .cine-slide inherits --cine-dur
+         from here too, which is what keeps the camera move in sync with
+         the autoplay delay instead of falling back to the CSS default */
+      root.style.setProperty('--cine-dur', delay + 'ms');
+      progress.classList.remove('run');
+      void progress.offsetWidth;                                /* force reflow -> animation restarts */
+      if (!manualPause && !paused) progress.classList.add('run');
+    }
+    function setActive() {
+      Array.prototype.forEach.call(track.children, function (s, k) {
+        var active = k === i;
+        s.classList.toggle('is-active', active);
+        s.classList.toggle('cine-cam', forceCam || s.getAttribute('data-cinematic') === '1');
+        s.setAttribute('aria-hidden', active ? 'false' : 'true');
+        if ('inert' in s) s.inert = !active;
+      });
+    }
+    function updateThumbs() {
+      $all('[data-thumb]', thumbsBox).forEach(function (b, k) {
+        b.classList.toggle('active', k === i);
+        b.setAttribute('aria-current', k === i ? 'true' : 'false');
+      });
+    }
+    function updateMeta() {
+      var s = slidesOf()[i],
+          cam = forceCam || s.cinematic;
+      metaOut.innerHTML = '<b>' + PROJECTS[projIdx].name + '</b> · slide ' + pad2(i + 1) + '/' + pad2(n) +
+        ' · ' + s.file + ' · ' + s.w + '×' + s.h + ' px · ' + s.mb.toFixed(2) + ' MB · ' +
+        s.kind + ' · camera move <b>' + (cam ? 'ON' : 'off') + '</b>' +
+        ' · slide dwell <b>' + (delay / 1000).toFixed(1) + ' s</b>';
+    }
+    function go(idx, fromAutoplay) {
+      i = mod(idx, n);
+      track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)';
+      if (curOut) curOut.textContent = pad2(i + 1);
+      preload(i + 1); preload(i - 1);
+      setActive(); updateThumbs(); updateMeta(); restartProgress();
+      if (fromAutoplay) advanceLog.push(Date.now());
+    }
+    function build(p) {
+      var ar = clamp(p.slides[0].w / p.slides[0].h, 0.75, 1.35);
+      stage.style.setProperty('--ar', ar.toFixed(3));           /* stage ratio from the project's render */
+      track.innerHTML = p.slides.map(function (s, k) {
+        return '<div class="cine-slide" data-index="' + k + '" data-cinematic="' + (s.cinematic ? '1' : '0') + '">' +
+                 '<img src="' + p.base + s.file + '" alt="' + p.name + ' — ' + s.kind + ', slide ' + (k + 1) + '" loading="' + (k === 0 ? 'eager' : 'lazy') + '">' +
+                 '<span class="cine-floor" aria-hidden="true"></span>' +
+               '</div>';
+      }).join('');
+      thumbsBox.innerHTML = p.slides.map(function (s, k) {
+        return '<button class="cine-thumb" type="button" data-thumb="' + k + '" aria-label="Slide ' + (k + 1) + '">' +
+                 '<img src="' + p.base + s.file + '" alt="" loading="lazy"></button>';
+      }).join('');
+      $all('[data-thumb]', thumbsBox).forEach(function (b) {
+        b.addEventListener('click', function () { manualPause = false; updatePlay(); go(parseInt(b.getAttribute('data-thumb'), 10)); start(); });
+      });
+      n = p.slides.length;
+      if (totalOut) totalOut.textContent = pad2(n);
+      if (warnOut) { warnOut.hidden = !p.note; warnOut.textContent = p.note; }
+      go(0);
+    }
+    /* ---------- transport ---------- */
+    function updatePlay() {
+      if (!playBtn) return;
+      var playing = !manualPause;
+      playBtn.textContent = playing ? 'Pause' : 'Play';
+      playBtn.setAttribute('aria-pressed', playing ? 'false' : 'true');
+      playBtn.setAttribute('aria-label', playing ? 'Pause autoplay' : 'Play autoplay');
+    }
+    function stop() { if (timer) { clearInterval(timer); timer = null; } }
+    function start() {
+      stop();
+      if (paused || manualPause) { progress.classList.remove('run'); return; }
+      restartProgress();
+      timer = setInterval(function () { go(i + 1, true); }, delay);
+    }
+    function pause() { paused = true; stop(); progress.classList.remove('run'); }
+    function resume() { paused = false; start(); }
+    function togglePlay() {
+      manualPause = !manualPause;
+      updatePlay();
+      if (manualPause) { stop(); progress.classList.remove('run'); } else { start(); }
+    }
+    function setProject(k) {
+      projIdx = k;
+      advanceLog = [];
+      build(PROJECTS[k]);
+      start();
+    }
+    /* ---------- events ---------- */
+    if (playBtn) playBtn.addEventListener('click', togglePlay);
+    if (prevBtn) prevBtn.addEventListener('click', function () { go(i - 1); start(); });
+    if (nextBtn) nextBtn.addEventListener('click', function () { go(i + 1); start(); });
+
+    /* keys are scoped to the focused player, so the page scroll is never hijacked */
+    root.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(i - 1); start(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(i + 1); start(); }
+      else if (e.key === ' ' || e.key === 'Spacebar') { e.preventDefault(); togglePlay(); }
+      else if (e.key === 'Home') { e.preventDefault(); go(0); start(); }
+    });
+
+    root.addEventListener('mouseenter', pause);
+    root.addEventListener('mouseleave', resume);
+
+    var sx = null;
+    stage.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; pause(); }, { passive: true });
+    stage.addEventListener('touchend', function (e) {
+      if (sx !== null) {
+        var dx = e.changedTouches[0].clientX - sx;
+        if (Math.abs(dx) > 42) go(i + (dx < 0 ? 1 : -1));   /* 42 px, same threshold as script.js:219 */
+        sx = null;
+      }
+      resume();
+    }, { passive: true });
+
+    /* script.js v2.8.0 does NOT do this today: a hidden tab keeps cycling and
+       burns CPU/battery. Demonstrated here so you can decide to adopt it. */
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) { pause(); } else { paused = false; start(); }
+    });
+
+    /* ---------- demo-only controls ---------- */
+    $all('[data-proj]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        $all('[data-proj]').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+        manualPause = false;
+        updatePlay();
+        setProject(parseInt(b.getAttribute('data-proj'), 10) || 0);
+      });
+    });
+    $all('[data-strength]').forEach(function (b) {
+      b.addEventListener('click', function () {
+        stage.setAttribute('data-strength', b.getAttribute('data-strength'));
+        $all('[data-strength]').forEach(function (o) { o.setAttribute('aria-pressed', o === b ? 'true' : 'false'); });
+      });
+    });
+    var forceBtn = $('[data-force-cam]');
+    if (forceBtn) forceBtn.addEventListener('click', function () {
+      forceCam = !forceCam;
+      forceBtn.setAttribute('aria-pressed', forceCam ? 'true' : 'false');
+      setActive(); updateMeta();
+    });
+    var rmBtn = $('[data-sim-rm]');
+    if (rmBtn) rmBtn.addEventListener('click', function () {
+      var on = rmBtn.getAttribute('aria-pressed') !== 'true';
+      document.documentElement.classList.toggle('rm', on);
+      rmBtn.setAttribute('aria-pressed', on ? 'true' : 'false');
+      manualPause = on ? true : reducedMotion;
+      updatePlay();
+      if (manualPause) { stop(); progress.classList.remove('run'); } else { start(); }
+    });
+
+    /* ---------- init + headless-QA handle ----------
+       window.__walkthroughDemo lets qa_demo.py measure the real autoplay
+       interval instead of trusting the label in the markup. */
+    window.__walkthroughDemo = {
+      auto: AUTO,
+      get: function () {
+        return {
+          project: PROJECTS[projIdx].name, index: i, count: n, delay: delay,
+          manualPause: manualPause, paused: paused, forceCam: forceCam,
+          advanceLog: advanceLog.slice(0)
+        };
+      },
+      setProject: setProject, go: go, togglePlay: togglePlay
+    };
+    updatePlay();
+    setProject(0);
+  })();
+})();
+</script>
+</body>
+</html>
