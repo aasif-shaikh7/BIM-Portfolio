@@ -156,7 +156,7 @@ def main():
             form.elements.message.value = '';
             form.dispatchEvent(new Event('submit', {cancelable: true}));
             return {
-              version: document.querySelector('link[href*="style.css"]').href.includes('2.8.0'),
+              version: document.querySelector('link[href*="style.css"]').href.includes('2.8.1'),
               projectDots: document.querySelectorAll('.proj-dot').length,
               bbsDots: document.querySelectorAll('.bbs-dot').length,
               titleFits: title.left >= -0.5 && title.right <= innerWidth + 0.5,

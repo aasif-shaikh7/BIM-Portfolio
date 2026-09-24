@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.8.0 "mobile and accessibility pass"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.8.1 "autoplay timing pass"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax, project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
@@ -132,7 +132,9 @@
     var cur = root.querySelector('#bbs-current'), total = root.querySelector('#bbs-total'),
         prev = root.querySelector('.bbs-prev'), next = root.querySelector('.bbs-next'),
         toggle = root.querySelector('.bbs-toggle'),
-        i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 5000;
+        /* v2.8.1: 5000 -> 4500. The BBS reel has 19 slides, so it keeps more
+           time per slide than the project carousel. */
+        i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 4500;
     if (total) total.textContent = n;
     track.style.transition = 'transform 650ms cubic-bezier(.22,.61,.36,1)';
     track.style.willChange = 'transform';
@@ -181,7 +183,9 @@
     var cur = root.querySelector('#proj-current'), total = root.querySelector('#proj-total'),
         prev = root.querySelector('.proj-prev'), next = root.querySelector('.proj-next'),
         toggle = root.querySelector('.proj-toggle'),
-        i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 5000;
+        /* v2.8.1: 5000 -> 4000. Snappier cycle; a 24-word project description
+           needs ~8 s to read, so autoplay stays supplementary to Pause/hover. */
+        i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 4000;
     if (total) total.textContent = ('0' + n).slice(-2);
     track.style.transition = 'transform 700ms cubic-bezier(.22,.61,.36,1)';
     track.style.willChange = 'transform';
