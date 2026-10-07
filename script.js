@@ -1,7 +1,7 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.8.1 "autoplay timing pass"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.9.0 "tagged portrait"
    Modules: header, mobile nav, reveal, services accordion,
-   hero parallax, project modal, BBS carousel, single 14-project
+   hero parallax (backdrop on scroll, figure on pointer), project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
    highlighting for the glass animations, floating Let's Talk,
    visitor counter, WhatsApp contact form.
@@ -32,11 +32,18 @@
     mainNav.addEventListener('click', function (e) { if (e.target.tagName === 'A') closeNav(); });
   }
 
-  /* ---------- Reveal on scroll ---------- */
-  var revealObs = new IntersectionObserver(function (entries) {
-    entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
-  }, { threshold: .08 });
-  document.querySelectorAll('.reveal').forEach(function (el) { revealObs.observe(el); });
+  /* ---------- Reveal on scroll ----------
+     .reveal starts at opacity 0, so if the observer is unavailable the blocks
+     are shown straight away instead of staying invisible. */
+  var revealEls = document.querySelectorAll('.reveal');
+  if ('IntersectionObserver' in window) {
+    var revealObs = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('visible'); revealObs.unobserve(e.target); } });
+    }, { threshold: .08 });
+    revealEls.forEach(function (el) { revealObs.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add('visible'); });
+  }
 
   /* ---------- Services accordion (click/touch; hover handled in CSS) ---------- */
   document.querySelectorAll('.svc').forEach(function (svc) {
@@ -67,7 +74,51 @@
     }, { passive: true });
   }
 
-  
+  /* ---------- Hero figure: pointer parallax ----------
+     Feeds the pointer position (-1..1 on each axis) to the figure as --px/--py;
+     style.css moves each layer (glow, rings, portrait, tags) by a different
+     amount for depth. Mouse/trackpad only, and never with reduced motion. */
+  var hero = document.getElementById('home');
+  var figure = document.getElementById('heroFigure');
+  /* Tag layout: by default the tags sit outside the ring, which needs ~180px of
+     free space on each side of the figure. Where the figure fills the width
+     (tablets, portrait screens) they move inside it instead; if the figure is
+     also too small to hold them there, they are switched off. Phones (<=640px)
+     have their own fixed layout in style.css and ignore both classes. */
+  if (figure) {
+    var tagRaf = 0;
+    var layoutTags = function () {
+      tagRaf = 0;
+      var w = figure.getBoundingClientRect().width;
+      var phone = window.matchMedia && window.matchMedia('(max-width:640px)').matches;
+      var inside = !phone && (window.innerWidth - w) / 2 < 180;
+      figure.classList.toggle('tags-inside', inside);
+      figure.classList.toggle('tags-off', inside && w < 560);
+    };
+    layoutTags();
+    window.addEventListener('resize', function () { if (!tagRaf) tagRaf = requestAnimationFrame(layoutTags); });
+  }
+  var finePointer = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
+  if (hero && figure && finePointer && !reducedMotion) {
+    var pRaf = 0, pX = 0, pY = 0;
+    hero.addEventListener('pointermove', function (e) {
+      var r = hero.getBoundingClientRect();
+      pX = ((e.clientX - r.left) / r.width - .5) * 2;
+      pY = ((e.clientY - r.top) / r.height - .5) * 2;
+      if (pRaf) return;
+      pRaf = requestAnimationFrame(function () {
+        pRaf = 0;
+        figure.style.setProperty('--px', pX.toFixed(3));
+        figure.style.setProperty('--py', pY.toFixed(3));
+      });
+    });
+    hero.addEventListener('pointerleave', function () {
+      pX = 0; pY = 0;
+      figure.style.setProperty('--px', '0');
+      figure.style.setProperty('--py', '0');
+    });
+  }
+
   /* ---------- Project modal ---------- */
   var modal = document.getElementById('projectModal'),
       title = document.getElementById('modalTitle'),
@@ -96,6 +147,10 @@
     if (lastFocused && document.contains(lastFocused)) lastFocused.focus();
     lastFocused = null;
   }
+  /* Autoplay must hold still while the viewer is open: otherwise the carousel
+     moves on behind it and closing the viewer returns focus to a "View Project"
+     button on a slide that is now hidden and inert. */
+  function modalOpen() { return !!modal && modal.classList.contains('open'); }
   document.querySelectorAll('.view-project').forEach(function (btn) {
     btn.addEventListener('click', function () { openModal(btn); });
   });
@@ -154,7 +209,7 @@
     function updateDots() { dotButtons.forEach(function (dot, idx) { var active = idx === i; dot.classList.toggle('active', active); dot.setAttribute('aria-current', active ? 'true' : 'false'); }); }
     function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); setActive(); updateDots(); }
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
-    function start() { stop(); if (!paused && !manualPause) timer = setInterval(function () { go(i + 1); }, delay); }
+    function start() { stop(); if (!paused && !manualPause) timer = setInterval(function () { if (!modalOpen()) go(i + 1); }, delay); }
     function pause() { paused = true; stop(); }
     function resume() { paused = false; start(); }
     function updateToggle() { if (!toggle) return; toggle.textContent = manualPause ? 'Play' : 'Pause'; toggle.setAttribute('aria-pressed', manualPause ? 'true' : 'false'); toggle.setAttribute('aria-label', (manualPause ? 'Play' : 'Pause') + ' BBS autoplay'); }
@@ -187,6 +242,9 @@
            needs ~8 s to read, so autoplay stays supplementary to Pause/hover. */
         i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 4000;
     if (total) total.textContent = ('0' + n).slice(-2);
+    /* the hero "Projects" tag shows the same count, so it can never go stale */
+    var heroCount = document.getElementById('heroProjCount');
+    if (heroCount) heroCount.textContent = n;
     track.style.transition = 'transform 700ms cubic-bezier(.22,.61,.36,1)';
     track.style.willChange = 'transform';
     var dots = document.createElement('div');
@@ -205,7 +263,7 @@
     function updateDots() { dotButtons.forEach(function (dot, idx) { var active = idx === i; dot.classList.toggle('active', active); dot.setAttribute('aria-current', active ? 'true' : 'false'); }); }
     function go(idx) { i = (idx + n) % n; track.style.transform = 'translate3d(' + (-i * 100) + '%,0,0)'; if (cur) cur.textContent = ('0' + (i + 1)).slice(-2); preloadSlide(track, i + 1, n); preloadSlide(track, i - 1, n); setActive(); updateDots(); }
     function stop() { if (timer) { clearInterval(timer); timer = null; } }
-    function start() { stop(); if (!paused && !manualPause) timer = setInterval(function () { go(i + 1); }, delay); }
+    function start() { stop(); if (!paused && !manualPause) timer = setInterval(function () { if (!modalOpen()) go(i + 1); }, delay); }
     function pause() { paused = true; stop(); }
     function resume() { paused = false; start(); }
     function updateToggle() { if (!toggle) return; toggle.textContent = manualPause ? 'Play autoplay' : 'Pause autoplay'; toggle.setAttribute('aria-pressed', manualPause ? 'true' : 'false'); toggle.setAttribute('aria-label', (manualPause ? 'Play' : 'Pause') + ' project autoplay'); }
@@ -252,26 +310,36 @@
      Unique-visitor-ish dedup:
      1) count.js never auto-fires — data-goatcounter-settings has
         {"no_onload":true} — this module decides *when* to count.
-     2) Same browser counts at most once per calendar day
-        (localStorage), so refreshing the page 100x does not
-        inflate the number.
-     3) The GoatCounter server adds IP/user-agent hysteresis on top. */
+     2) Same browser counts at most once per 4 hours (rolling window,
+        timestamp in localStorage), so refreshing the page 100x does
+        not inflate the number, but a visitor who comes back later the
+        same day is counted again.
+     3) The GoatCounter server adds its own IP/user-agent session
+        memory on top (documented as 8 hours), so a return visit from
+        the same network + browser may still be merged server-side. */
   (function () {
     var el = document.getElementById('goatcounter-counter');
     if (!el) return;
     var tries = 0;
+    var COUNT_WINDOW_MS = 4 * 60 * 60 * 1000; /* 4 hours — change the first number to retune */
     function guardRead() { try { return JSON.parse(localStorage.getItem('asif-gc-guard') || 'null'); } catch (e) { return null; } }
     function guardWrite(v) { try { localStorage.setItem('asif-gc-guard', JSON.stringify(v)); } catch (e) {} }
-    function today() {
-      var d = new Date();
-      return d.getUTCFullYear() + '-' + ('0' + (d.getUTCMonth() + 1)).slice(-2) + '-' + ('0' + d.getUTCDate()).slice(-2);
+    function mayCount() {
+      var g = guardRead();
+      /* no record, the old {day:…} record from v2.6.1–v2.8.1, or a timestamp in
+         the future (clock was changed) all count as "not counted yet" */
+      if (!g || typeof g.t !== 'number') return true;
+      var age = Date.now() - g.t;
+      return age < 0 || age >= COUNT_WINDOW_MS;
     }
-    function mayCount() { var g = guardRead(); return !g || g.day !== today(); }
     function countIfNew() {
       if (!window.goatcounter || typeof window.goatcounter.count !== 'function') return;
       if (!mayCount()) return;
-      try { window.goatcounter.count(); } catch (e) {}
-      guardWrite({ day: today() });
+      /* count.js drops localhost, prerender and bot hits itself — don't start
+         the 4-hour window for a hit that was never sent */
+      try { if (typeof window.goatcounter.filter === 'function' && window.goatcounter.filter()) return; } catch (e) {}
+      try { window.goatcounter.count(); } catch (e) { return; }
+      guardWrite({ t: Date.now() });
     }
     function url() {
       var s = document.querySelector('script[data-goatcounter]');

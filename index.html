@@ -4,14 +4,22 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="theme-color" content="#150a12">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://aasif-shaikh7.github.io/BIM-Portfolio/">
 <meta property="og:title" content="Asif Shaikh | Senior BIM Modeler">
-<meta property="og:description" content="Senior BIM Modeler portfolio — Revit, architectural & structural modelling, BOQ and BBS.">
+<meta property="og:description" content="Senior BIM Modeler portfolio — Revit, architectural &amp; structural modelling, BOQ and BBS.">
+<meta property="og:image" content="https://aasif-shaikh7.github.io/BIM-Portfolio/assets/slide-04-01.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <meta name="description" content="Asif Shaikh — Senior BIM Modeler portfolio. Revit Architecture, Revit Structure, 3D modelling, Scan to BIM, BOQ, BBS and construction-ready documentation.">
+<link rel="canonical" href="https://aasif-shaikh7.github.io/BIM-Portfolio/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23150a12'/%3E%3Ctext x='32' y='43' text-anchor='middle' font-family='Arial,sans-serif' font-size='30' font-weight='800' fill='%23ffb27a'%3EAS%3C/text%3E%3C/svg%3E">
 <title>Asif Shaikh | Senior BIM Modeler</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=2.8.2">
+<link rel="stylesheet" href="style.css?v=2.9.0">
+<!-- .reveal blocks start hidden and are shown by script.js; without JS they must stay visible -->
+<noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 <script data-goatcounter="https://aasif-shaikh7.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="//gc.zgo.at/count.js"></script>
 </head>
 <body>
@@ -35,9 +43,49 @@
 <section id="home" class="hero">
   <div class="hero-backdrop"><img src="assets/slide-04-01.jpg" alt="" id="heroBackdrop"></div>
   <p class="hero-tag">BIM · Revit · BOQ · BBS</p>
-  <img class="hero-photo" src="assets/profile.png" alt="" onerror="this.remove()">
+  <!-- v2.9.0 hero figure: the portrait presented as a tagged BIM element —
+       glow, grid disc + instrument rings behind it, a Scan-to-BIM light sweep
+       over it, and Revit-style tags with leaders around it. -->
+  <div class="hero-figure" id="heroFigure">
+    <span class="hero-halo" aria-hidden="true"></span>
+    <svg class="hero-rings" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
+      <defs>
+        <radialGradient id="hrFill" cx="50%" cy="34%" r="72%">
+          <stop offset="0" stop-color="#ffb27a" stop-opacity=".30"/>
+          <stop offset=".5" stop-color="#8a4a72" stop-opacity=".36"/>
+          <stop offset="1" stop-color="#1a0c18" stop-opacity=".80"/>
+        </radialGradient>
+        <linearGradient id="hrArc" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#ffe2ca"/>
+          <stop offset="1" stop-color="#ffb27a"/>
+        </linearGradient>
+        <pattern id="hrGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M20 0H0V20" fill="none" stroke="#ffb27a" stroke-opacity=".17" stroke-width=".6"/>
+        </pattern>
+      </defs>
+      <circle cx="200" cy="200" r="172" fill="url(#hrFill)"/>
+      <circle cx="200" cy="200" r="172" fill="url(#hrGrid)"/>
+      <circle class="hr-line" cx="200" cy="200" r="172"/>
+      <circle class="hr-ticks" cx="200" cy="200" r="184"/>
+      <circle class="hr-base" cx="200" cy="200" r="196"/>
+      <g class="hr-spin">
+        <circle class="hr-arc" cx="200" cy="200" r="196" transform="rotate(-157 200 200)"/>
+        <circle class="hr-node" cx="200" cy="4" r="4.5"/>
+        <circle class="hr-arc" cx="200" cy="200" r="196" transform="rotate(23 200 200)"/>
+        <circle class="hr-node" cx="200" cy="396" r="4.5"/>
+      </g>
+    </svg>
+    <img class="hero-photo" src="assets/profile.png" alt="Portrait of Asif Shaikh" width="1036" height="1000" fetchpriority="high" onerror="this.closest('.hero-figure').remove()">
+    <span class="hero-scan" aria-hidden="true"></span>
+    <ul class="hero-chips" aria-label="At a glance">
+      <li class="hero-chip chip-l c1"><small>Revit</small><b>Arch + Struct</b></li>
+      <li class="hero-chip chip-r c2"><small>Model LOD</small><b>300–350</b></li>
+      <li class="hero-chip chip-l c3"><small>Projects</small><b><span id="heroProjCount">14</span> delivered</b></li>
+      <li class="hero-chip chip-r c4"><b><i></i>Open to work</b></li>
+    </ul>
+  </div>
   <div class="hero-inner">
-    <h1 class="hero-title metal">PORTFOLIO</h1>
+    <h1 class="hero-title metal"><span class="sr-only">Asif Shaikh, Senior BIM Modeler — </span>PORTFOLIO</h1>
   </div>
   <div class="hero-foot">
     <p class="hero-role">Senior <strong>BIM</strong> <em>Modeler</em></p>
@@ -85,10 +133,13 @@
 </section>
 
 <!-- ============ SKILLS MARQUEE ============ -->
-<div class="marquee-zone" aria-label="Software and documentation skills">
-  <div class="marquee marquee-row"><div class="marquee-track"><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span></div><div class="marquee-track" aria-hidden="true"><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span></div></div>
-  <div class="marquee marquee-row reverse"><div class="marquee-track"><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span></div><div class="marquee-track" aria-hidden="true"><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span></div></div>
-  <div class="marquee marquee-row slow"><div class="marquee-track"><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span></div><div class="marquee-track" aria-hidden="true"><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span></div></div>
+<!-- The three rows repeat every item 4x for the seamless loop, so they are hidden
+     from assistive tech and the list is announced once from the .sr-only line. -->
+<div class="marquee-zone">
+  <p class="sr-only">Software and documentation skills: Revit Architecture, Revit Structure, AutoCAD, CADS RC, Navisworks, Dynamo, SketchUp, BIM 360, BBS, BOQ, Quantity Takeoff, Shop Drawings, GFC Drawings, Layout Sheets, IFC Extraction, Scan to BIM, Clash Detection, Family Creation, Rebar Detailing, LOD 300–350, Point Cloud, As-Built Modelling, MEP Coordination, Sheet Sets.</p>
+  <div class="marquee marquee-row" aria-hidden="true"><div class="marquee-track"><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span></div><div class="marquee-track" aria-hidden="true"><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span><span>Revit Architecture</span><span>Revit Structure</span><span>AutoCAD</span><span>CADS RC</span><span>Navisworks</span><span>Dynamo</span><span>SketchUp</span><span>BIM 360</span></div></div>
+  <div class="marquee marquee-row reverse" aria-hidden="true"><div class="marquee-track"><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span></div><div class="marquee-track" aria-hidden="true"><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span><span>BBS</span><span>BOQ</span><span>Quantity Takeoff</span><span>Shop Drawings</span><span>GFC Drawings</span><span>Layout Sheets</span><span>IFC Extraction</span><span>Scan to BIM</span></div></div>
+  <div class="marquee marquee-row slow" aria-hidden="true"><div class="marquee-track"><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span></div><div class="marquee-track" aria-hidden="true"><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span><span>Clash Detection</span><span>Family Creation</span><span>Rebar Detailing</span><span>LOD 300–350</span><span>Point Cloud</span><span>As-Built Modelling</span><span>MEP Coordination</span><span>Sheet Sets</span></div></div>
 </div>
 
 <!-- ============ SERVICES ============ -->
@@ -291,7 +342,7 @@
         <table class="bbs-ref slab" aria-label="Typical slab bar bending schedule">
           <thead><tr><th>#</th><th>Description</th><th>Dia (mm)</th><th>Qty</th><th>Len (m)</th><th>Kg/m</th><th>Total (kg)</th></tr></thead>
           <tbody>
-            <tr><td>01</td><td>Main bars — short span @150 c/c</td><td>10</td><td>34</td><td>3.65</td><td>0.62</td><td>76.5</td></tr>
+            <tr><td>01</td><td>Main bars — short span @150 c/c</td><td>10</td><td>34</td><td>3.65</td><td>0.62</td><td>76.6</td></tr>
             <tr><td>02</td><td>Distribution bars — long span @150 c/c</td><td>8</td><td>24</td><td>5.05</td><td>0.40</td><td>47.9</td></tr>
             <tr><td>03</td><td>Edge / curtain bars — perimeter</td><td>8</td><td>10</td><td>3.65</td><td>0.40</td><td>14.4</td></tr>
           </tbody>
@@ -358,7 +409,7 @@
   <div class="wrap">
     <div class="foot-top">
       <div><p class="foot-label">Connect with me</p><a class="foot-mail" href="mailto:shaikhaasif582@gmail.com">shaikhaasif582@gmail.com</a>
-        <nav class="foot-nav" aria-label="Footer"><a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#services">Services</a><a href="#projects">Projects</a><a href="#contact">Contact</a></nav>
+        <nav class="foot-nav" aria-label="Footer"><a href="#home">Home</a><a href="#about">About</a><a href="#skills">Skills</a><a href="#services">Services</a><a href="#projects">Projects</a><a href="#bbs">BBS</a><a href="#contact">Contact</a></nav>
       </div>
       <div class="foot-right"><h3>Let's build something</h3><p>Open for freelance opportunities and collaborations.</p><a class="btn btn-white" href="#contact">Get in touch</a></div>
     </div>
@@ -380,6 +431,6 @@
   <div class="modal-box"><button class="modal-close" aria-label="Close project viewer">×</button><h2 id="modalTitle">Project</h2><div id="modalGallery" class="modal-gallery"></div></div>
 </div>
 
-<script src="script.js?v=2.8.1"></script>
+<script src="script.js?v=2.9.0"></script>
 </body>
 </html>

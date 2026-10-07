@@ -1,2 +1,4 @@
 .vs
 reel_analysis/
+.vscode/
+__pycache__/
