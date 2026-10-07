@@ -40,7 +40,7 @@
 
 /* ---------- Base ---------- */
 *,*::before,*::after{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:70px}
+html{scroll-behavior:smooth;scroll-padding-top:128px}   /* sticky banner + the section's own 56px top padding, so an anchor jump never tucks a heading under the banner */
 body{margin:0;background:linear-gradient(180deg,var(--bg),var(--bg-soft) 38%,var(--bg) 68%,#1a0c15);color:var(--text);font:400 16px/1.65 var(--font-body);-webkit-font-smoothing:antialiased;overflow-x:hidden}
 img{max-width:100%;display:block}
 button{font-family:inherit;cursor:pointer}
@@ -48,9 +48,11 @@ button{font-family:inherit;cursor:pointer}
 ::selection{background:var(--accent);color:var(--accent-ink)}
 .metal{background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent}
 .accent-i{font-family:var(--font-serif);font-style:italic;font-weight:500;text-transform:none;letter-spacing:0}
-.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--pad)}
+/* sides only: a padding shorthand here (class specificity) used to zero the
+   vertical padding of every section/header/footer that also carries .wrap */
+.wrap{max-width:var(--max);margin:0 auto;padding-left:var(--pad);padding-right:var(--pad)}
 .kicker{font:700 11px/1 var(--font-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--dim);margin:0 0 14px}
-section{padding:56px 0;border-top:1px solid var(--line)}
+section{padding-top:56px;padding-bottom:56px;border-top:1px solid var(--line)}
 h2{font:800 clamp(24px,3.4vw,40px)/1.1 var(--font-display);letter-spacing:-.01em;margin:0 0 14px}
 h3{font:800 17px/1.2 var(--font-display);margin:0 0 8px}
 p{margin:0 0 14px}
@@ -67,7 +69,7 @@ p{margin:0 0 14px}
 /* ---------- Demo banner ---------- */
 .demo-banner{position:sticky;top:0;z-index:60;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;background:linear-gradient(90deg,var(--accent),var(--plum));color:var(--accent-ink);font:700 12px/1.4 var(--font-mono);letter-spacing:.06em;padding:12px var(--pad)}
 .demo-banner a{color:var(--accent-ink);text-decoration:underline}
-.hero-demo{padding:64px 0 48px;border-top:0}
+.hero-demo{padding-top:64px;padding-bottom:48px;border-top:0}
 .hero-demo h1{font:800 clamp(32px,5.6vw,68px)/1.02 var(--font-display);letter-spacing:-.02em;margin:0 0 16px;text-transform:uppercase}
 
 /* ---------- Panels ---------- */
@@ -102,14 +104,17 @@ p{margin:0 0 14px}
    ============================================================ */
 .cine{border:1px solid var(--line);border-radius:24px;padding:14px;background:linear-gradient(150deg,rgba(64,32,58,.32),rgba(28,14,28,.56));box-shadow:0 22px 56px rgba(0,0,0,.34),inset 0 1px 0 rgba(255,255,255,.06);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
 .cine:focus-visible{outline:3px solid var(--accent);outline-offset:6px}
-/* the stage adopts each slide's real aspect ratio (--ar) so a 3:4 render
-   and a 2:1 drawing both fill the frame with no letterbox bars */
+/* the stage keeps ONE ratio per project (taken from its -01 render) so the
+   controls below never jump while autoplay runs. Slides with a different
+   ratio are letterboxed, and the bars are filled with a blurred copy of the
+   same image (--fill) instead of flat black — standard video-player trick */
 .cine-stage{position:relative;margin:0 auto;width:100%;max-width:min(100%,660px);aspect-ratio:var(--ar,3/4);max-height:70vh;border-radius:16px;overflow:hidden;background:#0d0609;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .cine-track{display:flex;height:100%;will-change:transform;transition:transform 600ms cubic-bezier(.22,.61,.36,1)}
 .cine-slide{position:relative;flex:0 0 100%;min-width:100%;display:flex;align-items:center;justify-content:center;overflow:hidden;
   perspective:1500px;perspective-origin:50% 42%;
   --cine-z:-150px;--cine-ry:3deg;--cine-drift:-3%;--cine-op:0deg}
-.cine-slide img{width:100%;height:100%;object-fit:contain;will-change:transform;backface-visibility:hidden}
+.cine-slide img{position:relative;width:100%;height:100%;object-fit:contain;will-change:transform;backface-visibility:hidden}
+.cine-slide::before{content:"";position:absolute;inset:-24px;background:var(--fill,none) center/cover no-repeat;filter:blur(22px) saturate(1.1) brightness(.55);pointer-events:none}
 /* the move runs only on the active slide and its duration is locked to the
    autoplay delay (--cine-dur), so it fills the slide exactly like a clip —
    that sync is what sells the "video" read */
@@ -162,15 +167,25 @@ td b{color:var(--accent)}
 ul.tight{margin:0 0 14px;padding-left:20px;color:var(--muted);font-size:14.5px}
 ul.tight li{margin-bottom:7px}
 ul.tight b{color:var(--text)}
-footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--dim);font-size:13.5px}
+footer{padding-top:40px;padding-bottom:64px;border-top:1px solid var(--line);color:var(--dim);font-size:13.5px}
 
 /* ---------- Reduced-motion simulation (.rm on <html>) ---------- */
 .rm *, .rm *::before, .rm *::after{animation:none!important;transition:none!important}
 .rm .cine-slide img{transform:none!important}
+/* the real OS/browser setting — the .rm class above only simulates it */
+@media (prefers-reduced-motion:reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .cine-slide img{transform:none!important}
+}
 
 @media (max-width:760px){
   .grid-2,.race{grid-template-columns:1fr}
-  section{padding:44px 0}
+  section{padding-top:44px;padding-bottom:44px}
+  /* one-line banner on phones: the long note wrapped to 3 lines and covered headings */
+  .demo-banner{padding:9px var(--pad);font-size:11px}
+  .demo-banner .banner-note{display:none}
+  html{scroll-padding-top:124px}
   .cine-stage{max-height:none}
   .cine-btn{width:46px;height:46px}
 }
@@ -180,7 +195,7 @@ footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--dim);fon
 
 <div class="demo-banner">
   <span>◆ STANDALONE DEMO — v0.1.0</span>
-  <span>live site untouched: style.css / script.js / index.html ko chhua nahi gaya</span>
+  <span class="banner-note">live site untouched: style.css / script.js / index.html ko chhua nahi gaya</span>
   <a href="../index.html">← production portfolio</a>
 </div>
 
@@ -572,7 +587,10 @@ footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--dim);fon
       var ar = clamp(p.slides[0].w / p.slides[0].h, 0.75, 1.35);
       stage.style.setProperty('--ar', ar.toFixed(3));           /* stage ratio from the project's render */
       track.innerHTML = p.slides.map(function (s, k) {
-        return '<div class="cine-slide" data-index="' + k + '" data-cinematic="' + (s.cinematic ? '1' : '0') + '">' +
+        return '<div class="cine-slide" data-index="' + k + '" data-cinematic="' + (s.cinematic ? '1' : '0') + '"' +
+                 /* blurred bar fill only for light files: on MES (4–9 MB, 15000 px) a
+                    second full-size blur layer would double the decode cost */
+                 (s.mb < 1 ? ' style="--fill:url(\'' + p.base + s.file + '\')"' : '') + '>' +
                  '<img src="' + p.base + s.file + '" alt="' + p.name + ' — ' + s.kind + ', slide ' + (k + 1) + '" loading="' + (k === 0 ? 'eager' : 'lazy') + '">' +
                  '<span class="cine-floor" aria-hidden="true"></span>' +
                '</div>';
@@ -630,8 +648,15 @@ footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--dim);fon
       else if (e.key === 'Home') { e.preventDefault(); go(0); start(); }
     });
 
-    root.addEventListener('mouseenter', pause);
-    root.addEventListener('mouseleave', resume);
+    /* hover-pause only for a real mouse: after a tap, touch browsers fire a
+       synthetic mouseenter with no matching mouseleave, which used to stop
+       autoplay silently while the button still said "Pause" */
+    var hovering = false;
+    function isMouse(e) { return !e.pointerType || e.pointerType === 'mouse'; }
+    var enterEv = window.PointerEvent ? 'pointerenter' : 'mouseenter',
+        leaveEv = window.PointerEvent ? 'pointerleave' : 'mouseleave';
+    root.addEventListener(enterEv, function (e) { if (isMouse(e)) { hovering = true; pause(); } });
+    root.addEventListener(leaveEv, function (e) { if (isMouse(e)) { hovering = false; resume(); } });
 
     var sx = null;
     stage.addEventListener('touchstart', function (e) { sx = e.touches[0].clientX; pause(); }, { passive: true });
@@ -647,7 +672,7 @@ footer{padding:40px 0 64px;border-top:1px solid var(--line);color:var(--dim);fon
     /* script.js v2.8.0 does NOT do this today: a hidden tab keeps cycling and
        burns CPU/battery. Demonstrated here so you can decide to adopt it. */
     document.addEventListener('visibilitychange', function () {
-      if (document.hidden) { pause(); } else { paused = false; start(); }
+      if (document.hidden) { pause(); } else if (!hovering) { resume(); }   /* stay paused if the mouse is still on the player */
     });
 
     /* ---------- demo-only controls ---------- */
