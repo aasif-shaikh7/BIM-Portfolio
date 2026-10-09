@@ -278,6 +278,9 @@ body.nav-open .nav-toggle span::after{top:0;transform:rotate(-45deg)}
 .proj-feature.is-active .proj-media img{animation:glassFloat 12s ease-in-out infinite}
 .proj-feature.is-active .proj-media:hover img{animation-play-state:paused}
 .proj-feature.is-active .proj-media{box-shadow:0 0 0 1px rgba(255,178,122,.16),0 30px 66px rgba(80,30,90,.34),inset 0 1px 0 rgba(255,255,255,.11)}
+/* v2.9.1: play badge on cards whose project has a construction build-up video */
+.play-badge{position:absolute;left:14px;bottom:14px;z-index:3;width:46px;height:46px;border-radius:50%;display:grid;place-items:center;background:var(--accent);color:var(--accent-ink);border:1px solid rgba(255,255,255,.35);box-shadow:0 8px 20px rgba(0,0,0,.45)}
+.play-badge svg{width:20px;height:20px;display:block;margin-left:2px}
 .proj-prev,.proj-next{position:absolute;top:50%;transform:translateY(-50%);z-index:5;width:48px;height:48px;border-radius:50%;border:1px solid rgba(255,255,255,.18);background:linear-gradient(135deg,rgba(48,20,46,.5),rgba(21,10,18,.68));color:var(--text);font-size:20px;display:grid;place-items:center;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 26px rgba(0,0,0,.35),inset 0 1px 0 rgba(255,255,255,.09);transition:background .25s ease,color .25s ease,border-color .25s ease,box-shadow .25s ease}
 .proj-prev{left:20px}
 .proj-next{right:20px}
@@ -420,6 +423,8 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
 .modal-box h2{font:800 clamp(24px,3vw,38px)/1.1 var(--font-display);text-transform:uppercase;letter-spacing:.02em;margin:6px 0 24px}
 .modal-gallery{display:grid;grid-template-columns:repeat(2,1fr);gap:12px}
 .modal-gallery img{width:100%;border-radius:12px;border:1px solid var(--line)}
+/* v2.9.1: construction build-up video — full width above the image gallery */
+.modal-gallery .modal-video{grid-column:1/-1;width:100%;aspect-ratio:16/9;background:#000;border-radius:12px;border:1px solid var(--line)}
 
 /* ---------- Responsive ---------- */
 @media(max-width:1080px){

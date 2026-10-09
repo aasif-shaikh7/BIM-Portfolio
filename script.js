@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.9.0 "tagged portrait"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.9.1 "project build-up videos"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax (backdrop on scroll, figure on pointer), project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
@@ -130,7 +130,17 @@
     title.textContent = btn.dataset.title || 'Project';
     var imgs = [];
     try { imgs = JSON.parse(btn.dataset.images || '[]'); } catch (e) { imgs = []; }
-    gallery.innerHTML = imgs.map(function (x) {
+    /* v2.9.1: cards tagged with data-video="slug" open with the construction
+       build-up video first, above the still images (assets/videos/<slug>.mp4). */
+    var vid = String(btn.dataset.video || '').replace(/[^a-zA-Z0-9._-]/g, '');
+    var vidHtml = '';
+    if (vid) {
+      vidHtml = '<video class="modal-video" controls playsinline preload="metadata"' +
+                ' poster="assets/videos/' + vid + '-poster.jpg">' +
+                '<source src="assets/videos/' + vid + '.mp4" type="video/mp4">' +
+                'Your browser does not support embedded video.</video>';
+    }
+    gallery.innerHTML = vidHtml + imgs.map(function (x) {
       return '<img src="assets/' + String(x).replace(/[^a-zA-Z0-9._-]/g, '') + '" alt="' + (btn.dataset.title || 'Project') + ' project image" loading="lazy">';
     }).join('');
     modal.classList.add('open');
@@ -143,6 +153,10 @@
     modal.classList.remove('open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.style.overflow = '';
+    /* stop the build-up video before emptying the gallery (removing a <video>
+       from the DOM does not reliably pause it in every browser) */
+    var gVideo = gallery.querySelector('video');
+    if (gVideo) { try { gVideo.pause(); } catch (e) {} }
     gallery.innerHTML = '';
     if (lastFocused && document.contains(lastFocused)) lastFocused.focus();
     lastFocused = null;
