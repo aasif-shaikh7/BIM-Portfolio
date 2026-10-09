@@ -1,0 +1,29 @@
+Construction build-up videos — soundtrack credits
+=================================================
+All tracks below are from Mixkit (Mixkit Free Stock Music License —
+free for commercial and personal projects, no attribution required):
+https://mixkit.co/license/#musicFree
+
+canara-bank-build.mp4, mohite-mrugank, ratnaj-blessing-milestone
+  "Forever in My Heart" — Michael Ramir C. (Contemporary Folk · Warm Acoustic)
+
+uma-niwas-build.mp4, ananta-carnation, sb-paradise
+  "Digital Clouds" — Alejandro Magaña (A. M.) (Chillout · Electronic)
+
+s-raheja-carter-build.mp4, moraj-opulence
+  "Romantic Getaway" — Ahjay Stelino (Classical · Elegant Piano)
+
+ncc-business-tower-build.mp4
+  "Close Up" — Michael Ramir C. (Corporate · Positive Futuristic)
+
+genesis
+  "Pop Track 03" — Lily J (Electronic · Playful Positive)
+
+amani-knowledge-park
+  "Forest Mist Whispers" — Alejandro Magaña (A. M.) (Hopeful · Piano Documentary)
+
+shaligram-bhopal
+  "Life's a Movie" — Arulo (Film Score · Epic Hopeful Brass)
+
+Track files: BIM-Build-Sequence\_encoder\audio\
+Mapped per project in BIM-Build-Sequence\projects.json ("audio" field).

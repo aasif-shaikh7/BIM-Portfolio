@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.9.3 "build-up video section"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.9.4 "build-up video section"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax (backdrop on scroll, figure on pointer), project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
