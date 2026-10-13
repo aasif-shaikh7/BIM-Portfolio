@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.9.6 "build-up video section"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.9.7 "build-up video section"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax (backdrop on scroll, figure on pointer), project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
@@ -359,22 +359,6 @@
         .catch(function () { el.textContent = '—'; });
     }
     render();
-  })();
-
-  /* ---------- BBS reference tables: tab switch (Beam/Footing/Slab/Column) ---------- */
-  (function () {
-    var tabs = Array.prototype.slice.call(document.querySelectorAll('.bbs-tab'));
-    if (!tabs.length) return;
-    var tables = Array.prototype.slice.call(document.querySelectorAll('.bbs-ref'));
-    var byId = {};
-    tables.forEach(function (tb) { var m = /(?:^|\s)(beam|footing|slab|column)(?:\s|$)/.exec(tb.className); if (m) byId[m[1]] = tb; });
-    tabs.forEach(function (t) {
-      t.addEventListener('click', function () {
-        var sel = t.dataset.table;
-        tabs.forEach(function (x) { var on = x === t; x.classList.toggle('active', on); x.setAttribute('aria-selected', on ? 'true' : 'false'); });
-        tables.forEach(function (tb) { tb.classList.toggle('active', tb === byId[sel]); });
-      });
-    });
   })();
 
   /* ---------- Contact form → WhatsApp ---------- */
