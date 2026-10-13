@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.9.7 "build-up video section"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.9.8 "build-up video section"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax (backdrop on scroll, figure on pointer), project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
@@ -118,6 +118,48 @@
       figure.style.setProperty('--py', '0');
     });
   }
+
+  /* ---------- v2.9.8 hero on phones: a real project being built in the arch, and a 3D lean ----------
+     Behind the portrait the arch shows one of the portfolio's own Revit models going up: a short, silent
+     loop cut from its build-up video (assets/videos/hero-build-*.mp4, the model keyed onto the site's plum).
+     The file is only fetched on phones, and only once the page has loaded. If the browser will not play it
+     by itself (data saver, low-power mode), the poster - the finished building - simply stays.
+     The lean: style.css tilts the whole figure with --ry/--rx (animated) plus --iy/--ix, which are set here
+     from a finger dragged over the hero, or from the phone's own tilt where the browser reports it without
+     asking (Android). style.css eases them. With reduced motion nothing moves and the poster is shown. */
+  (function () {
+    var vid = document.getElementById('heroBuild');
+    if (!vid || !figure || !hero || !window.matchMedia) return;
+    var phoneMq = window.matchMedia('(max-width:640px)');
+    var loaded = false, visible = true;
+    function play() {
+      if (!phoneMq.matches || reducedMotion) return;
+      if (!loaded) { loaded = true; vid.src = vid.getAttribute('data-src'); }
+      if (visible && !document.hidden) { var p = vid.play(); if (p && p.catch) p.catch(function () {}); }
+      else vid.pause();
+    }
+    if (document.readyState === 'complete') play(); else window.addEventListener('load', play);
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (loaded) play(); }, { threshold: 0 }).observe(hero);
+    }
+    document.addEventListener('visibilitychange', function () { if (loaded) play(); });
+    if (phoneMq.addEventListener) phoneMq.addEventListener('change', play);
+    if (reducedMotion) return;
+    if (window.CSS && CSS.registerProperty) figure.classList.add('tilt-anim');
+    /* a finger dragged over the hero leans the frame towards it (scrolling is never blocked) */
+    var lean = 0, gy = 0, gx = 0;
+    function apply() { lean = 0; figure.style.setProperty('--iy', gy.toFixed(2) + 'deg'); figure.style.setProperty('--ix', gx.toFixed(2) + 'deg'); }
+    function set(y, x) { gy = y; gx = x; if (!lean && phoneMq.matches) lean = requestAnimationFrame(apply); }
+    hero.addEventListener('touchmove', function (e) {
+      var p = e.touches[0], r = hero.getBoundingClientRect();
+      set(((p.clientX - r.left) / r.width - 0.5) * 16, -((p.clientY - r.top) / r.height - 0.5) * 8);
+    }, { passive: true });
+    hero.addEventListener('touchend', function () { set(0, 0); }, { passive: true });
+    window.addEventListener('deviceorientation', function (e) {
+      if (e.gamma == null || e.beta == null) return;
+      set(Math.max(-9, Math.min(9, e.gamma * 0.35)), Math.max(-5, Math.min(5, (e.beta - 55) * -0.12)));
+    });
+  })();
 
   /* ---------- Project modal ---------- */
   var modal = document.getElementById('projectModal'),
@@ -245,6 +287,9 @@
     /* the hero "Projects" tag shows the same count, so it can never go stale */
     var heroCount = document.getElementById('heroProjCount');
     if (heroCount) heroCount.textContent = n;
+    /* v2.9.8: so does the strip of facts on the phone hero */
+    var heroStat = document.getElementById('heroStatCount');
+    if (heroStat) heroStat.textContent = n;
     track.style.transition = 'transform 700ms cubic-bezier(.22,.61,.36,1)';
     track.style.willChange = 'transform';
     var dots = document.createElement('div');
