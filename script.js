@@ -1,5 +1,5 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.9.8 "build-up video section"
+   ASIF SHAIKH — BIM Portfolio · script.js v2.9.9 "build-up video section"
    Modules: header, mobile nav, reveal, services accordion,
    hero parallax (backdrop on scroll, figure on pointer), project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
@@ -119,21 +119,20 @@
     });
   }
 
-  /* ---------- v2.9.8 hero on phones: a real project being built in the arch, and a 3D lean ----------
+  /* ---------- v2.9.9 hero (v2.9.8 on phones, now every width): a real project being built in the arch, and a 3D lean ----------
      Behind the portrait the arch shows one of the portfolio's own Revit models going up: a short, silent
      loop cut from its build-up video (assets/videos/hero-build-*.mp4, the model keyed onto the site's plum).
-     The file is only fetched on phones, and only once the page has loaded. If the browser will not play it
+     The file is only fetched once the page has loaded. If the browser will not play it
      by itself (data saver, low-power mode), the poster - the finished building - simply stays.
      The lean: style.css tilts the whole figure with --ry/--rx (animated) plus --iy/--ix, which are set here
-     from a finger dragged over the hero, or from the phone's own tilt where the browser reports it without
-     asking (Android). style.css eases them. With reduced motion nothing moves and the poster is shown. */
+     from the mouse or a finger moved over the hero, or from the phone's own tilt where the browser reports
+     it without asking (Android). style.css eases them. With reduced motion nothing moves and the poster is shown. */
   (function () {
     var vid = document.getElementById('heroBuild');
     if (!vid || !figure || !hero || !window.matchMedia) return;
-    var phoneMq = window.matchMedia('(max-width:640px)');
     var loaded = false, visible = true;
     function play() {
-      if (!phoneMq.matches || reducedMotion) return;
+      if (reducedMotion) return;
       if (!loaded) { loaded = true; vid.src = vid.getAttribute('data-src'); }
       if (visible && !document.hidden) { var p = vid.play(); if (p && p.catch) p.catch(function () {}); }
       else vid.pause();
@@ -143,13 +142,19 @@
       new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (loaded) play(); }, { threshold: 0 }).observe(hero);
     }
     document.addEventListener('visibilitychange', function () { if (loaded) play(); });
-    if (phoneMq.addEventListener) phoneMq.addEventListener('change', play);
     if (reducedMotion) return;
     if (window.CSS && CSS.registerProperty) figure.classList.add('tilt-anim');
     /* a finger dragged over the hero leans the frame towards it (scrolling is never blocked) */
     var lean = 0, gy = 0, gx = 0;
     function apply() { lean = 0; figure.style.setProperty('--iy', gy.toFixed(2) + 'deg'); figure.style.setProperty('--ix', gx.toFixed(2) + 'deg'); }
-    function set(y, x) { gy = y; gx = x; if (!lean && phoneMq.matches) lean = requestAnimationFrame(apply); }
+    function set(y, x) { gy = y; gx = x; if (!lean) lean = requestAnimationFrame(apply); }
+    /* the mouse moved over the hero leans the frame towards it */
+    hero.addEventListener('pointermove', function (e) {
+      if (e.pointerType === 'touch') return;
+      var r = hero.getBoundingClientRect();
+      set(((e.clientX - r.left) / r.width - 0.5) * 13, -((e.clientY - r.top) / r.height - 0.5) * 7);
+    });
+    hero.addEventListener('pointerleave', function () { set(0, 0); });
     hero.addEventListener('touchmove', function (e) {
       var p = e.touches[0], r = hero.getBoundingClientRect();
       set(((p.clientX - r.left) / r.width - 0.5) * 16, -((p.clientY - r.top) / r.height - 0.5) * 8);

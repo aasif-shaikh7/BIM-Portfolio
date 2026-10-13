@@ -1,5 +1,7 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · v2.9.8 "arch frame on phones"
+   ASIF SHAIKH — BIM Portfolio · v2.9.9 "two arch windows"
+   v2.9.9: the two-window hero (portrait + a project being built)
+   now on desktop and tablet too; the old ring-and-portrait hero is gone.
    v2.9.8: phone hero only — the portrait stands in an arch and
    the head rises out of it; rings and tags are dropped there.
    v2.9.0: hero portrait rebuilt as a tagged BIM element — glow,
@@ -602,4 +604,47 @@ footer::after{content:"";position:absolute;left:0;right:0;bottom:0;height:130px;
   .proj-track .proj-feature .proj-copy{padding-right:0}
   .bbs-slides img{height:52vh}
   .bbs-slideshow{padding:10px}
+}
+
+/* ============ v2.9.9 - the two-window hero on desktop and tablet (641px and wider) ============
+   The same idea as on phones (see max-width:640px): the portrait in one arch window, a real project being
+   built in the other, a shared moving ground, a gentle 3D lean. Here the pair stands between the big title
+   and the role row, and the four tags of the old hero hang beside it with their leader lines.
+   --th  the title's font size (the room left under it depends on it)
+   --fh  the height of a window, --aw its width, --drop how much lower the right one hangs */
+@media(min-width:641px){
+  .hero{--th:clamp(64px,13.5vw,196px)}
+  .hero-title{font-size:var(--th)}
+  .hero-rings,.hero-scan{display:none}
+  .hero-figure{--gap:26px;--drop:30px;--fh:clamp(230px,calc(100svh - 262px - var(--th)*.95),600px);--aw:calc(var(--fh)*.49);--cell:calc(var(--aw)/16);--shape:999px 999px 26px 26px;--lead:44px;left:50%;right:auto;top:auto;bottom:186px;margin:0 0 0 calc(var(--aw)*-1 - var(--gap)/2);width:calc(var(--aw)*2 + var(--gap));height:var(--fh);aspect-ratio:auto;max-width:none;z-index:2;transition:--iy .5s ease-out,--ix .5s ease-out;transform-origin:50% 50%;transform:perspective(1400px) rotateY(calc(var(--ry) + var(--iy))) rotateX(calc(var(--rx) + var(--ix)))}
+  .hero-figure.tilt-anim{animation:heroTiltY 7s ease-in-out infinite alternate,heroTiltX 9.5s ease-in-out infinite alternate}
+  /* left window: ground (blueprint grid sliding up + a light going round), portrait, name, rim */
+  .hero-halo{display:block;position:absolute;z-index:0;left:0;top:0;width:var(--aw);height:100%;aspect-ratio:auto;overflow:hidden;transform:none;translate:none;border-radius:var(--shape);background:linear-gradient(rgba(255,214,184,.13) 1px,transparent 1px) 0 0/var(--cell) var(--cell),linear-gradient(90deg,rgba(255,214,184,.13) 1px,transparent 1px) 0 0/var(--cell) var(--cell),linear-gradient(180deg,#6f3560 0%,#221021 100%);box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 60px rgba(255,178,122,.10);animation:heroRise .9s cubic-bezier(.2,.7,.2,1) both,winGrid 14.45s linear infinite}
+  .hero-halo::before{content:"";position:absolute;left:50%;top:33.6%;width:120%;aspect-ratio:1;margin:-60% 0 0 -60%;border-radius:50%;background:radial-gradient(closest-side,rgba(255,198,152,.50),transparent);animation:winGlow 14.45s ease-in-out infinite}
+  .hero-photo{position:absolute;z-index:1;left:0;top:15%;width:var(--aw);height:85%;object-fit:cover;object-position:50% 0;border-radius:0 0 26px 26px;translate:none;filter:contrast(1.04) saturate(1.05)}
+  .hero-figure::after{content:"Asif Shaikh";position:absolute;z-index:2;left:0;top:0;width:var(--aw);height:100%;box-sizing:border-box;padding-bottom:16px;display:flex;align-items:flex-end;justify-content:center;border-radius:var(--shape);pointer-events:none;background:linear-gradient(180deg,transparent 68%,rgba(21,10,18,.78) 100%);font:700 10px/1.2 var(--font-mono);letter-spacing:.24em;text-transform:uppercase;color:#ffd9bd}
+  .hero-figure::before,.hero-arch::after{content:"";position:absolute;z-index:3;border:1.5px solid transparent;border-radius:var(--shape);pointer-events:none;background:linear-gradient(158deg,#ffeedd 0%,rgba(255,178,122,.30) 30%,rgba(255,178,122,.10) 58%,rgba(255,206,170,.85) 100%) border-box;-webkit-mask:linear-gradient(#000 0 0) padding-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) padding-box exclude,linear-gradient(#000 0 0)}
+  .hero-figure::before{left:0;top:0;width:var(--aw);height:100%;box-sizing:border-box}
+  /* right window: the project, hung a little lower */
+  .hero-arch{display:block;position:absolute;z-index:1;right:0;top:var(--drop);width:var(--aw);height:100%;overflow:hidden;border-radius:var(--shape);background:#2a1426;box-shadow:0 30px 70px rgba(0,0,0,.55),0 0 60px rgba(255,178,122,.10);animation:heroRise .9s cubic-bezier(.2,.7,.2,1) .12s both}
+  .hero-arch video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center 40%;pointer-events:none}
+  .hero-arch::after{inset:0}
+  .hero-arch::before{content:attr(data-label);position:absolute;z-index:1;inset:0;box-sizing:border-box;padding-bottom:16px;display:flex;align-items:flex-end;justify-content:center;border-radius:inherit;pointer-events:none;background:linear-gradient(180deg,rgba(255,178,122,.07) 0%,transparent 26%,transparent 68%,rgba(21,10,18,.82) 100%);font:700 10px/1.2 var(--font-mono);letter-spacing:.24em;text-transform:uppercase;color:#ffd9bd}
+  /* the four tags: two beside each window, each leader dot landing on the window's edge */
+  .hero-figure .c1{right:calc(100% + var(--lead));left:auto;top:22%}
+  .hero-figure .c3{right:calc(100% + var(--lead));left:auto;top:58%}
+  .hero-figure .c2{left:calc(100% + var(--lead));right:auto;top:calc(20% + var(--drop))}
+  .hero-figure .c4{left:calc(100% + var(--lead));right:auto;top:calc(56% + var(--drop))}
+  /* no room beside the pair (tablets, narrow windows): script.js marks that with .tags-inside - the tags are dropped */
+  .hero-figure.tags-inside .hero-chips{display:none}
+  /* the backdrop moves here as well: a slow drift and two wandering lights */
+  .hero-backdrop img{animation:heroDrift 30s ease-in-out infinite alternate}
+  .hero-backdrop::before{content:"";position:absolute;inset:-18%;z-index:1;pointer-events:none;background:radial-gradient(34% 30% at 26% 34%,rgba(255,178,122,.14),transparent 70%),radial-gradient(40% 34% at 76% 62%,rgba(170,84,146,.22),transparent 70%);animation:heroAurora 19s ease-in-out infinite alternate}
+  /* short screens (laptops at 768 / 720): a smaller title leaves the windows enough height */
+  @media(max-height:800px){.hero{--th:clamp(64px,10.4vw,150px)}}
+  /* tablets: the title has its own size there, and the hero a deeper bottom padding */
+  @media(max-width:900px){
+    .hero{--th:clamp(46px,15.6vw,150px)}
+    .hero-figure{bottom:212px;--fh:clamp(230px,calc(100svh - 336px - var(--th)*.95),580px)}
+  }
 }
