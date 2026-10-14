@@ -2,3 +2,5 @@
 reel_analysis/
 .vscode/
 __pycache__/
+# local QA screenshots and preview videos (not part of the site)
+audit-*/
