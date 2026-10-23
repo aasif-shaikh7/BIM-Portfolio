@@ -1,0 +1,161 @@
+/* =====================================================================
+   v3.4 HERO — scroll stage (see stage.js): a camera move round the desk, drawn frame by frame on a canvas
+   .stage            : tall section (the scroll distance); .stage-pin sticks to the viewport inside it
+   .stage.is-static  : no JS motion (reduced motion / JS failed) -> one-screen hero
+   Everything is laid out by stage.js with inline styles while scrolling; the rules below are the resting state.
+   ===================================================================== */
+.stage{position:relative;height:100svh;background:#0d0710}
+.stage.is-live{height:420vh}
+.stage-pin{position:sticky;top:0;height:100svh;width:100%;overflow:hidden;background:#0d0710}
+
+/* the film: poster first (paints instantly), then the canvas takes over once frames have loaded */
+.stage-poster,.stage-canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 50%;pointer-events:none;user-select:none}
+.stage-poster{transition:opacity .4s ease}
+.stage-canvas{opacity:0}
+.stage.is-live .stage-canvas{opacity:1}
+/* vignette that frames the subject + a light touch of the site's plum (keeps skin tones natural) */
+.stage-shade{position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    radial-gradient(ellipse 75% 70% at 55% 52%,transparent 35%,rgba(13,7,16,.78) 100%),
+    linear-gradient(180deg,rgba(13,7,16,.72) 0%,rgba(13,7,16,0) 26%,rgba(13,7,16,0) 62%,rgba(13,7,16,.88) 100%),
+    linear-gradient(90deg,rgba(160,78,136,.07),rgba(255,178,122,.03))}
+.stage-fade{position:absolute;inset:0 0 auto;height:22vh;z-index:1;pointer-events:none;opacity:0;background:linear-gradient(180deg,#0d0710,transparent)}
+/* the last stretch of scroll fades the film into the page background before the About section arrives */
+.stage-exit{position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;background:linear-gradient(180deg,rgba(21,10,18,.55),var(--bg) 70%)}
+
+/* ---------- hero text ---------- */
+/* bottom padding keeps the stats/buttons clear of the site's floating widgets (visitors, Let's talk, WhatsApp) */
+.stage-hero{position:absolute;inset:0;z-index:3;display:flex;flex-direction:column;justify-content:space-between;max-width:1500px;margin:0 auto;padding:100px var(--pad) 108px;will-change:opacity,transform,filter}
+.stage-top{display:flex;align-items:center;justify-content:space-between;gap:16px}
+.stage-tag{margin:0;font:600 10px/1.9 var(--font-mono);letter-spacing:.3em;text-transform:uppercase;color:var(--muted)}
+.stage-explore{display:inline-flex;align-items:center;gap:10px;font:600 13px/1 var(--font-body);letter-spacing:.04em;color:var(--text)}
+.stage-explore span{font-size:22px;font-weight:300;transition:transform .3s ease}
+.stage-explore:hover{color:var(--accent)}
+.stage-explore:hover span{transform:translateX(6px)}
+
+/* the name sits low, over the back of the laptop, so the face above stays clear */
+.stage-center{display:flex;flex-direction:column;align-items:flex-start;margin:auto 0 2.5vh;padding:0}
+.stage-kicker{margin:0 0 .4em .35em;font:700 clamp(10px,1.05vw,14px)/1 var(--font-mono);letter-spacing:.32em;text-transform:uppercase;color:var(--accent)}
+.stage-name{margin:0;font:800 clamp(56px,11.2vw,200px)/.9 var(--font-display);letter-spacing:-.035em;text-transform:uppercase;white-space:nowrap;user-select:none}
+.stage-word{display:inline-block;white-space:nowrap}
+.stage-word>span{display:inline-block;background:var(--metal);-webkit-background-clip:text;background-clip:text;color:transparent;
+  text-shadow:none;filter:drop-shadow(0 8px 30px rgba(0,0,0,.55))}
+/* entrance — "CAD drafting": stage.js lays an outline copy of the name over it (.stage-name-ol); a plotter crosshair
+   draws that outline left to right, inside Revit-style crop-region corners, then the metal letters fill in letter by
+   letter and the outline fades. Without JS the letters simply show; with reduced motion nothing animates. */
+.stage-namewrap{position:relative;display:inline-block}
+.stage.anim .stage-word>span{opacity:0;transform:translateY(.06em)}
+.stage.anim.in .stage-word>span{opacity:1;transform:none;
+  transition:opacity .7s ease,transform .8s cubic-bezier(.16,1,.3,1);transition-delay:calc(1.05s + var(--i,0)*.045s)}
+.stage-name-ol{position:absolute;inset:0;margin:0;pointer-events:none;clip-path:inset(-12% 100% -12% 0)}
+.stage-name-ol .stage-word>span,.stage.anim .stage-name-ol .stage-word>span,.stage.anim.in .stage-name-ol .stage-word>span{background:none;color:transparent;-webkit-text-stroke:1.3px var(--accent);filter:none;opacity:1;transform:none;transition:none}
+.stage.in .stage-name-ol{animation:olDraw 2.3s cubic-bezier(.65,0,.35,1) .15s both}
+@keyframes olDraw{0%{clip-path:inset(-12% 100% -12% 0);opacity:1}52%{clip-path:inset(-12% 0 -12% 0);opacity:1}72%{opacity:.9}100%{clip-path:inset(-12% 0 -12% 0);opacity:0}}
+.stage-xhair{position:absolute;top:-16px;bottom:-16px;left:0;width:1px;pointer-events:none;opacity:0;background:var(--accent);box-shadow:0 0 10px var(--accent-glow)}
+.stage-xhair::before{content:"";position:absolute;left:-18px;top:50%;width:37px;height:1px;background:var(--accent)}
+.stage-xhair::after{content:"";position:absolute;left:-5px;top:calc(50% - 5px);width:9px;height:9px;border:1px solid var(--accent)}
+.stage.in .stage-xhair{animation:xhair 2.3s cubic-bezier(.65,0,.35,1) .15s both}
+@keyframes xhair{0%{left:0;opacity:1}52%{left:100%;opacity:1}62%{left:100%;opacity:0}100%{left:100%;opacity:0}}
+.stage-crop{position:absolute;inset:-14px -20px -10px -14px;pointer-events:none}
+.stage-crop i{position:absolute;width:16px;height:16px;border:0 solid rgba(255,178,122,.55)}
+.stage-crop i:nth-child(1){left:0;top:0;border-width:1.5px 0 0 1.5px}
+.stage-crop i:nth-child(2){right:0;top:0;border-width:1.5px 1.5px 0 0}
+.stage-crop i:nth-child(3){right:0;bottom:0;border-width:0 1.5px 1.5px 0}
+.stage-crop i:nth-child(4){left:0;bottom:0;border-width:0 0 1.5px 1.5px}
+.stage.anim .stage-crop{opacity:0;transform:scale(1.04)}
+.stage.anim.in .stage-crop{opacity:1;transform:none;transition:opacity .5s ease .05s,transform .8s cubic-bezier(.16,1,.3,1) .05s}
+.stage.anim .stage-kicker,.stage.anim .stage-top,.stage.anim .stage-foot{opacity:0;transform:translateY(14px)}
+.stage.anim.in .stage-kicker,.stage.anim.in .stage-top,.stage.anim.in .stage-foot{opacity:1;transform:none;transition:opacity .8s ease,transform .8s cubic-bezier(.16,1,.3,1)}
+.stage.anim.in .stage-kicker{transition-delay:.15s}
+.stage.anim.in .stage-foot{transition-delay:.75s}
+
+.stage-foot{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap}
+.stage-stats{display:flex;gap:clamp(18px,3vw,44px);margin:0;padding:0;list-style:none}
+.stage-stats li{display:flex;flex-direction:column;gap:4px}
+.stage-stats b{font:800 clamp(20px,2.2vw,30px)/1 var(--font-display);color:var(--text)}
+.stage-stats small{font:600 10px/1 var(--font-mono);letter-spacing:.22em;text-transform:uppercase;color:var(--muted)}
+.stage-cta{display:flex;flex-direction:column;align-items:flex-end;gap:12px}
+.stage-open{display:flex;align-items:center;gap:8px;margin:0;font:600 11px/1 var(--font-mono);letter-spacing:.16em;text-transform:uppercase;color:var(--muted)}
+.stage-open i{width:8px;height:8px;border-radius:50%;background:#7be08f;box-shadow:0 0 0 4px rgba(123,224,143,.18)}
+
+/* ---------- skill cards ---------- */
+.stage-card{position:absolute;z-index:3;top:50%;max-width:330px;padding:22px 24px;border-radius:18px;opacity:0;pointer-events:none;
+  background:rgba(21,10,18,.72);border:1px solid var(--line-strong);backdrop-filter:blur(18px);-webkit-backdrop-filter:blur(18px);
+  box-shadow:0 24px 60px rgba(0,0,0,.5)}
+.stage-card-l{left:clamp(20px,4vw,64px);translate:0 -50%}
+.stage-card-r{right:clamp(20px,4vw,64px);translate:0 -50%}
+.stage-card-k{font:700 10px/1 var(--font-mono);letter-spacing:.24em;text-transform:uppercase;color:var(--accent)}
+.stage-card h3{margin:10px 0 8px;font:800 22px/1.15 var(--font-display);color:var(--text)}
+.stage-card p{margin:0;font:400 13px/1.6 var(--font-body);color:var(--muted)}
+.stage-card ul{display:flex;flex-wrap:wrap;gap:6px;margin:14px 0 0;padding:0;list-style:none}
+.stage-card li{padding:4px 10px;border-radius:999px;border:1px solid var(--line-strong);background:rgba(255,255,255,.04);font:600 11px/1.4 var(--font-mono);color:var(--text)}
+
+.stage-hint{position:absolute;z-index:3;left:50%;bottom:26px;translate:-50% 0;display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:999px;opacity:0;pointer-events:none;
+  background:rgba(13,7,16,.6);border:1px solid var(--line);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);font:600 12px/1 var(--font-body);color:var(--muted)}
+.stage-hint span{width:14px;height:22px;border:1.5px solid var(--muted);border-radius:8px;position:relative}
+.stage-hint span::after{content:"";position:absolute;left:50%;top:4px;width:2px;height:5px;margin-left:-1px;border-radius:2px;background:var(--accent);animation:stageWheel 1.6s ease-in-out infinite}
+@keyframes stageWheel{0%{opacity:0;transform:translateY(0)}30%{opacity:1}100%{opacity:0;transform:translateY(8px)}}
+
+/* ---------- phones ---------- */
+@media (max-width:767px){
+  .stage-hero{padding:92px 20px 104px}
+  .stage-tag{font-size:9px;letter-spacing:.24em}
+  .stage-explore{font-size:12px}
+  .stage-center{align-items:center;text-align:center;margin-top:auto;margin-bottom:6vh}
+  .stage-kicker{margin-left:0}
+  .stage-name{font-size:clamp(52px,17.5vw,120px);line-height:.88;display:flex;flex-direction:column;align-items:center}
+  .stage-foot{flex-direction:column;align-items:stretch;gap:16px}
+  .stage-stats{justify-content:space-between}
+  .stage-cta{align-items:stretch}
+  .stage-open{justify-content:center}
+  .stage-cta .hero-actions{display:grid;grid-template-columns:1fr 1fr}
+  .stage-cta .btn{justify-content:center}
+  .stage-card{top:auto;bottom:84px;left:16px;right:16px;max-width:none;translate:none;padding:18px 18px}
+  .stage-card h3{font-size:19px}
+  .stage-hint{bottom:20px}
+}
+/* <=640px the site shows only the WhatsApp button (bottom-right, 52px) */
+@media (max-width:640px){
+  .stage-hero{padding-bottom:80px}
+}
+@media (max-width:767px) and (max-height:640px){
+  .stage-name{font-size:clamp(44px,14vw,80px)}
+  .stage-card p{display:none}
+}
+
+/* ---------- static fallback (reduced motion / no JS) ---------- */
+.stage.is-static .stage-poster{object-position:50% 50%}
+@media (prefers-reduced-motion:reduce){
+  .stage-hint span::after{animation:none}
+  .stage-name-ol,.stage-xhair{display:none}
+  .stage.anim .stage-crop{opacity:1;transform:none;transition:none}
+  .stage.anim .stage-word>span,.stage.anim .stage-kicker,.stage.anim .stage-top,.stage.anim .stage-foot{opacity:1;transform:none;filter:none;transition:none}
+}
+
+
+/* ---------- level-marker rail: scroll progress as Revit level heads (stage.js fills it) ---------- */
+.stage-levels{position:absolute;z-index:3;right:clamp(18px,2.2vw,34px);top:24%;bottom:24%;width:70px;opacity:0;pointer-events:none}
+.lv-rail{position:absolute;right:0;top:0;bottom:0;width:2px;border-radius:2px;background:rgba(255,255,255,.12)}
+.lv-fill{position:absolute;left:0;right:0;bottom:0;height:0;border-radius:2px;background:linear-gradient(to top,var(--accent),rgba(255,178,122,.35))}
+.lv-list{position:absolute;inset:0;margin:0;padding:0;list-style:none}
+.lv-list li{position:absolute;right:0;display:flex;align-items:center;gap:6px;transform:translateY(50%);font:700 9px/1 var(--font-mono);letter-spacing:.12em;color:var(--dim);transition:color .3s ease,opacity .3s ease}
+.lv-list li i{position:relative;width:26px;height:0;border-top:1px dashed rgba(255,255,255,.22)}
+.lv-list li i::after{content:"";position:absolute;right:-1px;top:-4px;border:4px solid transparent;border-top:6px solid rgba(255,255,255,.35);border-bottom:0}
+.lv-list li.on{color:var(--muted)}
+.lv-list li.on i{border-top-color:rgba(255,178,122,.55)}
+.lv-list li.on i::after{border-top-color:var(--accent)}
+.lv-list li.cur{opacity:0}
+.lv-mark{position:absolute;right:-5px;bottom:0;width:12px;height:12px;border-radius:50%;transform:translateY(50%);background:var(--accent);box-shadow:0 0 0 4px rgba(255,178,122,.18),0 0 18px var(--accent-glow)}
+.lv-mark b{position:absolute;right:22px;top:50%;transform:translateY(-50%);white-space:nowrap;padding:5px 9px;border-radius:999px;border:1px solid rgba(255,178,122,.45);background:rgba(13,7,16,.82);
+  font:700 10px/1 var(--font-mono);letter-spacing:.1em;color:var(--text);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px)}
+/* keep the right skill card clear of the rail */
+@media (min-width:768px){.stage-card-r{right:clamp(130px,10vw,170px)}}
+@media (max-width:767px){
+  .stage-levels{right:10px;top:22%;bottom:38%;width:20px}
+  .lv-list li b{display:none}
+  .lv-list li i{width:10px}
+  .lv-mark b{right:18px;padding:4px 7px;font-size:9px}
+}
+
+/* stats and the availability line sit over the film: keep them legible */
+.stage-stats b,.stage-stats small,.stage-open{text-shadow:0 2px 14px rgba(0,0,0,.85),0 0 2px rgba(0,0,0,.6)}

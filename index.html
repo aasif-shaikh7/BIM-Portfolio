@@ -18,6 +18,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=2.9.9">
+<link rel="stylesheet" href="stage.css?v=3.4.0">
+<link rel="preload" as="image" href="assets/hero-poster.jpg?v=4" fetchpriority="high">
 <!-- .reveal blocks start hidden and are shown by script.js; without JS they must stay visible -->
 <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 <script data-goatcounter="https://aasif-shaikh7.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="//gc.zgo.at/count.js"></script>
@@ -39,69 +41,65 @@
 </header>
 
 <main>
-<!-- ============ HERO ============ -->
-<section id="home" class="hero">
-  <div class="hero-backdrop"><img src="assets/slide-04-01.jpg" alt="" id="heroBackdrop"></div>
-  <p class="hero-tag">BIM · Revit · BOQ · BBS</p>
-  <!-- v2.9.0 hero figure: the portrait presented as a tagged BIM element —
-       glow, grid disc + instrument rings behind it, a Scan-to-BIM light sweep
-       over it, and Revit-style tags with leaders around it. -->
-  <div class="hero-figure" id="heroFigure">
-    <span class="hero-halo" aria-hidden="true"></span>
-    <!-- v2.9.8 (phones) / v2.9.9 (every width): the second of two arch windows (the portrait is the first); in it one of the real projects is built,
-         a short silent loop cut from its build-up video. script.js sets the source once the page has loaded. -->
-    <div class="hero-arch" aria-hidden="true" data-label="Mohite Mrugank"><video id="heroBuild" muted loop playsinline preload="none" tabindex="-1" disablepictureinpicture poster="assets/videos/hero-build-mohite-mrugank-poster.jpg" data-src="assets/videos/hero-build-mohite-mrugank.mp4?v=2.9.8"></video></div>
-    <svg class="hero-rings" viewBox="0 0 400 400" aria-hidden="true" focusable="false">
-      <defs>
-        <radialGradient id="hrFill" cx="50%" cy="34%" r="72%">
-          <stop offset="0" stop-color="#ffb27a" stop-opacity=".30"/>
-          <stop offset=".5" stop-color="#8a4a72" stop-opacity=".36"/>
-          <stop offset="1" stop-color="#1a0c18" stop-opacity=".80"/>
-        </radialGradient>
-        <linearGradient id="hrArc" x1="0" y1="0" x2="1" y2="1">
-          <stop offset="0" stop-color="#ffe2ca"/>
-          <stop offset="1" stop-color="#ffb27a"/>
-        </linearGradient>
-        <pattern id="hrGrid" width="20" height="20" patternUnits="userSpaceOnUse">
-          <path d="M20 0H0V20" fill="none" stroke="#ffb27a" stroke-opacity=".17" stroke-width=".6"/>
-        </pattern>
-      </defs>
-      <circle cx="200" cy="200" r="172" fill="url(#hrFill)"/>
-      <circle cx="200" cy="200" r="172" fill="url(#hrGrid)"/>
-      <circle class="hr-line" cx="200" cy="200" r="172"/>
-      <circle class="hr-ticks" cx="200" cy="200" r="184"/>
-      <circle class="hr-base" cx="200" cy="200" r="196"/>
-      <g class="hr-spin">
-        <circle class="hr-arc" cx="200" cy="200" r="196" transform="rotate(-157 200 200)"/>
-        <circle class="hr-node" cx="200" cy="4" r="4.5"/>
-        <circle class="hr-arc" cx="200" cy="200" r="196" transform="rotate(23 200 200)"/>
-        <circle class="hr-node" cx="200" cy="396" r="4.5"/>
-      </g>
-    </svg>
-    <img class="hero-photo" src="assets/profile.png" alt="Portrait of Asif Shaikh" width="1036" height="1000" fetchpriority="high" onerror="this.closest('.hero-figure').remove()">
-    <span class="hero-scan" aria-hidden="true"></span>
-    <ul class="hero-chips" aria-label="At a glance">
-      <li class="hero-chip chip-l c1"><small>Revit</small><b>Arch + Struct</b></li>
-      <li class="hero-chip chip-r c2"><small>Model LOD</small><b>300–350</b></li>
-      <li class="hero-chip chip-l c3"><small>Projects</small><b><span id="heroProjCount">14</span> delivered</b></li>
-      <li class="hero-chip chip-r c4"><b><i></i>Open to work</b></li>
-    </ul>
-  </div>
-  <div class="hero-inner">
-    <h1 class="hero-title metal"><span class="sr-only">Asif Shaikh, Senior BIM Modeler — </span>PORTFOLIO</h1>
-  </div>
-  <div class="hero-foot">
-    <!-- v2.9.8, phones only: the three facts that the desktop shows as tags round the portrait -->
-    <ul class="hero-stats" aria-label="At a glance">
-      <li><b><span id="heroStatCount">14</span></b><small>Projects</small></li>
-      <li><b>300–350</b><small>Model LOD</small></li>
-      <li><b>AR + ST</b><small>Revit</small></li>
-    </ul>
-    <p class="hero-role">Senior <strong>BIM</strong> <em>Modeler</em></p>
-    <div class="hero-actions">
-      <a class="btn btn-lime" href="assets/asif-shaikh-resume.pdf" download="Asif-Shaikh-Resume.pdf" aria-label="Download Asif Shaikh resume PDF">Resume ↓</a>
-      <a class="btn btn-dark" href="#contact">Contact</a>
+<!-- ============ HERO (v3.4 scroll stage) ============ -->
+<!-- A pinned, scroll-driven stage: a camera move round the desk (assets/hero-frames, drawn on a canvas by stage.js) goes
+     from in front of the desk (the back of the laptop) to the side, then dissolves to the over-the-shoulder view of the
+     laptop screen. The name is drawn like a CAD plot on load, two skill cards pass, a level rail tracks the scroll, and
+     the stage fades into the About section. Without JS, or with reduced motion, it is a plain one-screen hero. -->
+<section id="home" class="stage" aria-label="Introduction">
+  <div class="stage-pin">
+    <img class="stage-poster" id="stagePoster" src="assets/hero-poster.jpg?v=4" alt="" aria-hidden="true" fetchpriority="high" width="1920" height="1080">
+    <canvas class="stage-canvas" id="stageCanvas" aria-hidden="true"></canvas>
+    <div class="stage-shade" aria-hidden="true"></div>
+    <div class="stage-fade" id="stageFade" aria-hidden="true"></div>
+
+    <div class="stage-hero" id="stageHero">
+      <div class="stage-top">
+        <p class="stage-tag">BIM · Revit · BOQ · BBS</p>
+        <a class="stage-explore" href="#projects">Explore work <span aria-hidden="true">→</span></a>
+      </div>
+      <div class="stage-center">
+        <p class="stage-kicker">Senior BIM Modeler</p>
+        <div class="stage-namewrap" id="stageNameWrap"><h1 class="stage-name"><span class="sr-only">Asif Shaikh, Senior BIM Modeler</span><span class="stage-word" aria-hidden="true"><span>A</span><span>S</span><span>I</span><span>F</span></span> <span class="stage-word" aria-hidden="true"><span>S</span><span>H</span><span>A</span><span>I</span><span>K</span><span>H</span></span></h1><span class="stage-crop" aria-hidden="true"><i></i><i></i><i></i><i></i></span></div>
+      </div>
+      <div class="stage-foot">
+        <ul class="stage-stats" aria-label="At a glance">
+          <li><b id="heroStatCount">14</b><small>Projects</small></li>
+          <li><b>300–350</b><small>Model LOD</small></li>
+          <li><b>AR + ST</b><small>Revit</small></li>
+        </ul>
+        <div class="stage-cta">
+          <p class="stage-open"><i></i>Open to work · Mumbai, India</p>
+          <div class="hero-actions">
+            <a class="btn btn-lime" href="assets/asif-shaikh-resume.pdf" download="Asif-Shaikh-Resume.pdf" aria-label="Download Asif Shaikh resume PDF">Resume ↓</a>
+            <a class="btn btn-dark" href="#contact">Contact</a>
+          </div>
+        </div>
+      </div>
     </div>
+
+    <!-- skill cards that pass while the camera orbits (desktop: one each side; phones: one after the other) -->
+    <div class="stage-card stage-card-l" id="stageCardL" aria-hidden="true">
+      <span class="stage-card-k">BIM Modelling</span>
+      <h3>Architecture <span class="accent-i">+</span> Structure</h3>
+      <p>Complete architectural and structural 3D models in Revit, built to project standards and ready for construction documentation.</p>
+      <ul><li>Revit Architecture</li><li>Revit Structure</li><li>LOD 300–350</li></ul>
+    </div>
+    <div class="stage-card stage-card-r" id="stageCardR" aria-hidden="true">
+      <span class="stage-card-k">Quantities &amp; Detailing</span>
+      <h3>BOQ <span class="accent-i">·</span> BBS</h3>
+      <p>Bar bending schedules and quantity takeoff straight from the model — construction-ready, audit-friendly.</p>
+      <ul><li>BBS</li><li>BOQ</li><li>CADS RC</li></ul>
+    </div>
+
+    <div class="stage-hint" id="stageHint" aria-hidden="true"><span></span>Scroll to explore</div>
+    <!-- scroll progress shown as Revit level heads: the marker climbs with the build (stage.js) -->
+    <div class="stage-levels" id="stageLevels" aria-hidden="true">
+      <span class="lv-rail"><span class="lv-fill" id="lvFill"></span></span>
+      <ul class="lv-list" id="lvList"></ul>
+      <span class="lv-mark" id="lvMark"><b id="lvTag">G</b></span>
+    </div>
+    <div class="stage-exit" id="stageExit" aria-hidden="true"></div>
   </div>
 </section>
 
@@ -478,5 +476,6 @@
 </div>
 
 <script src="script.js?v=2.9.9"></script>
+<script src="stage.js?v=3.4.0"></script>
 </body>
 </html>
