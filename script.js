@@ -1,7 +1,7 @@
 /* ============================================================
-   ASIF SHAIKH — BIM Portfolio · script.js v2.9.9 "build-up video section"
+   ASIF SHAIKH — BIM Portfolio · script.js v3.6 (the hero scroll stage is in stage.js)
    Modules: header, mobile nav, reveal, services accordion,
-   hero parallax (backdrop on scroll, figure on pointer), project modal, BBS carousel, single 14-project
+   project modal, BBS carousel, single 14-project
    carousel (one at a time), slide preloading, is-active slide
    highlighting for the glass animations, floating Let's Talk,
    visitor counter, WhatsApp contact form.
@@ -59,112 +59,7 @@
     });
   });
 
-  /* ---------- Hero parallax backdrop ---------- */
-  var backdrop = document.getElementById('heroBackdrop');
-  if (backdrop && !reducedMotion) {
-    var ticking = false;
-    window.addEventListener('scroll', function () {
-      if (ticking) return;
-      ticking = true;
-      requestAnimationFrame(function () {
-        var y = window.scrollY;
-        if (y < window.innerHeight * 1.2) backdrop.style.transform = 'translateY(' + (y * .22) + 'px)';
-        ticking = false;
-      });
-    }, { passive: true });
-  }
-
-  /* ---------- Hero figure: pointer parallax ----------
-     Feeds the pointer position (-1..1 on each axis) to the figure as --px/--py;
-     style.css moves each layer (glow, rings, portrait, tags) by a different
-     amount for depth. Mouse/trackpad only, and never with reduced motion. */
-  var hero = document.getElementById('home');
-  var figure = document.getElementById('heroFigure');
-  /* Tag layout: by default the tags sit outside the ring, which needs ~180px of
-     free space on each side of the figure. Where the figure fills the width
-     (tablets, portrait screens) they move inside it instead; if the figure is
-     also too small to hold them there, they are switched off. Phones (<=640px)
-     have their own fixed layout in style.css and ignore both classes. */
-  if (figure) {
-    var tagRaf = 0;
-    var layoutTags = function () {
-      tagRaf = 0;
-      var w = figure.getBoundingClientRect().width;
-      var phone = window.matchMedia && window.matchMedia('(max-width:640px)').matches;
-      var inside = !phone && (window.innerWidth - w) / 2 < 180;
-      figure.classList.toggle('tags-inside', inside);
-      figure.classList.toggle('tags-off', inside && w < 560);
-    };
-    layoutTags();
-    window.addEventListener('resize', function () { if (!tagRaf) tagRaf = requestAnimationFrame(layoutTags); });
-  }
-  var finePointer = window.matchMedia && window.matchMedia('(hover:hover) and (pointer:fine)').matches;
-  if (hero && figure && finePointer && !reducedMotion) {
-    var pRaf = 0, pX = 0, pY = 0;
-    hero.addEventListener('pointermove', function (e) {
-      var r = hero.getBoundingClientRect();
-      pX = ((e.clientX - r.left) / r.width - .5) * 2;
-      pY = ((e.clientY - r.top) / r.height - .5) * 2;
-      if (pRaf) return;
-      pRaf = requestAnimationFrame(function () {
-        pRaf = 0;
-        figure.style.setProperty('--px', pX.toFixed(3));
-        figure.style.setProperty('--py', pY.toFixed(3));
-      });
-    });
-    hero.addEventListener('pointerleave', function () {
-      pX = 0; pY = 0;
-      figure.style.setProperty('--px', '0');
-      figure.style.setProperty('--py', '0');
-    });
-  }
-
-  /* ---------- v2.9.9 hero (v2.9.8 on phones, now every width): a real project being built in the arch, and a 3D lean ----------
-     Behind the portrait the arch shows one of the portfolio's own Revit models going up: a short, silent
-     loop cut from its build-up video (assets/videos/hero-build-*.mp4, the model keyed onto the site's plum).
-     The file is only fetched once the page has loaded. If the browser will not play it
-     by itself (data saver, low-power mode), the poster - the finished building - simply stays.
-     The lean: style.css tilts the whole figure with --ry/--rx (animated) plus --iy/--ix, which are set here
-     from the mouse or a finger moved over the hero, or from the phone's own tilt where the browser reports
-     it without asking (Android). style.css eases them. With reduced motion nothing moves and the poster is shown. */
-  (function () {
-    var vid = document.getElementById('heroBuild');
-    if (!vid || !figure || !hero || !window.matchMedia) return;
-    var loaded = false, visible = true;
-    function play() {
-      if (reducedMotion) return;
-      if (!loaded) { loaded = true; vid.src = vid.getAttribute('data-src'); }
-      if (visible && !document.hidden) { var p = vid.play(); if (p && p.catch) p.catch(function () {}); }
-      else vid.pause();
-    }
-    if (document.readyState === 'complete') play(); else window.addEventListener('load', play);
-    if ('IntersectionObserver' in window) {
-      new IntersectionObserver(function (e) { visible = e[0].isIntersecting; if (loaded) play(); }, { threshold: 0 }).observe(hero);
-    }
-    document.addEventListener('visibilitychange', function () { if (loaded) play(); });
-    if (reducedMotion) return;
-    if (window.CSS && CSS.registerProperty) figure.classList.add('tilt-anim');
-    /* a finger dragged over the hero leans the frame towards it (scrolling is never blocked) */
-    var lean = 0, gy = 0, gx = 0;
-    function apply() { lean = 0; figure.style.setProperty('--iy', gy.toFixed(2) + 'deg'); figure.style.setProperty('--ix', gx.toFixed(2) + 'deg'); }
-    function set(y, x) { gy = y; gx = x; if (!lean) lean = requestAnimationFrame(apply); }
-    /* the mouse moved over the hero leans the frame towards it */
-    hero.addEventListener('pointermove', function (e) {
-      if (e.pointerType === 'touch') return;
-      var r = hero.getBoundingClientRect();
-      set(((e.clientX - r.left) / r.width - 0.5) * 13, -((e.clientY - r.top) / r.height - 0.5) * 7);
-    });
-    hero.addEventListener('pointerleave', function () { set(0, 0); });
-    hero.addEventListener('touchmove', function (e) {
-      var p = e.touches[0], r = hero.getBoundingClientRect();
-      set(((p.clientX - r.left) / r.width - 0.5) * 16, -((p.clientY - r.top) / r.height - 0.5) * 8);
-    }, { passive: true });
-    hero.addEventListener('touchend', function () { set(0, 0); }, { passive: true });
-    window.addEventListener('deviceorientation', function (e) {
-      if (e.gamma == null || e.beta == null) return;
-      set(Math.max(-9, Math.min(9, e.gamma * 0.35)), Math.max(-5, Math.min(5, (e.beta - 55) * -0.12)));
-    });
-  })();
+  /* (the hero is the scroll stage in stage.js) */
 
   /* ---------- Project modal ---------- */
   var modal = document.getElementById('projectModal'),
@@ -289,10 +184,7 @@
            needs ~8 s to read, so autoplay stays supplementary to Pause/hover. */
         i = 0, timer = null, paused = false, manualPause = reducedMotion, delay = 4000;
     if (total) total.textContent = ('0' + n).slice(-2);
-    /* the hero "Projects" tag shows the same count, so it can never go stale */
-    var heroCount = document.getElementById('heroProjCount');
-    if (heroCount) heroCount.textContent = n;
-    /* v2.9.8: so does the strip of facts on the phone hero */
+    /* the hero's "Projects" figure shows the same count, so it can never go stale */
     var heroStat = document.getElementById('heroStatCount');
     if (heroStat) heroStat.textContent = n;
     track.style.transition = 'transform 700ms cubic-bezier(.22,.61,.36,1)';
