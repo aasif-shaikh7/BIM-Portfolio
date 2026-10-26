@@ -18,8 +18,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=2.9.9">
-<link rel="stylesheet" href="stage.css?v=3.4.0">
-<link rel="preload" as="image" href="assets/hero-poster.jpg?v=4" fetchpriority="high">
+<link rel="stylesheet" href="stage.css?v=3.6.0">
+<link rel="preload" as="image" href="assets/hero-poster.jpg?v=5" fetchpriority="high">
 <!-- .reveal blocks start hidden and are shown by script.js; without JS they must stay visible -->
 <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
 <script data-goatcounter="https://aasif-shaikh7.goatcounter.com/count" data-goatcounter-settings='{"no_onload":true}' async src="//gc.zgo.at/count.js"></script>
@@ -41,14 +41,14 @@
 </header>
 
 <main>
-<!-- ============ HERO (v3.4 scroll stage) ============ -->
+<!-- ============ HERO (v3.6 scroll stage) ============ -->
 <!-- A pinned, scroll-driven stage: a camera move round the desk (assets/hero-frames, drawn on a canvas by stage.js) goes
-     from in front of the desk (the back of the laptop) to the side, then dissolves to the over-the-shoulder view of the
-     laptop screen. The name is drawn like a CAD plot on load, two skill cards pass, a level rail tracks the scroll, and
+     in one continuous shot from in front of the desk (the back of the laptop), round behind him, to the over-the-shoulder
+     view of the laptop screen. The name is drawn like a CAD plot on load, two skill cards pass, a level rail tracks the scroll, and
      the stage fades into the About section. Without JS, or with reduced motion, it is a plain one-screen hero. -->
 <section id="home" class="stage" aria-label="Introduction">
   <div class="stage-pin">
-    <img class="stage-poster" id="stagePoster" src="assets/hero-poster.jpg?v=4" alt="" aria-hidden="true" fetchpriority="high" width="1920" height="1080">
+    <img class="stage-poster" id="stagePoster" src="assets/hero-poster.jpg?v=5" alt="" aria-hidden="true" fetchpriority="high" width="1920" height="1080">
     <canvas class="stage-canvas" id="stageCanvas" aria-hidden="true"></canvas>
     <div class="stage-shade" aria-hidden="true"></div>
     <div class="stage-fade" id="stageFade" aria-hidden="true"></div>
@@ -476,6 +476,6 @@
 </div>
 
 <script src="script.js?v=2.9.9"></script>
-<script src="stage.js?v=3.4.0"></script>
+<script src="stage.js?v=3.6.0"></script>
 </body>
 </html>

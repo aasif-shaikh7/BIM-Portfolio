@@ -1,12 +1,12 @@
 /* =====================================================================
-   v3.4 HERO — scroll stage
-   A camera move around the desk (assets/hero-frames[-hd]/f0001-f0237.webp) is drawn on a canvas as the page scrolls
+   v3.6 HERO — scroll stage
+   A camera move around the desk (assets/hero-frames[-hd]/f0001-f0240.webp) is drawn on a canvas as the page scrolls
    through the tall #home section; the pinned layers are placed for the current scroll progress p (0..1):
      0.00-0.12  name + hero text fade out (the name was drawn like a CAD plot on load)
-     0.00-0.80  the film plays: in front of the desk (back of the laptop) -> round to the side
+     0.00-0.90  the film plays in one continuous shot: in front of the desk (back of the laptop) -> round behind him
+                -> over his right shoulder onto the Revit model on the laptop screen
      0.18-0.55  skill cards pass (desktop: both sides; phones: one after the other)
      0.03-0.95  a level rail (Revit level heads) tracks the scroll
-     0.80-0.90  dissolve + slight push-in to the over-the-shoulder view of the laptop (shoulder.webp)
      0.92-1.00  it fades into the page background, and the About section scrolls in
    Frames on a canvas (not a paused <video>) scrub smoothly on every phone.
    With reduced motion, or without canvas support, the hero stays a plain one-screen hero (.is-static).
@@ -51,14 +51,13 @@
 
   /* ---------- tuning ---------- */
   /* two frame sets: 1920x1080 (lanczos upscale, light sharpening, ~9 MB) for large screens, 1280x720 (~5 MB) for small */
-  var FRAMES = 237,
+  var FRAMES = 240,
       HD = (window.innerWidth || 0) * (window.devicePixelRatio || 1) > 1400,
       FW = HD ? 1920 : 1280, FH = HD ? 1080 : 720,
       DIR = HD ? 'assets/hero-frames-hd/' : 'assets/hero-frames/',
-      VER = '?v=4';                   // bump whenever the frames are re-rendered (same file names)
+      VER = '?v=5';                   // bump whenever the frames are re-rendered (same file names)
   var frameUrl = function (i) { return DIR + 'f' + ('000' + (i + 1)).slice(-4) + '.webp' + VER; };
-  var ZOOM_AT = [0.457, 0.47];        // the dissolve pushes in towards the laptop screen's centre
-  var HERO_END = 0.12, FILM_END = 0.80, DISSOLVE = [0.80, 0.90], EXIT = [0.92, 1.0];
+  var HERO_END = 0.12, FILM_END = 0.90, EXIT = [0.92, 1.0];
 
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
   var seg = function (p, a, b) { return clamp((p - a) / (b - a), 0, 1); };
@@ -100,28 +99,19 @@
   }
 
   /* ---------- frames: cache + progressive loader ---------- */
-  var frames = new Array(FRAMES), shoulder = null, drawnKey = '', want = 0, wantMix = 0, painted = false;
+  var frames = new Array(FRAMES), drawn = -1, want = 0, painted = false;
   function nearest(idx) {
     var i = idx;
     while (i >= 0 && !frames[i]) i--;                  // closest earlier frame that has loaded
     if (i < 0) { i = idx; while (i < FRAMES && !frames[i]) i++; }
     return i < FRAMES ? i : -1;
   }
-  /* paint film frame `idx`, with the over-the-shoulder shot dissolved over it by `mix` (0..1) */
-  function paint(idx, mix) {
+  /* paint film frame `idx` (or the closest one that has loaded) */
+  function paint(idx) {
     var i = nearest(idx);
-    if (i < 0) return;
-    var m = shoulder ? mix : 0, key = i + ':' + Math.round(m * 200);
-    if (key === drawnKey) return;
-    drawnKey = key;
-    ctx.globalAlpha = 1;
-    if (m < 1) ctx.drawImage(frames[i], 0, 0, FW, FH);
-    if (m > 0) {
-      var z = 1.14 - 0.14 * m, cx = ZOOM_AT[0] * FW, cy = ZOOM_AT[1] * FH;   // pushes in, lands at 1:1
-      ctx.globalAlpha = m;
-      ctx.drawImage(shoulder, cx - cx * z, cy - cy * z, FW * z, FH * z);
-      ctx.globalAlpha = 1;
-    }
+    if (i < 0 || i === drawn) return;
+    drawn = i;
+    ctx.drawImage(frames[i], 0, 0, FW, FH);
     if (!painted && poster) { poster.style.opacity = '0'; painted = true; }
   }
   function loadImg(src, done) {
@@ -139,11 +129,11 @@
     add(FRAMES - 1);
     var k = 0, BATCH = 6;
     function frame(i) {
-      return loadImg(frameUrl(i), function (im) { frames[i] = im; if (Math.abs(i - want) < 3 || !painted) paint(want, wantMix); });
+      return loadImg(frameUrl(i), function (im) { frames[i] = im; if (Math.abs(i - want) < 3 || !painted) paint(want); });
     }
-    /* first frame, then the rest coarse-to-fine, then the over-the-shoulder shot */
+    /* first frame, then the rest coarse-to-fine */
     frame(0).then(function next() {
-      if (k >= order.length) return loadImg(DIR + 'shoulder.webp' + VER, function (im) { shoulder = im; drawnKey = ''; paint(want, wantMix); });
+      if (k >= order.length) return;
       var part = order.slice(k, k + BATCH); k += BATCH;
       return Promise.all(part.map(frame)).then(next);
     });
@@ -160,10 +150,10 @@
     var p = s.p, vw = s.vw, vh = s.vh, phone = vw < 768;
 
     /* film: cover the viewport; on narrow screens the visible slice follows the subject, then the laptop */
-    var t = ease(seg(p, 0, FILM_END)), mix = ease(seg(p, DISSOLVE[0], DISSOLVE[1])),
+    var t = ease(seg(p, 0, FILM_END)),
         scale = Math.max(vw / 1280, vh / 720),
         W = 1280 * scale, H = 720 * scale,
-        fx = 0.5 + 0.08 * t + (ZOOM_AT[0] - 0.58) * mix, fy = 0.52,
+        fx = 0.5 + 0.02 * t, fy = 0.52,
         ox = clamp(vw / 2 - fx * W, vw - W, 0),
         oy = clamp(vh / 2 - fy * H, vh - H, 0);
     canvas.style.cssText = 'left:' + ox + 'px;top:' + oy + 'px;width:' + W + 'px;height:' + H + 'px';
@@ -192,10 +182,9 @@
     /* 3. level-marker rail */
     placeLevels(p, phone);
 
-    /* film frame + dissolve */
+    /* film frame */
     want = Math.min(FRAMES - 1, Math.round(seg(p, 0, FILM_END) * (FRAMES - 1)));
-    wantMix = mix;
-    paint(want, mix);
+    paint(want);
   }
   function card(el, cin, cout, dir) {
     if (!el) return;
