@@ -7,7 +7,7 @@
                 -> over his right shoulder onto the Revit model on the laptop screen
      0.18-0.55  skill cards pass (desktop: both sides; phones: one after the other)
      0.03-0.95  a level rail (Revit level heads) tracks the scroll
-     0.92-1.00  it fades into the page background, and the About section scrolls in
+     0.84-1.00  the full-screen film shrinks into a rounded card (Apple-style) that then scrolls away with the page
    Frames on a canvas (not a paused <video>) scrub smoothly on every phone.
    With reduced motion, or without canvas support, the hero stays a plain one-screen hero (.is-static).
    ===================================================================== */
@@ -22,6 +22,7 @@
       canvas = $('stageCanvas'), poster = $('stagePoster'), hero = $('stageHero'),
       fade = $('stageFade'), exit = $('stageExit'), hint = $('stageHint'),
       cardL = $('stageCardL'), cardR = $('stageCardR'),
+      shade = stage.querySelector('.stage-shade'),
       levels = $('stageLevels'), lvList = $('lvList'), lvFill = $('lvFill'), lvMark = $('lvMark'), lvTag = $('lvTag');
 
   var reduced = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
@@ -57,7 +58,7 @@
       DIR = HD ? 'assets/hero-frames-hd/' : 'assets/hero-frames/',
       VER = '?v=5';                   // bump whenever the frames are re-rendered (same file names)
   var frameUrl = function (i) { return DIR + 'f' + ('000' + (i + 1)).slice(-4) + '.webp' + VER; };
-  var HERO_END = 0.12, FILM_END = 0.90, EXIT = [0.92, 1.0];
+  var HERO_END = 0.12, FILM_END = 0.90, EXIT = [0.92, 1.0], CARD = [0.84, 1.0];
 
   var clamp = function (v, a, b) { return Math.min(b, Math.max(a, v)); };
   var seg = function (p, a, b) { return clamp((p - a) / (b - a), 0, 1); };
@@ -86,7 +87,7 @@
   }
   function placeLevels(p, phone) {
     if (!levels) return;
-    levels.style.opacity = String(seg(p, 0.03, 0.08) * (1 - seg(p, 0.92, 0.99)));
+    levels.style.opacity = String(seg(p, 0.03, 0.08) * (1 - seg(p, 0.82, 0.88)));
     var f = seg(p, 0.03, 0.95), n = LEVELS.length - 1,
         idx = Math.min(n, Math.floor(f * n + 0.0001));
     if (lvFill) lvFill.style.height = (f * 100).toFixed(2) + '%';
@@ -156,7 +157,15 @@
         fx = 0.5 + 0.02 * t, fy = 0.52,
         ox = clamp(vw / 2 - fx * W, vw - W, 0),
         oy = clamp(vh / 2 - fy * H, vh - H, 0);
-    canvas.style.cssText = 'left:' + ox + 'px;top:' + oy + 'px;width:' + W + 'px;height:' + H + 'px';
+    /* end: the whole frame closes in to a rounded card; the film inside eases back a little */
+    var cs = ease(seg(p, CARD[0], CARD[1]));
+    canvas.style.cssText = 'left:' + ox + 'px;top:' + oy + 'px;width:' + W + 'px;height:' + H + 'px' +
+      (cs > 0 ? ';transform:scale(' + (1 - 0.08 * cs).toFixed(4) + ')' : '');
+    if (cs > 0) {
+      var ix = cs * (phone ? 4 : 14), it = cs * (phone ? 12 : 9), ib = cs * (phone ? 16 : 15);   /* bottom: crops the desk shadow */
+      pin.style.clipPath = 'inset(' + it.toFixed(2) + 'vh ' + ix.toFixed(2) + 'vw ' + ib.toFixed(2) + 'vh round ' + (cs * 28).toFixed(1) + 'px)';
+    } else if (pin.style.clipPath) pin.style.clipPath = '';
+    if (shade) shade.style.opacity = String(1 - 0.75 * cs);      /* the card shows the film edge to edge */
     if (poster && !painted) poster.style.cssText = 'left:' + ox + 'px;top:' + oy + 'px;width:' + W + 'px;height:' + H + 'px';
 
     /* 1. hero text */
@@ -167,7 +176,7 @@
     hero.style.visibility = hp >= 1 ? 'hidden' : 'visible';
     if (fade) fade.style.opacity = String(seg(p, 0.1, 0.2));
     if (hint) hint.style.opacity = String(seg(p, 0.04, 0.1) * (1 - seg(p, 0.6, 0.7)));
-    if (exit) exit.style.opacity = String(ease(seg(p, EXIT[0], EXIT[1])));
+    if (exit) exit.style.opacity = String(0.35 * ease(seg(p, EXIT[0], EXIT[1])));
 
     /* 2. skill cards */
     if (phone) {

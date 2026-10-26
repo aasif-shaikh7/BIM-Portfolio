@@ -18,7 +18,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css?v=3.6.1">
-<link rel="stylesheet" href="stage.css?v=3.6.0">
+<link rel="stylesheet" href="stage.css?v=3.8.0">
+<link rel="stylesheet" href="effects.css?v=3.8.0">
 <link rel="preload" as="image" href="assets/hero-poster.jpg?v=5" fetchpriority="high">
 <!-- .reveal blocks start hidden and are shown by script.js; without JS they must stay visible -->
 <noscript><style>.reveal{opacity:1;transform:none}</style></noscript>
@@ -154,6 +155,17 @@
   <div class="wrap">
     <div class="services-head"><p class="kicker">03 · Services</p></div>
     <h2 class="services-title metal">WHAT WE<br>CAN DO</h2>
+    <div class="svc-layout">
+    <!-- desktop: sticks beside the list while the services scroll past and shows the active one (effects.js) -->
+    <div class="svc-media" id="svcMedia" aria-hidden="true">
+      <figure class="on"><img src="assets/slide-07-03.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="assets/slide-16-06.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="assets/slide-17-01.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="assets/slide-17-02.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="assets/slide-09-01.jpg" alt="" loading="lazy"></figure>
+      <figure><img src="assets/slide-18-03.jpg" alt="" loading="lazy"></figure>
+      <div class="svc-media-meta"><b id="svcMediaNo">01</b><span>/ 06</span></div>
+    </div>
     <div class="svc-list">
       <div class="svc">
         <button class="svc-row" type="button" aria-expanded="false"><span class="svc-no">01</span><span class="svc-name">BIM Modelling — Arch &amp; Struct</span><span class="svc-icon">↘</span></button>
@@ -180,16 +192,38 @@
         <div class="svc-detail"><div><div class="svc-detail-inner"><span></span><div class="svc-tags"><span>Navisworks</span><span>MEP Coordination</span><span>Model Audits</span><span>BIM Standards</span></div><p class="svc-desc">Inter-discipline coordination, clash checks and model audits that keep every stream aligned before site work begins.</p></div></div></div>
       </div>
     </div>
+    </div>
   </div>
 </section>
 
 <!-- ============ WORKFLOW ============ -->
-<section class="workflow" aria-label="BIM workflow">
-  <div class="wrap flow-grid">
-    <div class="flow-step reveal"><span>STEP 01</span><h3>Model</h3><p>Detailed architectural and structural 3D modelling using Revit.</p></div>
-    <div class="flow-step reveal"><span>STEP 02</span><h3>Coordinate</h3><p>Clear interdisciplinary coordination and consistent BIM standards.</p></div>
-    <div class="flow-step reveal"><span>STEP 03</span><h3>Document</h3><p>Construction-ready drawings, BBS, layouts, BOQ extraction and documentation.</p></div>
-    <div class="flow-step reveal"><span>STEP 04</span><h3>Deliver</h3><p>Accurate project outputs focused on practical construction requirements.</p></div>
+<section class="workflow" id="workflow" aria-label="BIM workflow">
+  <!-- pinned on scroll (effects.js): a building model is assembled layer by layer, exploded for coordination,
+       turned into drawings, and delivered, one workflow step at a time. Static without JS / with reduced motion. -->
+  <div class="wf-pin">
+    <div class="wrap wf-grid">
+      <div class="wf-visual" aria-hidden="true">
+        <div class="wf-scene" id="wfScene">
+          <div class="wf-stack" id="wfStack">
+            <div class="wf-plate" data-k="foundation"><svg viewBox="0 0 400 280"><g class="pl-tie"><path d="M40 30H360M40 140H360M40 250H360M40 30V250M147 30V250M253 30V250M360 30V250"/></g><g class="pl-fnd"><rect x="18" y="8" width="44" height="44"/><rect x="125" y="8" width="44" height="44"/><rect x="231" y="8" width="44" height="44"/><rect x="338" y="8" width="44" height="44"/><rect x="18" y="118" width="44" height="44"/><rect x="125" y="118" width="44" height="44"/><rect x="231" y="118" width="44" height="44"/><rect x="338" y="118" width="44" height="44"/><rect x="18" y="228" width="44" height="44"/><rect x="125" y="228" width="44" height="44"/><rect x="231" y="228" width="44" height="44"/><rect x="338" y="228" width="44" height="44"/></g></svg></div>
+            <div class="wf-plate" data-k="columns"><svg viewBox="0 0 400 280"><g class="pl-grid"><path d="M40 30H360M40 140H360M40 250H360M40 30V250M147 30V250M253 30V250M360 30V250"/></g><g class="pl-col"><rect x="31" y="21" width="18" height="18"/><rect x="138" y="21" width="18" height="18"/><rect x="244" y="21" width="18" height="18"/><rect x="351" y="21" width="18" height="18"/><rect x="31" y="131" width="18" height="18"/><rect x="138" y="131" width="18" height="18"/><rect x="244" y="131" width="18" height="18"/><rect x="351" y="131" width="18" height="18"/><rect x="31" y="241" width="18" height="18"/><rect x="138" y="241" width="18" height="18"/><rect x="244" y="241" width="18" height="18"/><rect x="351" y="241" width="18" height="18"/></g></svg></div>
+            <div class="wf-plate" data-k="beams"><svg viewBox="0 0 400 280"><g class="pl-bm"><rect x="35" y="25" width="330" height="10"/><rect x="35" y="135" width="330" height="10"/><rect x="35" y="245" width="330" height="10"/><rect x="35" y="25" width="10" height="230"/><rect x="142" y="25" width="10" height="230"/><rect x="248" y="25" width="10" height="230"/><rect x="355" y="25" width="10" height="230"/><rect x="92" y="35" width="7" height="100"/><rect x="301" y="145" width="7" height="100"/></g></svg></div>
+            <div class="wf-plate" data-k="slabs"><svg viewBox="0 0 400 280"><path class="pl-slab" fill-rule="evenodd" d="M30 20H370V260H30Z M262 150H350V240H262Z"/><g class="pl-slabln"><path d="M147 20V260M253 20V260M30 140H370"/><path d="M262 150L350 240M350 150L262 240"/></g></svg></div>
+            <div class="wf-plate" data-k="walls"><svg viewBox="0 0 400 280"><g class="pl-wall"><path d="M40 30H120M174 30H226M280 30H360V110M360 170V250H290M236 250H164M110 250H40V170M40 110V30"/><path class="pl-part" d="M147 30V120M147 160V250M253 30V140H360M40 140H110M200 140V250"/></g><g class="pl-win"><path d="M120 30H174M226 30H280M360 110V170M290 250H236M164 250H110M40 170V110"/></g></svg></div>
+          </div>
+        </div>
+        <div class="wf-labels" id="wfLabels"><span data-k="walls">Walls <i>Arch</i></span><span data-k="slabs">Slabs <i>150 thk</i></span><span data-k="beams">Beams <i>230&times;450</i></span><span data-k="columns">Columns <i>300&times;600</i></span><span data-k="foundation">Foundation <i>F1&ndash;F6</i></span></div>
+        <div class="wf-clash" id="wfClash"><b></b><b></b><b></b></div>
+        <div class="wf-sheet" id="wfSheet"><span class="wf-sheet-tb"><b>S-101</b>GFC &middot; Beam &amp; slab layout<i>Scale 1:100</i></span></div>
+        <div class="wf-deliver" id="wfDeliver"><span>IFC</span><span>BOQ</span><span>BBS</span><span>GFC</span></div>
+      </div>
+      <div class="flow-grid wf-steps" id="wfSteps">
+        <div class="flow-step"><span>STEP 01</span><h3>Model</h3><p>Detailed architectural and structural 3D modelling using Revit.</p></div>
+        <div class="flow-step"><span>STEP 02</span><h3>Coordinate</h3><p>Clear interdisciplinary coordination and consistent BIM standards.</p></div>
+        <div class="flow-step"><span>STEP 03</span><h3>Document</h3><p>Construction-ready drawings, BBS, layouts, BOQ extraction and documentation.</p></div>
+        <div class="flow-step"><span>STEP 04</span><h3>Deliver</h3><p>Accurate project outputs focused on practical construction requirements.</p></div>
+      </div>
+    </div>
   </div>
 </section>
 
@@ -476,6 +510,7 @@
 </div>
 
 <script src="script.js?v=3.6.1"></script>
-<script src="stage.js?v=3.6.0"></script>
+<script src="stage.js?v=3.8.0"></script>
+<script src="effects.js?v=3.8.0"></script>
 </body>
 </html>
