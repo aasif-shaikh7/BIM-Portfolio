@@ -4,3 +4,5 @@ reel_analysis/
 __pycache__/
 # local QA screenshots and preview videos (not part of the site)
 audit-*/
+walkthrough-demo/
+_site/
